@@ -1,0 +1,142 @@
+
+    <div class="row my-5 ml-5">
+        <div class="col-4">
+          <img class="center-block img-responsive" 
+               src="../../assets/siu-02.png" 
+               [style.height.px]="120"
+               [style.margin.px]="2">
+        </div>
+        <div class="col-8">
+          
+            <h4 class="card-title text-center">Estudio Previo</h4>
+            <p class="text-center card-text">COORDINACIÓN DE PROCESO ADMINISTRACIÓN DE PROYECTOS</p>
+            <p class="text-center card-text">Administración de Proyectos de Investigación y Extensión</p>
+            <p class="text-center card-text">Administración SIU</p>        
+        </div>
+      </div>
+      
+      <form novalidate (ngSubmit)="save()">
+  
+  
+      
+      <div class="card mb-5 mx-5 shadow-lg">
+        <div class="card-header text-white">
+          <p class="font-weight-bold text-center" [style.font-size.px]="20">Informacion de solicitud</p>
+        </div>
+        <div class="card-body px-5 py-5">
+            <div class="form-group col-4 mb-3">
+                <label for="fechaId" class="col-form-label"><b>Fecha:</b></label>
+                
+                  <input id="fechaId" class="form-control" bsDatepicker>
+            
+                
+              </div>
+
+            <div class="form-group col-3 mb-2">
+              <label for="centroCostosId" class="col-form-label"><b>Centro de costos:</b></label>
+              
+                <input id="centroCostosId" class="form-control" type="text">
+                  
+              
+            </div>
+
+   
+    
+        
+          
+        
+      
+            <div class="row">
+              <div class="col-12 mb-3 form-group">
+  
+                <label for="necesidadId" class="col-form-label"><b>Necesidad y conveniencia de la contratación:</b></label>            
+                <textarea id="necesidadId" class="form-control mb-3"
+                  rows="5"
+                ></textarea>
+
+                
+              </div>
+            </div>
+  
+            <div class="row">
+              <div class="form-group col-12 mb-3">
+                <label for="descripcionId" class="col-form-label"><b>Descripción del objeto del contrato:</b></label>
+                
+                  <textarea id="descripcionId" class="form-control"
+                     rows="5"
+                    ></textarea>
+              </div>
+  
+            </div>
+  
+            <div class="row">
+              <div class="form-group col-8 mb-3">
+                <label for="valorId" class="col-form-label"><b>Valor o presupuesto estimado(discriminar valor con IVA y sin IVA):</b></label>
+                
+                  <input id="valorId" class="form-control" matInput mvndrMatCurrencyFormat  type="text">
+              </div>
+  
+              
+            </div>
+      
+            <div class="row">
+  
+              <div class="form-group col-12 mb-3">
+                <label for="verificacionId" class="col-form-label"><b>Verificación de contratos marco o acuerdos generales para el servicio, obra o bien requerido:</b></label>
+                                  
+                <div class="row">
+  
+                  <div class="custom-control custom-radio custom-control-inline mx-5">
+                    <input type="radio" id="verificacionId1" value="si"  class="custom-control-input">
+                    <label class="custom-control-label" for="verificacionId1">Sí existe</label>
+                  </div>
+                  <div class="custom-control custom-radio custom-control-inline mx-5">
+                    <input type="radio" id="verificacionId2" value="no"  class="custom-control-input">
+                    <label class="custom-control-label" for="verificacionId2">No Existe</label>                  
+                  </div>
+                </div>
+              </div>
+  
+            </div>      
+
+            <div class="row">
+  
+              <div class="form-group col-12 mb-3">
+                <label for="Firmas" class="col-form-label"><b>Firmas</b></label>
+                                  
+                <div class="row">
+  
+                 aqui van firmas
+                  
+                </div>
+              </div>
+  
+            </div>      
+  
+      
+          </div>
+        
+        </div>
+  
+  
+
+        <div class="form-group row">
+          <div class="offset-md-1 mb-5">
+            <button class="btn btn-success mr-3" style="width:200px;" type="submit"
+              >
+              Enviar
+            </button>
+            <!-- <button class="btn btn-outline-secondary mr-3" style="width:100px;" type="button" title="Cancelar"
+              [routerLink]="['/solicitud']">
+              Cancelar
+            </button> -->
+            <!-- <button class="btn btn-outline-warning" *ngIf="!agregarSolicitud" style="width:90px" type="button"
+              title="Borrar solicitud" (click)="deleteSolicitud()">
+              Borrar
+            </button> -->
+          </div>
+        </div>
+  
+      </form>
+
+  

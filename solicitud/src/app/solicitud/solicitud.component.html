@@ -1,0 +1,72 @@
+<div class="card">
+    <div class="card-header text-white">
+        <h2>
+
+            {{titulo}}
+        </h2>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-2">Buscar por nombre:</div>
+            <div class="col-md-4">
+                <input type="text" [(ngModel)]="filtrar">
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <h4>Filtrado por: {{filtrar}}</h4>
+        </div>
+    </div>
+    <div class="table-responsive">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>
+                        #
+                    </th>
+                    <th>Estado de proyecto</th>
+                    <th>Nombre Proyecto</th>
+                    <th>nombre del investigador</th>                                                                                                                 
+                    <th>nombre del grupo</th>
+                    <!-- <th>Numero de precotizaciones</th>                                                 -->
+                    <th>Fecha</th>                                                
+                    <th><button class="btn btn-outline-primary btn-sm" 
+                                [routerLink]="['/solicitud/0/editar']">
+                            Agregar
+                        </button></th>
+
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let solicitud of filtrados; let i=index">
+                    <td>
+                        {{(i+1)}}
+                    </td>
+                    <td>
+                        <div *ngIf="solicitud.estado === 'Creada'"  >
+                            <span class="badge badge-secondary">{{solicitud.estado}}</span>
+                        </div>                        
+                        <div *ngIf="solicitud.estado === 'Verificada Proyectos'">
+                            <span class="badge badge-success">{{solicitud.estado}}</span>
+                        </div>                        
+                    </td>
+
+                    <td>{{solicitud.nombreProyecto}}</td>
+                    <td>{{solicitud.investigador.nombre}}</td>                                                                   
+                    <td>{{solicitud.grupo.nombre}}</td>
+                    <!-- <td>{{solicitud.precotizaciones.length}}</td>                                                -->
+                    <td>{{solicitud.fecha | date}}</td>                                               
+                    <td><button class="btn btn-outline-secondary btn-sm"
+                        [routerLink]="['/solicitud', solicitud.idSolicitud, 'editar']">
+                  Editar
+                </button></td>
+
+
+
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
