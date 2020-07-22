@@ -1,6 +1,5 @@
 package com.solicitud.solicitud.service;
 
-import com.solicitud.solicitud.entity.Precotizacion;
 import com.solicitud.solicitud.entity.Solicitud;
 import com.solicitud.solicitud.repository.SolicitudRepository;
 import org.springframework.beans.factory.annotation.Autowired;

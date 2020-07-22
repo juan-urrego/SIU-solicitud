@@ -1,6 +1,6 @@
 package com.solicitud.solicitud.controller;
 
-import com.solicitud.solicitud.entity.Investigador;
+
 import com.solicitud.solicitud.entity.Precotizacion;
 import com.solicitud.solicitud.service.PrecotizacionService;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,0 +1,14 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Spring Boot-SolicitudApplication<solicitud>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "console": "internalConsole",
+            "mainClass": "com.solicitud.solicitud.SolicitudApplication",
+            "projectName": "solicitud",
+            "args": ""
+        }
+    ]
+}

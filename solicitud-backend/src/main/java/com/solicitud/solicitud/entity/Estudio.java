@@ -1,6 +1,6 @@
 package com.solicitud.solicitud.entity;
 
-import com.sun.tracing.dtrace.ArgsAttributes;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

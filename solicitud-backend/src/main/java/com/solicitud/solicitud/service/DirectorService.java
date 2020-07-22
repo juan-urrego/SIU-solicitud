@@ -2,7 +2,6 @@ package com.solicitud.solicitud.service;
 
 import com.solicitud.solicitud.entity.Director;
 import com.solicitud.solicitud.repository.DirectorRepository;
-import com.solicitud.solicitud.repository.DirectorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

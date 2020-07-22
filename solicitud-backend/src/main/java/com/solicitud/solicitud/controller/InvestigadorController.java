@@ -1,6 +1,5 @@
 package com.solicitud.solicitud.controller;
 
-import com.solicitud.solicitud.entity.Grupo;
 import com.solicitud.solicitud.entity.Investigador;
 import com.solicitud.solicitud.service.InvestigadorService;
 import org.springframework.beans.factory.annotation.Autowired;
