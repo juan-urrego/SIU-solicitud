@@ -29,11 +29,14 @@ public class Solicitud {
     @Column(name = "nombre_proyecto")
     private String nombreProyecto;
     private String fecha;
+
     private String rubro;
     private String subrubro;
     private String financiador;
     @Column(name = "centro_costos")
     private String centroCostos;
+
+    
     private String estado;
 
     @ManyToOne
@@ -55,4 +58,12 @@ public class Solicitud {
 
     )
     private List<Precotizacion> precotizaciones;
+
+    @JsonIgnoreProperties({"director","solicitud"})
+    @OneToOne(cascade = CascadeType.PERSIST, mappedBy = "solicitud")
+    private Estudio estudio;
+
+    @JsonIgnoreProperties({"director","solicitud"})
+    @OneToOne(cascade = CascadeType.PERSIST, mappedBy = "solicitud")
+    private Consulta consulta;
 }

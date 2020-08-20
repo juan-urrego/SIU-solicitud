@@ -4,10 +4,12 @@ import com.solicitud.solicitud.entity.Grupo;
 import com.solicitud.solicitud.repository.GrupoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
+@Transactional
 public class GrupoService {
 
     @Autowired

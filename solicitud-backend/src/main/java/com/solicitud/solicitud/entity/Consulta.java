@@ -16,12 +16,15 @@ public class Consulta {
     @Id
     @GeneratedValue
     private int id;
+    private String acuerdo;
     private String porque;
     private String estado;
 
     @OneToOne
     private Precotizacion precotizacion;
+
     @OneToOne
+    @JoinColumn(name = "solicitud_id_solicitud")
     private Solicitud solicitud;
 
 }

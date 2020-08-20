@@ -36,13 +36,12 @@ import { CurrencyPipe } from '@angular/common';
     GrupoComponent,
     ConsultaComponent,
     ConsultaEditarComponent,
-    
     GrupoEditarComponent,
     InvestigadorComponent,
     InvestigadorEditarComponent,
-    
+
     ProveedorComponent,
-    
+
     ProveedorEditarComponent
   ],
   imports: [

@@ -13,44 +13,54 @@ public class SolicitudService {
     @Autowired
     SolicitudRepository repository;
 
-    public Solicitud saveSolicitud(Solicitud solicitud){
+    public Solicitud saveSolicitud(Solicitud solicitud) {
+        solicitud.setEstado(this.updateEstado(solicitud));
         return repository.save(solicitud);
     }
 
-    public List<Solicitud> getSolicitudes(){
+    public List<Solicitud> getSolicitudes() {
         return repository.findAll();
     }
 
-    public Solicitud getSolicitudById(int id){
+    public Solicitud getSolicitudById(int id) {
         return repository.findById(id).orElse(null);
     }
 
-    public String deleteSolicitud(int id){
+    public String deleteSolicitud(int id) {
         repository.deleteById(id);
         return "Solicitud Eliminada " + id;
     }
 
-    public Solicitud updateSolicitud(Solicitud newSolicitud, int id){
-        return repository.findById(id)
-                .map(solicitud -> {
-                    solicitud.setGrupo(newSolicitud.getGrupo());
-                    solicitud.setInvestigador(newSolicitud.getInvestigador());
-                    solicitud.setCargo(newSolicitud.getCargo());
-                    solicitud.setNombreProyecto(newSolicitud.getNombreProyecto());
-                    solicitud.setFecha(newSolicitud.getFecha());
-                    solicitud.setRubro(newSolicitud.getRubro());
-                    solicitud.setSubrubro(newSolicitud.getSubrubro());
-                    solicitud.setFinanciador(newSolicitud.getFinanciador());
-                    solicitud.setCentroCostos(newSolicitud.getCentroCostos());
-                    solicitud.setNecesidad(newSolicitud.getNecesidad());
-                    solicitud.setDescripcion(newSolicitud.getDescripcion());
-                    solicitud.setValor(newSolicitud.getValor());
-                    solicitud.setVerificacion(newSolicitud.getVerificacion());
-                    solicitud.setPrecotizaciones((newSolicitud.getPrecotizaciones()));
-                    solicitud.setObservacion(newSolicitud.getObservacion());
-                    solicitud.setEstado(newSolicitud.getEstado());
-                    return repository.save(solicitud);
-                })
-                .orElse(null);
+    public Solicitud updateSolicitud(Solicitud newSolicitud, int id) {
+        return repository.findById(id).map(solicitud -> {
+            solicitud.setGrupo(newSolicitud.getGrupo());
+            solicitud.setInvestigador(newSolicitud.getInvestigador());
+            solicitud.setCargo(newSolicitud.getCargo());
+            solicitud.setNombreProyecto(newSolicitud.getNombreProyecto());
+            solicitud.setFecha(newSolicitud.getFecha());
+            solicitud.setRubro(newSolicitud.getRubro());
+            solicitud.setSubrubro(newSolicitud.getSubrubro());
+            solicitud.setFinanciador(newSolicitud.getFinanciador());
+            solicitud.setCentroCostos(newSolicitud.getCentroCostos());
+            solicitud.setNecesidad(newSolicitud.getNecesidad());
+            solicitud.setDescripcion(newSolicitud.getDescripcion());
+            solicitud.setValor(newSolicitud.getValor());
+            solicitud.setVerificacion(newSolicitud.getVerificacion());
+            solicitud.setPrecotizaciones((newSolicitud.getPrecotizaciones()));
+            solicitud.setObservacion(newSolicitud.getObservacion());
+            solicitud.setEstado(this.updateEstado(solicitud));
+            return repository.save(solicitud);
+        }).orElse(null);
+    }
+
+    public String updateEstado(Solicitud solicitud) {
+        if (solicitud.getEstudio() != null && solicitud.getConsulta() != null) {
+            return "Documentado";
+        }
+        if(solicitud.getRubro() != null && solicitud.getSubrubro() != null && solicitud.getFinanciador() != null
+                && solicitud.getCentroCostos() != null) {
+            return "Verificada Proyectos";
+        }
+        return "Creada";
     }
 }

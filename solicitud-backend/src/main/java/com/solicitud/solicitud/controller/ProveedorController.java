@@ -3,6 +3,7 @@ package com.solicitud.solicitud.controller;
 import com.solicitud.solicitud.entity.Proveedor;
 import com.solicitud.solicitud.service.ProveedorService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -27,6 +28,7 @@ public class ProveedorController {
     public Proveedor findProveedorById(@PathVariable int id){
         return service.getProveedorById(id);
     }
+
 
     @PutMapping("/proveedores/actualizar/{id}")
     public Proveedor updateProveedor(@RequestBody Proveedor proveedor, @PathVariable int id){

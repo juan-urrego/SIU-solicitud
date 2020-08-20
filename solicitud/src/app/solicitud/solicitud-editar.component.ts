@@ -251,6 +251,8 @@ export class SolicitudEditarComponent implements OnInit, OnDestroy {
 
             if (this.solicitudForm.dirty) {
                 console.log("dirty");
+                console.log(this.solicitud);
+                
 
                 const p = { ...this.solicitud, ...this.solicitudForm.value };
 

@@ -4,13 +4,13 @@ import { Precotizacion } from './precotizacion';
 
 export interface Solicitud {
     idSolicitud: number,
-    grupo: Grupo,
-    investigador: Investigador,    
+    grupo ?: Grupo,
+    investigador ?: Investigador,
     necesidad: string,
     descripcion: string,
     valor: number,
     verificacion: string,
-    observacion: string, 
+    observacion: string,
     cargo: string,
     nombreProyecto: string,
     fecha: string,
