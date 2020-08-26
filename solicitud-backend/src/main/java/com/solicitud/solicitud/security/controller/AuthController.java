@@ -122,7 +122,7 @@ public class AuthController {
         Usuario usuario = usuarioService.getOne(id).get();
         usuario.setNombre(nuevoUsuario.getNombre());
         usuario.setApellido(nuevoUsuario.getApellido());
-        usuario.setEmail(nuevoUsuario.getApellido());
+        usuario.setEmail(nuevoUsuario.getEmail());
         usuario.setPassword(nuevoUsuario.getPassword());
         Set<Rol> roles = new HashSet<>();
         roles.add(rolService.getByRolNombre(RolNombre.ROLE_USER).get());

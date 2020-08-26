@@ -1,0 +1,103 @@
+<app-menu></app-menu>
+<div class="container">
+<div class="card">
+    <div class="card-header text-white">
+        <h2>{{title}}</h2>
+
+    </div>
+    <div class="card-body">
+
+        <form novalidate (ngSubmit)="saveAuxiliar()" [formGroup]="auxiliarForm">
+
+            <div class="form-group row mb-3">
+                <label for="nombreId" class="col-md-2 col-form-label">Nombre: </label>
+                <div class="col-md-8">
+                    <input id="nombreId" class="form-control" type="text" placeholder="Ingrese el nombre"
+                        formControlName="{{'nombre' | lowercase}}" [ngClass]="{'is-invalid': (auxiliarForm.get('nombre').touched || auxiliarForm.get('nombre').dirty) && !auxiliarForm.get('nombre').valid}">
+                    <span class="invalid-feedback">
+                        <span *ngIf="auxiliarForm.get('nombre').errors?.required">
+                            Por favor ingrese su nombre.
+                          </span>
+                          <span *ngIf="auxiliarForm.get('nombre').errors?.minlength">
+                            El nombre debe ser mayor de 3 letras.
+                          </span>
+                    </span>
+                </div>
+            </div>
+
+            <div class="form-group row mb-3">
+                <label for="apellidoId" class="col-md-2 col-form-label">Apellido: </label>
+                <div class="col-md-8">
+                    <input id="apellidoId" class="form-control" type="text" placeholder="Ingrese el apellido"
+                        formControlName="{{'apellido' | lowercase}}" [ngClass]="{'is-invalid': (auxiliarForm.get('apellido').touched || auxiliarForm.get('apellido').dirty) && !auxiliarForm.get('apellido').valid}">
+                    <span class="invalid-feedback">
+                        <span *ngIf="auxiliarForm.get('apellido').errors?.required">
+                            Por favor ingrese su apellido.
+                          </span>
+                    </span>
+                </div>
+            </div>
+
+            <div class="form-group row mb-3">
+                <label for="emailId" class="col-md-2 col-form-label">Email: </label>
+                <div class="col-md-8">
+                    <input id="emailId" class="form-control" type="email" placeholder="Ingrese el email"
+                        formControlName="email" [ngClass]="{'is-invalid': (auxiliarForm.get('email').touched || auxiliarForm.get('email').dirty) && !auxiliarForm.get('email').valid}">
+                    <span class="invalid-feedback">
+                        <span *ngIf="auxiliarForm.get('email').errors?.required">
+                            Por favor ingrese su email.
+                          </span>
+                        <span *ngIf="auxiliarForm.get('email').errors?.email">
+                            Por favor ingrese un email válido.
+                          </span>
+                    </span>
+                </div>
+            </div>
+
+            <div class="form-group row mb-3">
+                <label for="passwordId" class="col-md-2 col-form-label">Password:</label>
+                <div class="col-md-8">
+                    <input id="passwordId" class="form-control" type="password" 
+                        formControlName="password" type="text" [ngClass]="{'is-invalid':(auxiliarForm.get('password').touched || auxiliarForm.get('password').dirty) && !auxiliarForm.get('password').valid}">
+                    <span class="invalid-feedback">
+                        <span *ngIf="auxiliarForm.get('password').errors?.required"></span>
+                    </span>                                
+                </div>
+            </div>
+
+            <div class="form-group row mb-2">
+                <div class="offset-md-2 col-md-4">
+                  <button class="btn btn-success mr-3"
+                          style="width:90px;"
+                          type="submit"
+                          [title]="auxiliarForm.valid ? 'Save your entered data' : 'Disabled until the form data is valid'"
+                          [disabled]="!auxiliarForm.valid"
+                          >
+                    Enviar
+                  </button>
+                  <button class="btn btn-outline-secondary mr-3"
+                          style="width:90px;"
+                          type="button"
+                          title="Cancelar"
+                          [routerLink]="['/auxiliar']">
+                    Cancelar
+                  </button>
+                  <button class="btn btn-outline-warning"
+                          *ngIf="id != 0"
+                          style="width:90px"
+                          type="button"
+                          title="Borrar auxiliar"
+                          (click)="deleteAuxiliar()">
+                    Borrar
+                  </button>
+                </div>
+              </div>
+
+        </form>
+    </div>
+</div>
+
+<pre>
+
+    {{auxiliarForm.value | json}}
+</pre>
