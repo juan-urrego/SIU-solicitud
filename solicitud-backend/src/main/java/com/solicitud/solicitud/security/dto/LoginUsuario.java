@@ -1,15 +1,12 @@
 package com.solicitud.solicitud.security.dto;
 
-
-
 import javax.validation.constraints.NotBlank;
-
 
 public class LoginUsuario {
     @NotBlank
-    private  String email;
+    private String email;
     @NotBlank
-    private  String password;
+    private String password;
 
     public String getEmail() {
         return this.email;

@@ -1,63 +1,52 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { SolicitudComponent } from './solicitud/solicitud.component';
-import { GrupoComponent } from './grupo/grupo.component';
+import { SolicitudComponent } from './components/solicitud/solicitud.component';
+import { GrupoComponent } from './components/grupo/grupo.component';
 
-import { GrupoEditarComponent } from './grupo/grupo-editar.component';
-import { InvestigadorComponent } from './investigador/investigador.component';
+import { GrupoEditarComponent } from './components/grupo/grupo-editar.component';
+import { InvestigadorComponent } from './components/investigador/investigador.component';
 
-import { InvestigadorEditarComponent } from './investigador/investigador-editar.component';
-import { ProveedorEditarComponent } from './proveedor/proveedor-editar.component';
-import { ProveedorComponent } from './proveedor/proveedor.component';
+import { InvestigadorEditarComponent } from './components/investigador/investigador-editar.component';
+import { ProveedorEditarComponent } from './components/proveedor/proveedor-editar.component';
+import { ProveedorComponent } from './components/proveedor/proveedor.component';
 
 
+import { SolicitudEditarComponent } from './components/solicitud/solicitud-editar.component';
+import { EstudioPrevioComponent } from './components/estudio-previo/estudio-previo.component';
+import { EstudioPrevioEditarComponent } from './components/estudio-previo/estudio-previo-editar.component';
 
-import { SolicitudEditarComponent } from './solicitud/solicitud-editar.component';
-import { EstudioPrevioComponent } from './estudio-previo/estudio-previo.component';
-import { EstudioPrevioEditarComponent } from './estudio-previo/estudio-previo-editar.component';
+import { ConsultaEditarComponent } from './components/consulta-precios/consulta-editar.component';
+import { ConsultaComponent } from './components/consulta-precios/consulta.component';
+import { LoginComponent } from './auth/login.component';
+import { RegistroComponent } from './auth/registro.component';
+import { SolGuardService as guard } from './guards/sol-guard.service';
+import { AuxiliarComponent } from './components/auxiliar/auxiliar.component';
+import { AuxiliarEditarComponent } from './components/auxiliar/auxiliar-editar.component';
 
-import { ConsultaEditarComponent } from './consulta-precios/consulta-editar.component';
-import { ConsultaComponent } from './consulta-precios/consulta.component';
 
 
 const routes: Routes = [];
 
 @NgModule({
   imports: [RouterModule.forRoot([
-    {path: 'solicitud' , component: SolicitudComponent},
-    {
-      path: 'solicitud/:id/editar',
-      component: SolicitudEditarComponent
-    },
-    {path: 'estudio' , component: EstudioPrevioComponent},
-    {
-      path: 'estudio/:id/editar',
-      component: EstudioPrevioEditarComponent
-    },
-    {path: 'consulta' , component: ConsultaComponent},
-    {
-      path: 'consulta/:id/editar',
-      component: ConsultaEditarComponent
-    },
-    {path: 'grupo' , component: GrupoComponent},    
-    {
-      path: 'grupo/:id/editar',
-      component: GrupoEditarComponent
-    },
-    {path: 'investigador' , component: InvestigadorComponent},
-    
-    {
-      path: 'investigador/:id/editar',
-      component: InvestigadorEditarComponent
-    },
-    {path: 'proveedor' , component: ProveedorComponent},
-  
-    {
-      path: 'proveedor/:id/editar',
-      component: ProveedorEditarComponent
-    },
-    {path: '' , redirectTo: 'solicitud', pathMatch: 'full'},
-    {path: '**' , redirectTo: 'solicitud' , pathMatch: 'full'}
+    { path: 'solicitud', component: SolicitudComponent, canActivate: [guard], data: { expectedRol: ['admin','user']}},
+    { path: 'solicitud/:id/editar', component: SolicitudEditarComponent, canActivate: [guard], data: { expectedRol: ['admin','user']} },
+    { path: 'estudio', component: EstudioPrevioComponent, canActivate: [guard], data: { expectedRol: ['admin','user']} },
+    { path: 'estudio/:id/editar', component: EstudioPrevioEditarComponent, canActivate: [guard], data: { expectedRol: ['admin','user']} },
+    { path: 'consulta', component: ConsultaComponent, canActivate: [guard], data: { expectedRol: ['admin','user']} },
+    { path: 'consulta/:id/editar', component: ConsultaEditarComponent, canActivate: [guard], data: { expectedRol: ['admin','user']} },
+    { path: 'grupo', component: GrupoComponent, canActivate: [guard], data: { expectedRol: ['admin','user']} },
+    { path: 'grupo/:id/editar', component: GrupoEditarComponent, canActivate: [guard], data: { expectedRol: ['admin','user']} },
+    { path: 'investigador', component: InvestigadorComponent, canActivate: [guard], data: { expectedRol: ['admin','user']} },
+    { path: 'investigador/:id/editar', component: InvestigadorEditarComponent, canActivate: [guard], data: { expectedRol: ['admin','user']} },
+    { path: 'proveedor', component: ProveedorComponent, canActivate: [guard], data: { expectedRol: ['admin','user']} },
+    { path: 'proveedor/:id/editar', component: ProveedorEditarComponent, canActivate: [guard], data: { expectedRol: ['admin','user']} },
+    { path: 'auxiliar', component: AuxiliarComponent, canActivate: [guard], data: { expectedRol: ['admin']} },
+    { path: 'auxiliar/:id/editar', component: AuxiliarEditarComponent, canActivate: [guard], data: { expectedRol: ['admin']} },
+    { path: 'login', component: LoginComponent },
+    { path: 'registro', component: RegistroComponent, canActivate: [guard], data: { expectedRol: ['admin']} },
+    { path: '**', redirectTo: 'login', pathMatch: 'full' },
+    { path: '', redirectTo: 'login', pathMatch: 'full' }
   ])],
   exports: [RouterModule]
 })

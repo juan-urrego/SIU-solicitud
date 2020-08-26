@@ -5,14 +5,12 @@ import com.solicitud.solicitud.service.GrupoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import javax.annotation.security.RolesAllowed;
 import java.util.List;
 
 @RestController
-@CrossOrigin(origins = "*")
+@CrossOrigin
 public class GrupoController {
 
     @Autowired
@@ -23,20 +21,16 @@ public class GrupoController {
         return  service.saveGrupo(grupo);
     }
 
-    @PreAuthorize("denyAll()")
     @GetMapping("/grupos")
-//    public List<Grupo> findAllGrupo(){
-//        return  service.getGrupos();
-//    }
-
-    public ResponseEntity<Grupo> list(){
+    public ResponseEntity<List<Grupo>> list(){
         List<Grupo> list = service.getGrupos();
-        return new ResponseEntity(list, HttpStatus.OK);
+        return new ResponseEntity<List<Grupo>>(list, HttpStatus.OK);
     }
 
     @GetMapping("/grupos/{id}")
-    public Grupo findGrupoById(@PathVariable int id){
-        return service.getGrupoById(id);
+    public ResponseEntity<Grupo> grupoById(@PathVariable("id") int id){
+        Grupo grupo = service.getGrupoById(id);
+        return new ResponseEntity<Grupo>(grupo,HttpStatus.OK);
     }
 
     @PutMapping("/grupos/actualizar/{id}")

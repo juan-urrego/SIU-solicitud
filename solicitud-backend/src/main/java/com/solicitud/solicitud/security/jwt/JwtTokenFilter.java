@@ -1,9 +1,6 @@
 package com.solicitud.solicitud.security.jwt;
 
-
-//comprobar validacion, permitir acceso
-
-import com.solicitud.solicitud.security.service.UsuarioDetailsServiceImpl;
+import com.solicitud.solicitud.security.service.UserDetailsServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,15 +23,15 @@ public class JwtTokenFilter extends OncePerRequestFilter {
     JwtProvider jwtProvider;
 
     @Autowired
-    UsuarioDetailsServiceImpl userDetailsService;
+    UserDetailsServiceImpl userDetailsService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest req, HttpServletResponse res, FilterChain filterChain) throws ServletException, IOException {
         try {
             String token = getToken(req);
             if(token != null && jwtProvider.validateToken(token)){
-                String nombreUsuario = jwtProvider.getEmailFromToken(token);
-                UserDetails userDetails = userDetailsService.loadUserByUsername(nombreUsuario);
+                String email = jwtProvider.getEmailFromToken(token);
+                UserDetails userDetails = userDetailsService.loadUserByUsername(email);
 
                 UsernamePasswordAuthenticationToken auth =
                         new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());

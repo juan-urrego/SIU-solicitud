@@ -1,0 +1,67 @@
+<app-menu></app-menu>
+<div class="container">
+<div class="card">
+    <div class="card-header text-white">
+        <h2>
+            {{titulo}}
+
+        </h2>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-2">Buscar por estados:</div>
+            <div class="col-md-4">
+                <input type="text" [(ngModel)]="filtrar">
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <h4>Filtrado por: {{filtrar}}</h4>
+        </div>
+    </div>
+    <div class="table-responsive">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>
+                        #
+                    </th>
+                    <th>estado</th>
+                    <th>acuerdo</th>
+                    <th>director</th>
+                    <th>Solicitud de Trámite</th>
+                    
+
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let estudio of filtrados; let i=index">
+                    <td>
+                        {{(i+1)}}
+                    </td>
+                    <td>                        
+                        <div *ngIf="estudio.estado === 'Creada'"  >
+                            <span class="badge badge-secondary">{{estudio.estado}}</span>
+                        </div>                        
+                        <div *ngIf="estudio.estado === 'Firmado'">
+                            <span class="badge badge-success">{{estudio.estado}}</span>
+                        </div>                   
+                    </td>
+
+                    <td>{{estudio.acuerdo}}</td>
+                    <!-- <td>{{estudio.director.nombre}}</td> -->
+                    <td>{{estudio.solicitud.nombreProyecto}}</td>
+                    <td><button class="btn btn-outline-secondary btn-sm"
+                        [routerLink]="['/estudio', estudio.id, 'editar']">
+                  Editar
+                </button></td>
+
+
+
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+</div>

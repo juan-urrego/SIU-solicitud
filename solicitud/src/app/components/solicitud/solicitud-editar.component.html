@@ -1,0 +1,406 @@
+
+<app-menu></app-menu>
+<div class="container">
+    <div class="row my-5 ml-5">
+      <div class="col-4">
+        <img class="center-block img-responsive" 
+             src="../../assets/siu-02.png" 
+             [style.height.px]="120"
+             [style.margin.px]="2">
+      </div>
+      <div class="col-8">
+        
+          <h4 class="card-title text-center">Solicitud de Trámite</h4>
+          <p class="text-center card-text">COORDINACIÓN DE PROCESO ADMINISTRACIÓN DE PROYECTOS</p>
+          <p class="text-center card-text">Administración de Proyectos de Investigación y Extensión</p>
+          <p class="text-center card-text">Administración SIU</p>        
+      </div>
+    </div>
+    
+    <form novalidate [formGroup]="solicitudForm" (ngSubmit)="saveSolicitud()">
+
+      <div class="card mb-5 mx-5 shadow-lg" >
+        <div class="card-header text-white">
+          <p class="font-weight-bold text-center" [style.font-size.px]="20">Informacion de solicitantes</p>
+        </div>
+        <div class="card-body px-5 py-5">
+          <div class="row">
+            <div class="col-md-3 mb-3 form-group">            
+              <div formGroupName="grupo">
+                
+                  <label class="col-form-label" for="idGrupoId"><b>Grupo de investigacion:</b></label>
+                  
+                    <select class="form-control" id="idGrupoId" formControlName="idGrupo" (change)="update($event.target.value)">
+                      <option [value]="grupo.idGrupo" *ngFor="let grupo of grupos">
+                        {{grupo.nombre}}</option>
+                      </select>
+                    </div>
+            </div>
+
+            <div class="col-md-9 form-group">                              
+            
+              <div formGroupName="investigador" class="row">
+                
+
+                  <div class="col-md-4 mb-3 form-group"> 
+                    
+                    <label class="col-form-label"><b>Nombre del investigador:</b></label>                                     
+                  <select class="form-control" formControlName="idInvestigador"
+                  (change)="updateInvestigador($event.target.value)">
+                  <ng-container *ngIf="grupo">
+                    <option disabled selected hidden>Select a State...</option>
+                    <option *ngFor="let investigador of grupo.investigadores" value="{{investigador.idInvestigador}}">
+                      {{investigador.nombre}}</option>
+                    </ng-container>
+                  </select>
+                </div>      
+                
+                <div class="col-md-4 mb-3 form-group"> 
+                  <label for="identificacionId" class="col-form-label"><b>Número de identificacion:</b></label>
+                  <input id="identificacionId" type="text" class="form-control" type="text" formControlName="identificacion">                  
+                  
+                </div>                                    
+              
+                <div class="col-md-4 mb-3 form-group">
+
+                  
+                  
+                    <label for="telefonoId" class="col-form-label"><b>Número de telefono:</b> </label>
+                    
+                      <input id="telefonoId" type="text" class="form-control" type="text" formControlName="telefono">
+                    </div>
+
+                    
+                  </div>
+                </div>
+              </div>                                                  
+          <div class="row">
+            <div class="col-6 mb-3 form-group">
+              
+                <label for="cargoId" class="col-form-label"><b>Cargo:</b></label>                
+                  <input id="cargoId" class="form-control" type="text"  formControlName="cargo"
+                    [ngClass]="{'is-invalid': (solicitudForm.get('cargo').touched || solicitudForm.get('cargo').dirty) && !solicitudForm.get('cargo').valid}">
+                  <span class="invalid-feedback">
+                    <span *ngIf="solicitudForm.get('cargo').errors?.required">
+                      Por favor ingrese el cargo.
+                    </span>
+                  </span>                              
+            </div>
+            <div class="col-6 mb-3 form-group">
+              
+                <label for="nombreProyectoId" class="col-form-label"><b>Nombre del proyecto:</b></label>
+                
+                  <input id="nombreProyectoId" class="form-control" type="text" formControlName="nombreProyecto"
+                    [ngClass]="{'is-invalid': (solicitudForm.get('nombreProyecto').touched || solicitudForm.get('nombreProyecto').dirty) && !solicitudForm.get('nombreProyecto').valid}">
+                  <span class="invalid-feedback">
+                    <span *ngIf="solicitudForm.get('nombreProyecto').errors?.required">
+                      Por favor ingrese el nombre del proyecto.
+                    </span>
+                  </span>                
+      
+
+            </div>
+          </div>
+          
+      </div>
+    </div>
+
+    
+    
+
+    
+    <div class="card mb-5 mx-5 shadow-lg">
+      <div class="card-header text-white">
+        <p class="font-weight-bold text-center" [style.font-size.px]="20">Informacion de solicitud</p>
+      </div>
+      <div class="card-body px-5 py-5">
+        
+        
+          <div *ngIf="!agregarSolicitud">
+            <div class="row">
+
+            
+            <div class="form-group col-3">
+              <label for="rubroId" class="col-form-label"><b>Rubro Presupuestal:</b></label>
+              
+                <input id="rubroId" class="form-control" type="text"  formControlName="rubro">
+              
+            </div>
+            <div class="form-group col-3 mb-2">
+              <label for="subrubroId" class="col-form-label"><b>Subrubro:</b></label>
+              
+                <input id="subrubroId" class="form-control" type="text" formControlName="subrubro">
+              
+            </div>
+      
+            <div class="form-group col-3 mb-2">
+              <label for="financiadorId" class="col-form-label"><b>Financiador:</b></label>
+              
+                <input id="financiadorId" class="form-control" type="text" 
+                  formControlName="financiador">
+              
+            </div>
+      
+            <div class="form-group col-3 mb-2">
+              <label for="centroCostosId" class="col-form-label"><b>Centro de costos:</b></label>
+              
+                <input id="centroCostosId" class="form-control" type="text"
+                  formControlName="centroCostos">
+              
+            </div>
+          </div>
+        </div>
+    
+          <div class="row">
+            <div class="col-12 mb-3 form-group">
+
+              <label for="necesidadId" class="col-form-label"><b>Necesidad y conveniencia de la contratación:</b></label>            
+              <textarea id="necesidadId" class="form-control mb-3"
+              formControlName="necesidad"  rows="5"
+              [ngClass]="{'is-invalid': (solicitudForm.get('necesidad').touched || solicitudForm.get('necesidad').dirty) && !solicitudForm.get('necesidad').valid}"></textarea>
+              <span class="invalid-feedback">
+                <span *ngIf="solicitudForm.get('necesidad').errors?.required">
+                  Por favor ingrese la necesidad.
+                </span>
+              </span>
+              
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="form-group col-12 mb-3">
+              <label for="descripcionId" class="col-form-label"><b>Descripción del objeto del contrato:</b></label>
+              
+                <textarea id="descripcionId" class="form-control"
+                  formControlName="descripcion" rows="5"
+                  [ngClass]="{'is-invalid': (solicitudForm.get('descripcion').touched || solicitudForm.get('descripcion').dirty) && !solicitudForm.get('descripcion').valid}"></textarea>
+                <span class="invalid-feedback">
+                  <span *ngIf="solicitudForm.get('descripcion').errors?.required">
+                    Por favor ingrese la descripcion.
+                  </span>
+                </span>              
+            </div>
+
+          </div>
+
+          <div class="row">
+            <div class="form-group col-8 mb-3">
+              <label for="valorId" class="col-form-label"><b>Valor o presupuesto estimado(discriminar valor con IVA y sin IVA):</b></label>
+              
+                <input id="valorId" class="form-control" matInput mvndrMatCurrencyFormat [allowNegative]="false" (blur)="updateUSAmount($event)" [currencyCode]="'USD'" type="text" formControlName="valor"                  
+                  [ngClass]="{'is-invalid': (solicitudForm.get('valor').touched || solicitudForm.get('valor').dirty) && !solicitudForm.get('valor').valid}">
+                <span class="invalid-feedback">
+                  <span *ngIf="solicitudForm.get('valor').errors?.required">
+                    Por favor ingrese el valor.
+                  </span>
+                </span>              
+            </div>
+
+            <div class="form-group col-4 mb-3">
+              <label for="fechaId" class="col-form-label"><b>Fecha:</b></label>
+              
+                <input id="fechaId" class="form-control" bsDatepicker [bsConfig]="{ dateInputFormat: 'DD/MM/YYYY'}" formControlName="fecha"
+                  [ngClass]="{'is-invalid': (solicitudForm.get('fecha').touched || solicitudForm.get('fecha').dirty) && !solicitudForm.get('fecha').valid}">
+                <span class="invalid-feedback">
+                  <span *ngIf="solicitudForm.get('fecha').errors?.required">
+                    Por favor ingrese la fecha que hace la solicitud.
+                  </span>
+                </span>
+              
+            </div>
+          </div>
+    
+          <div class="row">
+
+            <div class="form-group col-12 mb-3">
+              <label for="verificacionId" class="col-form-label"><b>Verificación de contratos marco o acuerdos generales para el servicio, obra o bien requerido:</b></label>
+              
+                <!-- <input id="verificacionId" class="" type="checkbox" formControlName="verificacion"> -->
+              <div class="row">
+
+                <div class="custom-control custom-radio custom-control-inline mx-5">
+                  <input type="radio" id="verificacionId1" value="si" formControlName="verificacion" class="custom-control-input">
+                  <label class="custom-control-label" for="verificacionId1">Sí existe</label>
+                </div>
+                <div class="custom-control custom-radio custom-control-inline mx-5">
+                  <input type="radio" id="verificacionId2" value="no" formControlName="verificacion" class="custom-control-input">
+                  <label class="custom-control-label" for="verificacionId2">No Existe</label>                  
+                </div>
+              </div>
+            </div>
+
+          </div>      
+
+    
+        </div>
+      
+      </div>
+  
+
+      <div class="card mb-5 mx-5 shadow-lg">
+        <div class="card-header text-white">
+          <p class="font-weight-bold text-center" [style.font-size.px]="20">Precotizaciones</p>
+        </div>
+        <div class="card-body px-5 py-5">
+          
+          <b>IMPORTANTE: Si tiene precotizaciones previas, por favor adjuntelas al ticket y diligencie en los siguientes campos:</b>
+          <hr>
+          
+          <div formArrayName="precotizaciones" *ngFor="let address of precotizaciones.controls; let i=index">                      
+            <div [formGroupName]="i" class="row">
+              <div class="col-8 form-group">
+
+                
+                <div formGroupName="proveedor" class="row">              
+                  <div class="form-group col-6 mb-3">
+                    <label class="col-form-label"> Nombre del proveedor</label>
+                    
+                    <select class="form-control" id="idProveedor" formControlName="idProveedor"
+                    (change)="updateProveedor($event.target.value, address)">
+                    <option disabled selected hidden>Select a State...</option>
+                    <option value="{{proveedor.idProveedor}}" *ngFor="let proveedor of proveedores">
+                      {{proveedor.nombre}}</option>
+                    </select>
+                    
+                  </div>
+
+                  <div class="form-group col-3 mb-3">
+                    <label class="col-form-label">Teléfono</label>
+                    
+                    <div *ngIf="proveedor || proveedorExisting; else no">
+                      <input id="telefonoid" class="form-control" type="text" 
+                      [readonly]="true" formControlName="telefono">
+                      
+                    </div>
+                    <ng-template #no>
+                      <input id="telefonoid" class="form-control" type="text"
+                      [readonly]="true">
+                    </ng-template>
+                    
+                  </div>
+
+                  <div class="form-group col-3 mb-3">
+                    <label class="col-form-label">Nit/Cédula</label>
+                    
+                    <div *ngIf="proveedor || proveedorExisting; else no">
+                      <input id="nitid" class="form-control" type="text" 
+                      [readonly]="true" formControlName="nit">
+                    </div>
+                    
+                  </div>
+                </div>
+              </div>
+    
+              <div class="col-4 form-group"> 
+               
+                <div class="row">
+                  <div class="form-group col-8 mb-3">
+                    <label class="col-form-label">Valor precotizado + IVA</label>
+                    
+                    <input matInput id="valorid" class="form-control" type="text"
+                    mvndrMatCurrencyFormat [allowNegative]="false" (blur)="updateUSAmount2($event)" [currencyCode]="'USD'"
+                    formControlName="valor">
+                    
+               
+                </div>
+
+                <div class="col-4 form-group">
+                  <label class="col-form-label">Eliminar</label>
+                  <button class="btn btn-outline-danger btn-sm form-control" type="button" (click)="deletePrecotizacion(i)">delete</button>
+                </div>
+
+                </div>
+
+              </div>              
+            </div>
+            <hr>
+
+          </div>
+    
+          <div class="row">
+            <div class="form-group mb-3">
+              <div class="col-md-4">
+                <button class="btn-outline-success btn" type="button" (click)="addPrecotizacion()">
+                  Agregar precotización
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="row text-danger">
+            <p>NOTA: Recuerde que la cotización a elegir será la más económica partiendo del principio de economía. En caso de seleccionar un proveedor por un concepto diferente, deberá justificar el por qué en el campo Observaciones.</p>
+          </div>
+
+          <div class="row">
+           
+
+              <div class="form-group col-12  mb-3">
+                <label for="observacionId" class="col-form-label"><b>Observaciones</b></label>                
+                  <textarea id="observacionId" class="form-control" 
+                    formControlName="observacion" rows="5"
+                    [ngClass]="{'is-invalid': (solicitudForm.get('observacion').touched || solicitudForm.get('observacion').dirty) && !solicitudForm.get('observacion').valid}"></textarea>
+                  <span class="invalid-feedback">
+                    <span *ngIf="solicitudForm.get('observacion').errors?.required">
+                      Por favor ingrese la observacion.
+                    </span>
+                  </span>
+                </div>
+              
+            
+          </div>
+
+          <div class="row">
+            <p>Esta información la utilizará la "Administración SIU" para diligenciar los formatos de "Estudio de Necesidad y Conveniencia para Cuantías Menores o Iguales a 30 SMMLV" y "Consulta de Precios del Mercado" en cumplimiento del Estatuto Contractual, formatos que estaban inicialmente bajo el diligenciamiento de los grupos de investigacion. Por lo tanto, la información que se digite en el presente formato de SOLICITUD DE TRAMITE es la misma que se utilizará para diligenciar los formatos correspondientes. En este sentido, cualquier error o inconsistencia será responsabilidad de quien diligencie la información y no de la Administración SIU. </p>
+
+          </div>
+  
+        </div>
+      </div>
+
+
+
+
+
+
+
+      <div class="form-group row">
+        <div class="offset-md-1 mb-5">
+          <button class="btn btn-success mr-3" style="width:200px;" type="submit"
+            [title]="solicitudForm.valid ? 'Save your entered data' : 'Disabled until the form data is valid'"
+            [disabled]="!solicitudForm.valid">
+            Enviar
+          </button>
+          <button class="btn btn-outline-secondary mr-3" style="width:100px;" type="button" title="Cancelar"
+            [routerLink]="['/solicitud']">
+            Cancelar
+          </button>
+          <button class="btn btn-outline-warning" *ngIf="!agregarSolicitud" style="width:90px" type="button"
+            title="Borrar solicitud" (click)="deleteSolicitud()">
+            Borrar
+          </button>
+        </div>
+      </div>
+
+    </form>
+<!-- 
+{{solicitudForm.dirty}}: Dirty
+<br>
+{{solicitudForm.valid}}: valid
+<br>
+{{solicitudForm.touched}}: touched
+<br>-->
+<h4>Solicitud Formulario</h4>
+<pre>
+
+    {{solicitudForm.value | json}}
+  </pre>
+<br>
+<!--
+<h4>Solicitud</h4>
+<pre>
+
+    {{solicitud | json}}
+    
+  </pre>
+<br> -->
+</div>

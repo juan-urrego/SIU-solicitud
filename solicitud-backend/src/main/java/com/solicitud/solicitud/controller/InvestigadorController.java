@@ -3,11 +3,13 @@ package com.solicitud.solicitud.controller;
 import com.solicitud.solicitud.entity.Investigador;
 import com.solicitud.solicitud.service.InvestigadorService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
+@CrossOrigin
 public class InvestigadorController {
 
     @Autowired

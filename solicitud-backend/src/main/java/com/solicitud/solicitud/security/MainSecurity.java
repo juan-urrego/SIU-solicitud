@@ -1,9 +1,8 @@
 package com.solicitud.solicitud.security;
 
-
 import com.solicitud.solicitud.security.jwt.JwtEntryPoint;
 import com.solicitud.solicitud.security.jwt.JwtTokenFilter;
-import com.solicitud.solicitud.security.service.UsuarioDetailsServiceImpl;
+import com.solicitud.solicitud.security.service.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -24,7 +23,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class MainSecurity extends WebSecurityConfigurerAdapter {
 
     @Autowired
-    UsuarioDetailsServiceImpl userDetailsService;
+    UserDetailsServiceImpl userDetailsService;
 
     @Autowired
     JwtEntryPoint jwtEntryPoint;

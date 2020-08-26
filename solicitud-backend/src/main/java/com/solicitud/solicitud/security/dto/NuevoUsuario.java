@@ -1,23 +1,19 @@
 package com.solicitud.solicitud.security.dto;
 
-import lombok.Data;
-
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import java.util.HashSet;
 import java.util.Set;
 
-
 public class NuevoUsuario {
-
     @NotBlank
-    private  String nombre;
+    private String nombre;
     @NotBlank
-    private  String apellido;
+    private String apellido;
     @Email
-    private  String email;
+    private String email;
     @NotBlank
-    private  String password;
+    private String password;
     private Set<String> roles = new HashSet<>();
 
     public String getNombre() {

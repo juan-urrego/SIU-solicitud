@@ -1,6 +1,5 @@
 package com.solicitud.solicitud.security.jwt;
 
-
 import com.solicitud.solicitud.security.entity.UsuarioPrincipal;
 import io.jsonwebtoken.*;
 import org.slf4j.Logger;
@@ -11,7 +10,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.Date;
 
-//generar token, validacion, expiracion
 @Component
 public class JwtProvider {
     private final static Logger logger = LoggerFactory.getLogger(JwtProvider.class);

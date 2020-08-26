@@ -7,7 +7,6 @@ import javax.validation.constraints.NotNull;
 
 @Entity
 public class Rol {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;

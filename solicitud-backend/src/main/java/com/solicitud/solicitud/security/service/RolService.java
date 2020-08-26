@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-
 import java.util.Optional;
 
 @Service
@@ -15,13 +14,13 @@ import java.util.Optional;
 public class RolService {
 
     @Autowired
-    RolRepository repository;
+    RolRepository rolRepository;
 
     public Optional<Rol> getByRolNombre(RolNombre rolNombre){
-        return repository.findByRolNombre(rolNombre);
+        return rolRepository.findByRolNombre(rolNombre);
     }
 
-    public void save (Rol rol){
-        repository.save(rol);
+    public void save(Rol rol){
+        rolRepository.save(rol);
     }
 }

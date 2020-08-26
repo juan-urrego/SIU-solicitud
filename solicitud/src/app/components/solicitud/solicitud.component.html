@@ -1,0 +1,84 @@
+<app-menu></app-menu>
+<div class="container">
+<div class="card">
+    <div class="card-header text-white">
+        <h2>
+
+            {{titulo}}
+        </h2>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-2">Buscar por nombre:</div>
+            <div class="col-md-4">
+                <input type="text" [(ngModel)]="filtrar">
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <h4>Filtrado por: {{filtrar}}</h4>
+        </div>
+    </div>
+    <div class="table-responsive">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th><button class="btn btn-outline-primary btn-sm" [routerLink]="['/solicitud/0/editar']">
+                        Agregar
+                    </button></th>
+                    <th>Nr.</th>
+                    <th>Estado de proyecto</th>
+                    <th>Nombre Proyecto</th>
+                    <th>nombre del investigador</th>
+                    <th>nombre del grupo</th>
+                    <th>Fecha</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let solicitud of filtrados; let i=index">
+                    <td>
+                        <div class="btn-group" dropdown>
+                            <button type="button" class="btn btn-outline-secondary btn-sm"
+                            [routerLink]="['/solicitud', solicitud.idSolicitud, 'editar']">Editar</button>
+                            <button id="button-split" type="button" dropdownToggle
+                            class="btn btn-outline-secondary dropdown-toggle dropdown-toggle-split"
+                            aria-controls="dropdown-split">
+
+                        </button>
+                        <ul id="dropdown-split" *dropdownMenu class="dropdown-menu" role="menu"
+                        aria-labelledby="button-split">
+                        <li role="menuitem" *ngIf="solicitud.estado === 'Verificada Proyectos'"><a role="button" class="dropdown-item" (click)="sendDocuments(solicitud.idSolicitud)">Crear Documentos</a></li>
+                        <li role="menuitem"><a class="dropdown-item" href="#">Eliminar</a>
+                        </li>
+
+                    </ul>
+                </div>
+            </td>
+            <th scope="row">{{i+1}}</th>
+                    <td>
+                        <div *ngIf="solicitud.estado === 'Creada'">
+                            <span class="badge badge-secondary">{{solicitud.estado}}</span>
+                        </div>
+                        <div *ngIf="solicitud.estado === 'Verificada Proyectos'">
+                            <span class="badge badge-success">{{solicitud.estado}}</span>
+                        </div>
+                        <div *ngIf="solicitud.estado === 'Documentos'">
+                            <span class="badge badge-success">{{solicitud.estado}}</span>
+                        </div>
+                    </td>
+
+                    <td>{{solicitud.nombreProyecto}}</td>
+                    <td>{{solicitud.investigador.nombre}}</td>
+                    <td>{{solicitud.grupo.nombre}}</td>
+                    <!-- <td>{{solicitud.precotizaciones.length}}</td>                                                -->
+                    <td>{{solicitud.fecha | date}}</td>
+
+
+
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+</div>

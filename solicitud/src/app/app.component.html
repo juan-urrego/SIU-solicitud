@@ -1,21 +1,2 @@
-<div class="container">
-  <nav class="navbar navbar-expand navbar-light bg-light mb-3">
-  <a class="navbar-brand">
+<router-outlet></router-outlet>
 
-    <img class="center-block img-responsive"
-    src="../../assets/logosimbolo-horizontal-png.png"
-    width="200" height="50" loading="lazy">
-  </a>
-    <ul class="nav-pills nav">
-      <li><a class="nav-link" [routerLink]="['/solicitud']" >Solicitud</a></li>
-      <li><a class="nav-link" [routerLink]="['/estudio']" >Estudio Previo</a></li>
-      <li><a class="nav-link" [routerLink]="['/consulta']" >Consulta de precios </a></li>
-      <li><a class="nav-link" [routerLink]="['/grupo']" >Grupo</a></li>
-      <li><a class="nav-link" [routerLink]="['/investigador']" >Investigador</a></li>
-      <li><a class="nav-link" [routerLink]="['/proveedor']" >Proveedor</a></li>
-    </ul>
-  </nav>
-  <div class="container">
-    <router-outlet></router-outlet>
-  </div>
-</div>
