@@ -50,7 +50,7 @@ public class AuthController {
     @Autowired
     JwtProvider jwtProvider;
 
-    @PreAuthorize("hasRole('ADMIN')")
+    
     @PostMapping("/nuevo")
     public ResponseEntity<?> nuevo(@Valid @RequestBody NuevoUsuario nuevoUsuario, BindingResult bindingResult){
         if(bindingResult.hasErrors())

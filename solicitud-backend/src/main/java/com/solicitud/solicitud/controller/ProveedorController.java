@@ -3,7 +3,6 @@ package com.solicitud.solicitud.controller;
 import com.solicitud.solicitud.entity.Proveedor;
 import com.solicitud.solicitud.service.ProveedorService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
