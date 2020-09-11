@@ -1,24 +1,22 @@
 package com.solicitud.solicitud.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
-@Data
+import com.solicitud.solicitud.enums.Estado;
+
+
 @Entity
-@AllArgsConstructor
-@NoArgsConstructor
 @Table(name = "consultas")
 public class Consulta {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private String acuerdo;
     private String porque;
-    private String estado;
+    @Enumerated(EnumType.STRING)
+    private Estado estado;
 
     @OneToOne
     private Precotizacion precotizacion;
@@ -27,4 +25,63 @@ public class Consulta {
     @JoinColumn(name = "solicitud_id_solicitud")
     private Solicitud solicitud;
 
+    public Consulta(String acuerdo, String porque, Estado estado, Precotizacion precotizacion, Solicitud solicitud) {
+        this.acuerdo = acuerdo;
+        this.porque = porque;
+        this.estado = estado;
+        this.precotizacion = precotizacion;
+        this.solicitud = solicitud;
+    }
+
+    public Consulta() {
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getAcuerdo() {
+        return acuerdo;
+    }
+
+    public void setAcuerdo(String acuerdo) {
+        this.acuerdo = acuerdo;
+    }
+
+    public String getPorque() {
+        return porque;
+    }
+
+    public void setPorque(String porque) {
+        this.porque = porque;
+    }
+
+    public Estado getEstado() {
+        return estado;
+    }
+
+    public void setEstado(Estado estado) {
+        this.estado = estado;
+    }
+
+    public Precotizacion getPrecotizacion() {
+        return precotizacion;
+    }
+
+    public void setPrecotizacion(Precotizacion precotizacion) {
+        this.precotizacion = precotizacion;
+    }
+
+    public Solicitud getSolicitud() {
+        return solicitud;
+    }
+
+    public void setSolicitud(Solicitud solicitud) {
+        this.solicitud = solicitud;
+    }
+    
 }

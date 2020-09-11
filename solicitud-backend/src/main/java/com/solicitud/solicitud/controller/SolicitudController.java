@@ -30,6 +30,11 @@ public class SolicitudController {
         return service.getSolicitudById(id);
     }
 
+    @PostMapping("/solicitudes/documents/{id}")
+    public String createDocuments(@PathVariable int id){
+        return service.createDocuments(id);
+    }
+
     @PutMapping("/solicitudes/actualizar/{id}")
     public Solicitud updateSolicitud(@RequestBody Solicitud solicitud, @PathVariable int id){
         return service.updateSolicitud(solicitud, id);

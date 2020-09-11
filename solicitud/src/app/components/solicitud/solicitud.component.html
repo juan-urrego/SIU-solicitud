@@ -21,7 +21,7 @@
         </div>
     </div>
     <div class="table-responsive">
-        <table class="table">
+        <table class="table mb-5">
             <thead>
                 <tr>
                     <th><button class="btn btn-outline-primary btn-sm" [routerLink]="['/solicitud/0/editar']">
@@ -48,7 +48,7 @@
                         </button>
                         <ul id="dropdown-split" *dropdownMenu class="dropdown-menu" role="menu"
                         aria-labelledby="button-split">
-                        <li role="menuitem" *ngIf="solicitud.estado === 'Verificada Proyectos'"><a role="button" class="dropdown-item" (click)="sendDocuments(solicitud.idSolicitud)">Crear Documentos</a></li>
+                        <li role="menuitem" *ngIf="solicitud.estado === 'VERIFICADA'"><a role="button" class="dropdown-item" (click)="sendDocuments(solicitud.idSolicitud)">Crear Documentos</a></li>
                         <li role="menuitem"><a class="dropdown-item" href="#">Eliminar</a>
                         </li>
 
@@ -57,13 +57,13 @@
             </td>
             <th scope="row">{{i+1}}</th>
                     <td>
-                        <div *ngIf="solicitud.estado === 'Creada'">
+                        <div *ngIf="solicitud.estado === 'CREADA'">
                             <span class="badge badge-secondary">{{solicitud.estado}}</span>
                         </div>
-                        <div *ngIf="solicitud.estado === 'Verificada Proyectos'">
+                        <div *ngIf="solicitud.estado === 'VERIFICADA'">
                             <span class="badge badge-success">{{solicitud.estado}}</span>
                         </div>
-                        <div *ngIf="solicitud.estado === 'Documentos'">
+                        <div *ngIf="solicitud.estado === 'DOCUMENTADA'">
                             <span class="badge badge-success">{{solicitud.estado}}</span>
                         </div>
                     </td>
@@ -71,7 +71,6 @@
                     <td>{{solicitud.nombreProyecto}}</td>
                     <td>{{solicitud.investigador.nombre}}</td>
                     <td>{{solicitud.grupo.nombre}}</td>
-                    <!-- <td>{{solicitud.precotizaciones.length}}</td>                                                -->
                     <td>{{solicitud.fecha | date}}</td>
 
 

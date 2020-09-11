@@ -3,23 +3,17 @@ package com.solicitud.solicitud.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.util.List;
 
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
 @Entity
 @Table(name = "investigadores")
 public class Investigador {
 
     @Id
     @Column(name = "id_investigador")
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int idInvestigador;
     private String identificacion;
     private String nombre;
@@ -39,4 +33,75 @@ public class Investigador {
     )
     private List<Grupo> grupos;
 
+    public Investigador(String identificacion, String nombre, double telefono, String email,
+            List<Solicitud> solicitudes, List<Grupo> grupos) {
+        this.identificacion = identificacion;
+        this.nombre = nombre;
+        this.telefono = telefono;
+        this.email = email;
+        this.solicitudes = solicitudes;
+        this.grupos = grupos;
+    }
+
+    public Investigador() {
+    }
+
+    public int getIdInvestigador() {
+        return idInvestigador;
+    }
+
+    public void setIdInvestigador(int idInvestigador) {
+        this.idInvestigador = idInvestigador;
+    }
+
+    public String getIdentificacion() {
+        return identificacion;
+    }
+
+    public void setIdentificacion(String identificacion) {
+        this.identificacion = identificacion;
+    }
+
+    public String getNombre() {
+        return nombre;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
+    public double getTelefono() {
+        return telefono;
+    }
+
+    public void setTelefono(double telefono) {
+        this.telefono = telefono;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public List<Solicitud> getSolicitudes() {
+        return solicitudes;
+    }
+
+    public void setSolicitudes(List<Solicitud> solicitudes) {
+        this.solicitudes = solicitudes;
+    }
+
+    public List<Grupo> getGrupos() {
+        return grupos;
+    }
+
+    public void setGrupos(List<Grupo> grupos) {
+        this.grupos = grupos;
+    }
+
+
+    
 }

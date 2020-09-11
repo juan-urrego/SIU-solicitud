@@ -28,8 +28,7 @@
                         #
                     </th>
                     <th>estado</th>
-                    <th>acuerdo</th>
-                    <th>director</th>
+                    
                     <th>Solicitud de Trámite</th>
                     
 
@@ -41,16 +40,15 @@
                         {{(i+1)}}
                     </td>
                     <td>                        
-                        <div *ngIf="estudio.estado === 'Creada'"  >
+                        <div *ngIf="estudio.estado === 'CREADA'"  >
                             <span class="badge badge-secondary">{{estudio.estado}}</span>
                         </div>                        
-                        <div *ngIf="estudio.estado === 'Firmado'">
+                        <div *ngIf="estudio.estado === 'FIRMADA'">
                             <span class="badge badge-success">{{estudio.estado}}</span>
                         </div>                   
                     </td>
-
-                    <td>{{estudio.acuerdo}}</td>
-                    <!-- <td>{{estudio.director.nombre}}</td> -->
+                
+                    
                     <td>{{estudio.solicitud.nombreProyecto}}</td>
                     <td><button class="btn btn-outline-secondary btn-sm"
                         [routerLink]="['/estudio', estudio.id, 'editar']">

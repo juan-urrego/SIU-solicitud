@@ -1,6 +1,9 @@
 package com.solicitud.solicitud.service;
 
+import com.solicitud.solicitud.entity.Consulta;
+import com.solicitud.solicitud.entity.Estudio;
 import com.solicitud.solicitud.entity.Solicitud;
+import com.solicitud.solicitud.enums.Estado;
 import com.solicitud.solicitud.repository.SolicitudRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,9 +15,13 @@ public class SolicitudService {
 
     @Autowired
     SolicitudRepository repository;
+    @Autowired
+    EstudioService estudioService;
+    @Autowired 
+    ConsultaService consultaService;
 
-    public Solicitud saveSolicitud(Solicitud solicitud) {
-        solicitud.setEstado(this.updateEstado(solicitud));
+    public Solicitud saveSolicitud(Solicitud solicitud) {        
+        solicitud.setEstado(updateEstado(solicitud));
         return repository.save(solicitud);
     }
 
@@ -32,6 +39,9 @@ public class SolicitudService {
     }
 
     public Solicitud updateSolicitud(Solicitud newSolicitud, int id) {
+        if(newSolicitud.getEstado() != Estado.DOCUMENTADA) {
+            newSolicitud.setEstado(updateEstado(newSolicitud));
+        }
         return repository.findById(id).map(solicitud -> {
             solicitud.setGrupo(newSolicitud.getGrupo());
             solicitud.setInvestigador(newSolicitud.getInvestigador());
@@ -48,19 +58,31 @@ public class SolicitudService {
             solicitud.setVerificacion(newSolicitud.getVerificacion());
             solicitud.setPrecotizaciones((newSolicitud.getPrecotizaciones()));
             solicitud.setObservacion(newSolicitud.getObservacion());
-            solicitud.setEstado(this.updateEstado(solicitud));
+            solicitud.setEstado(newSolicitud.getEstado());
             return repository.save(solicitud);
         }).orElse(null);
     }
 
-    public String updateEstado(Solicitud solicitud) {
-        if (solicitud.getEstudio() != null && solicitud.getConsulta() != null) {
-            return "Documentado";
+    public Estado updateEstado(Solicitud solicitud) {
+        if(solicitud.getRubro() != "" && solicitud.getSubrubro() != "" && solicitud.getFinanciador() != ""
+                && solicitud.getCentroCostos() != "") {
+            return Estado.VERIFICADA;
+        }else{
+            return Estado.CREADA;
         }
-        if(solicitud.getRubro() != null && solicitud.getSubrubro() != null && solicitud.getFinanciador() != null
-                && solicitud.getCentroCostos() != null) {
-            return "Verificada Proyectos";
+    }
+
+    public String createDocuments(int id){
+        Solicitud solicitud = repository.findById(id).orElse(null);
+        if (solicitud.getEstado() == Estado.VERIFICADA){
+            Estudio estudio = new Estudio(null, Estado.CREADA, null, null, null, solicitud);
+            Consulta consulta = new Consulta(null, null, Estado.CREADA, null, solicitud);
+            consultaService.saveConsulta(consulta);
+            estudioService.saveEstudio(estudio);
+            solicitud.setEstado(Estado.DOCUMENTADA);
+            updateSolicitud(solicitud, solicitud.getIdSolicitud());
+            return "Estudio previo y consulta de precios creados correctamente";
         }
-        return "Creada";
+        return "No se pudieron crear los documentos";
     }
 }

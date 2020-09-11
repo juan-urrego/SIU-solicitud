@@ -91,6 +91,8 @@ public class AuthController {
         return new ResponseEntity<List<Usuario>>(list, HttpStatus.OK);
     }
 
+    
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/auxiliar/{id}")
     public ResponseEntity<?> getById(@PathVariable("id") int id){
         if(!usuarioService.existsById(id))

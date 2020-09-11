@@ -87,8 +87,7 @@ export class SolicitudEditarComponent implements OnInit, OnDestroy {
             valor: ['', [Validators.required]],
             verificacion: '',
             observacion: ['', [Validators.required]],
-            precotizaciones: this.fb.array([]),
-            estado: ['Creada', [Validators.required]]
+            precotizaciones: this.fb.array([])
         });
 
 
@@ -104,18 +103,6 @@ export class SolicitudEditarComponent implements OnInit, OnDestroy {
         this.sub.unsubscribe();
     }
 
-    // getDate(): string {
-    //     var a = new Date()
-    //     var month = `${a.getMonth() + 1}`;
-    //     var day = `${a.getDate()}`
-    //     if (a.getDate() < 10) {
-    //         day = '0' + a.getDate();
-    //     }
-    //     if (a.getMonth() < 9) {
-    //         month = '0' + month;
-    //     }
-    //     return (a.getFullYear() + '-' + month + '-' + day);
-    // }
 
     update(id) {
         this.grupoService.getGrupo(id).subscribe({
@@ -213,8 +200,7 @@ export class SolicitudEditarComponent implements OnInit, OnDestroy {
             descripcion: this.solicitud.descripcion,
             valor: this.solicitud.valor,
             verificacion: this.solicitud.verificacion,
-            observacion: this.solicitud.observacion,
-            estado: this.solicitud.estado
+            observacion: this.solicitud.observacion
 
         });
         let control = <FormArray>this.solicitudForm.controls['precotizaciones']
@@ -234,17 +220,6 @@ export class SolicitudEditarComponent implements OnInit, OnDestroy {
     }
 
     saveSolicitud(): void {
-        console.log("en el boton");
-
-        if (this.solicitudForm.get('rubro').value != '' &&
-            this.solicitudForm.get('subrubro').value != '' &&
-            this.solicitudForm.get('financiador').value != '' &&
-            this.solicitudForm.get('centroCostos').value != '') {            
-            this.solicitudForm.get('estado').setValue('Verificada Proyectos');            
-        }
-        else{
-            this.solicitudForm.get('estado').setValue('Creada');            
-        }
 
         if (this.solicitudForm.valid) {
             console.log("valid");

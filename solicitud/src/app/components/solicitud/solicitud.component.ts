@@ -60,42 +60,9 @@ export class SolicitudComponent implements OnInit {
 
 
     sendDocuments(id): void {
-        this.form = this.fb.group({
-            id: 0,
-            solicitud: this.fb.group({
-                idSolicitud: id
-            }),
-            estado: 'Creada'
-        });
-
-        this.update = this.fb.group({
-            idSolicitud:id,
-            estado: "Documentos"
-        });
-        
-        const p = { ...this.consulta, ...this.form.value };
-
-        this.solicitudService.getSolicitud(id).subscribe({
-            next: solicitud => {
-                this.solicitud = { ...solicitud};
-                this.solicitud.estado="Documentos";                
-            },
-            error: err => this.mensajeError=err
-        })
-
-        this.solicitudService.updateSolicitud(this.solicitud).subscribe({
-            next: () => console.log("estado actualizado"),
-            error: err => this.mensajeError = err            
-        });
-
-        this.consultaService.createConsulta(p).subscribe({
-            next: () => console.log('consulta creada'),
-            error: err => this.mensajeError = err
-        });
-
-        this.estudioService.createEstudio(p).subscribe({
-            next: () => console.log('estudio creado'),
-            error: err => this.mensajeError = err
+        this.solicitudService.createDocuments(id).subscribe({
+            next: mensaje => console.log(mensaje),
+            error: error => this.mensajeError = error
         });
     }
 

@@ -1,24 +1,19 @@
 package com.solicitud.solicitud.entity;
 
-
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
 import javax.persistence.*;
 
-@Data
+import com.solicitud.solicitud.enums.Estado;
+
 @Entity
-@AllArgsConstructor
-@NoArgsConstructor
 @Table(name = "estudios")
 public class Estudio {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private String firma;
-    private String estado;
+    @Enumerated(EnumType.STRING)
+    private Estado estado;
     private String unidad;
 
     @OneToOne
@@ -28,5 +23,74 @@ public class Estudio {
     @OneToOne
     @JoinColumn(name = "solicitud_id_solicitud")
     private Solicitud solicitud;
+
+    public Estudio(String firma, Estado estado, String unidad, Director director, String acuerdo, Solicitud solicitud) {
+        this.firma = firma;
+        this.estado = estado;
+        this.unidad = unidad;
+        this.director = director;
+        this.acuerdo = acuerdo;
+        this.solicitud = solicitud;
+    }
+
+    public Estudio() {
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getFirma() {
+        return firma;
+    }
+
+    public void setFirma(String firma) {
+        this.firma = firma;
+    }
+
+    public Estado getEstado() {
+        return estado;
+    }
+
+    public void setEstado(Estado estado) {
+        this.estado = estado;
+    }
+
+    public String getUnidad() {
+        return unidad;
+    }
+
+    public void setUnidad(String unidad) {
+        this.unidad = unidad;
+    }
+
+    public Director getDirector() {
+        return director;
+    }
+
+    public void setDirector(Director director) {
+        this.director = director;
+    }
+
+    public String getAcuerdo() {
+        return acuerdo;
+    }
+
+    public void setAcuerdo(String acuerdo) {
+        this.acuerdo = acuerdo;
+    }
+
+    public Solicitud getSolicitud() {
+        return solicitud;
+    }
+
+    public void setSolicitud(Solicitud solicitud) {
+        this.solicitud = solicitud;
+    }
+    
 
 }

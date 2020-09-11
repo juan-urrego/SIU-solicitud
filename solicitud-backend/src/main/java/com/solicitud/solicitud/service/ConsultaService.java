@@ -13,6 +13,7 @@ public class ConsultaService {
     @Autowired
     ConsultaRepository repository;
 
+  
     public Consulta saveConsulta(Consulta consulta){
         return repository.save(consulta);
     }

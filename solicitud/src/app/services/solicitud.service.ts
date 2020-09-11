@@ -41,6 +41,12 @@ export class SolicitudService {
                 catchError(this.handleError)
             );
     }
+    
+    createDocuments(id: number): Observable<any> {
+        const url = `${this.solicitudUrl}/documents/${id}`;
+        return this.http.post<any>(url,null);
+    }
+
 
     deleteSolicitud(id: number): Observable<{}> {
         const headers = new HttpHeaders({ 'Content-type': 'application/json' });
@@ -81,6 +87,7 @@ export class SolicitudService {
         console.error(err);
         return throwError(errorMessage);
     }
+
     private initializeSolicitud(): Solicitud {
         // Return an initialized object
         return {
