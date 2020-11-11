@@ -61,9 +61,13 @@ export class SolicitudComponent implements OnInit {
 
     sendDocuments(id): void {
         this.solicitudService.createDocuments(id).subscribe({
-            next: mensaje => console.log(mensaje),
+            next: mensaje => {console.log(mensaje)},
             error: error => this.mensajeError = error
         });
+    }
+
+    downloadPdfs(): void {
+        
     }
 
 }

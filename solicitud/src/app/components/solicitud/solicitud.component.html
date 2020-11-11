@@ -49,6 +49,7 @@
                         <ul id="dropdown-split" *dropdownMenu class="dropdown-menu" role="menu"
                         aria-labelledby="button-split">
                         <li role="menuitem" *ngIf="solicitud.estado === 'VERIFICADA'"><a role="button" class="dropdown-item" (click)="sendDocuments(solicitud.idSolicitud)">Crear Documentos</a></li>
+                        <li role="menuitem" *ngIf="solicitud.estado === 'DOCUMENTADA'"><a role="button" class="dropdown-item" (click)="downloadPdfs()">descargar documentos</a></li>
                         <li role="menuitem"><a class="dropdown-item" href="#">Eliminar</a>
                         </li>
 

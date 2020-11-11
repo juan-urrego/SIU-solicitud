@@ -16,7 +16,19 @@
                 </ul>
             </div>
             <div class="card-body">
-
+                <form #f="ngForm" (ngSubmit)="onRegister()" novalidate>
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="text" name="email" id="email" class="form-control" [(ngModel)]="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <input type="password" name="password" id="password" class="form-control" [(ngModel)]="password" required>
+                    </div>
+                    <div class="form-group">
+                        <button class="btn btn-outline-success btn-block" [disabled]="!f.valid">Iniciar Sesion</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>

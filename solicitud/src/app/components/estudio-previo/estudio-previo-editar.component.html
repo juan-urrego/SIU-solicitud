@@ -1,16 +1,14 @@
-<app-menu></app-menu>
 <div class="container">
+  <div id="content">
     <div class="row my-5 ml-5">
-        <div class="col-4">
+        <div class="col-xl-4">
           <img class="center-block img-responsive" 
                src="../../assets/siu-02.png" 
                [style.height.px]="120"
                [style.margin.px]="2">
         </div>
-        <div class="col-8">
-          
-            <h4 class="card-title text-center">Estudio Previo</h4>
-            <p class="text-center card-text">COORDINACIÓN DE PROCESO ADMINISTRACIÓN DE PROYECTOS</p>
+        <div class="col-xl-8">          
+            <h4 class="card-title text-center">ESTUDIO PREVIO DE NECESIDAD Y CONVENIENCIA PARA CUANTIAS MENORES O IGUALES A 30 SMMLV</h4>        
             <p class="text-center card-text">Administración de Proyectos de Investigación y Extensión</p>
             <p class="text-center card-text">Administración SIU</p>        
         </div>
@@ -22,36 +20,47 @@
       
       <div class="card mb-5 mx-5 shadow-lg">
         <div class="card-header text-white">
-          <p class="font-weight-bold text-center" [style.font-size.px]="20">Informacion de solicitud</p>
+          <p class="font-weight-bold text-center" [style.font-size.px]="20">Informacion de estudio</p>
         </div>
         <div class="card-body px-5 py-5">
-            <div class="form-group col-4 mb-3">
+
+          <div class="row">
+
+            <div class="form-group col-md-6 mb-3">
                 <label for="fechaId" class="col-form-label"><b>Fecha:</b></label>
                 
-                  <input id="fechaId" class="form-control" bsDatepicker>
+                  <input id="fechaId" class="form-control" [formControl]="fecha" [value]="fecha.value | date" readonly>
             
                 
               </div>
 
-            <div class="form-group col-3 mb-2">
+            <div class="form-group col-md-6 mb-3">
               <label for="centroCostosId" class="col-form-label"><b>Centro de costos:</b></label>
               
-                <input id="centroCostosId" class="form-control" type="text">
+                <input id="centroCostosId" class="form-control" [formControl]="centroCostos" type="text" readonly>
                   
               
             </div>
+          </div>
 
-   
+          <div class="row">
+            <div class="form-group col-md-9 mt-3">
+              <label for="centroCostosId" class="col-form-label"><b> UNIDAD ACADÉMICA O ADMINISTRATIVA (Facultad, Dirección, Escuela o Instituto):</b></label>
+                
+                
+              </div>
+                  <div class="form-group col-md-3 mt-3">
     
-        
-          
-        
+                    <input id="centroCostosId" class="form-control" type="text">
+                  </div>
+          </div>
+
       
             <div class="row">
               <div class="col-12 mb-3 form-group">
   
                 <label for="necesidadId" class="col-form-label"><b>Necesidad y conveniencia de la contratación:</b></label>            
-                <textarea id="necesidadId" class="form-control mb-3"
+                <textarea id="necesidadId" class="form-control mb-3" readonly [formControl]="necesidad"
                   rows="5"
                 ></textarea>
 
@@ -63,9 +72,41 @@
               <div class="form-group col-12 mb-3">
                 <label for="descripcionId" class="col-form-label"><b>Descripción del objeto del contrato:</b></label>
                 
-                  <textarea id="descripcionId" class="form-control"
+                  <textarea id="descripcionId" class="form-control" readonly [formControl]="descripcion"
                      rows="5"
                     ></textarea>
+              </div>
+  
+            </div>
+
+            <div class="row">
+              <div class="form-group col-12 mb-3">
+                <label for="" class="col-form-label"><b>Condición del responsable de la contratación:</b></label>
+                
+              </div>
+  
+            </div>
+            <div class="row form-group">
+              <div class=" col-md-2 mb-3 text-right">
+                <label for="" class="col-form-label"><b>Competente:</b></label>
+                
+              </div>
+              <div class=" col-md-10 mb-3">
+                <input type="text" class="form-control">
+         
+                
+              </div>
+  
+            </div>
+            <div class="row form-group">
+              <div class=" col-md-2 mb-3 text-right">
+                <label for="" class="col-form-label"><b>Acuerdo:</b></label>
+                
+              </div>
+              <div class=" col-md-10 mb-3">
+                <input type="text" class="form-control">
+         
+                
               </div>
   
             </div>
@@ -74,7 +115,7 @@
               <div class="form-group col-8 mb-3">
                 <label for="valorId" class="col-form-label"><b>Valor o presupuesto estimado(discriminar valor con IVA y sin IVA):</b></label>
                 
-                  <input id="valorId" class="form-control" matInput mvndrMatCurrencyFormat  type="text">
+                  <input id="valorId" class="form-control" readonly  type="text" [formControl]="valor">
               </div>
   
               
@@ -88,12 +129,8 @@
                 <div class="row">
   
                   <div class="custom-control custom-radio custom-control-inline mx-5">
-                    <input type="radio" id="verificacionId1" value="si"  class="custom-control-input">
-                    <label class="custom-control-label" for="verificacionId1">Sí existe</label>
-                  </div>
-                  <div class="custom-control custom-radio custom-control-inline mx-5">
-                    <input type="radio" id="verificacionId2" value="no"  class="custom-control-input">
-                    <label class="custom-control-label" for="verificacionId2">No Existe</label>                  
+                    <input type="radio" id="verificacionId1" class="custom-control-input" checked>
+                    <label class="custom-control-label" for="verificacionId1">{{verificacion.value | uppercase}} existe</label>
                   </div>
                 </div>
               </div>
@@ -127,17 +164,21 @@
               >
               Enviar
             </button>
-            <!-- <button class="btn btn-outline-secondary mr-3" style="width:100px;" type="button" title="Cancelar"
-              [routerLink]="['/solicitud']">
+            <button class="btn btn-outline-secondary mr-3" style="width:100px;" type="button" title="Cancelar"
+              [routerLink]="['/estudio']">
               Cancelar
-            </button> -->
-            <!-- <button class="btn btn-outline-warning" *ngIf="!agregarSolicitud" style="width:90px" type="button"
-              title="Borrar solicitud" (click)="deleteSolicitud()">
-              Borrar
-            </button> -->
+            </button>
+            <button class="btn btn-outline-secondary mr-3" (click)="downloadPdf()" style="width:100px;" type="button" title="Donwload">
+              Download
+            </button>
+         
           </div>
         </div>
   
       </form>
 
-  </div>
+  </div></div>
+
+  <pre>
+    {{estudioForm.value | json}}
+  </pre>
