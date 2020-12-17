@@ -7,12 +7,13 @@ import { Consulta } from '../models/consulta';
 
 @Injectable({providedIn: 'root'})
 export class ConsultaService {
-    private consultaUrl = 'http://localhost:9191/consultas';
+    private consultaUrl = 'http://localhost:9191/consulta';
 
     constructor(private http: HttpClient) { }
 
     getConsultas(): Observable<Consulta[]> {
-        return this.http.get<Consulta[]>(this.consultaUrl)
+        const url = `${this.consultaUrl}/consultas`;
+        return this.http.get<Consulta[]>(url)
             .pipe(
                 tap(data => console.log(JSON.stringify(data))),
                 catchError(this.handleError)
@@ -51,7 +52,7 @@ export class ConsultaService {
 
     updateConsulta(consulta: Consulta): Observable<Consulta> {
         const headers = new HttpHeaders({ 'Content-type': 'application/json' });
-        const url = `${this.consultaUrl}/actualizar/${consulta.id}`;
+        const url = `${this.consultaUrl}/update/${consulta.id}`;
         return this.http.put<Consulta>(url, consulta, { headers })
             .pipe(
                 tap(() => console.log('update Consulta: ' + consulta.id)),

@@ -7,12 +7,13 @@ import { Estudio } from '../models/estudio';
 
 @Injectable({providedIn: 'root'})
 export class EstudioService {
-    private estudioUrl = 'http://localhost:9191/estudios';
+    private estudioUrl = 'http://localhost:9191/estudio';
 
     constructor(private http: HttpClient) { }
 
     getEstudios(): Observable<Estudio[]> {
-        return this.http.get<Estudio[]>(this.estudioUrl)
+        const url = `${this.estudioUrl}/estudios`;
+        return this.http.get<Estudio[]>(url)
             .pipe(
                 tap(data => console.log(JSON.stringify(data))),
                 catchError(this.handleError)
@@ -41,7 +42,7 @@ export class EstudioService {
 
     deleteEstudio(id: number): Observable<{}> {
         const headers = new HttpHeaders({ 'Content-type': 'application/json' });
-        const url = `${this.estudioUrl}/eliminar/${id}`;
+        const url = `${this.estudioUrl}/delete/${id}`;
         return this.http.delete<Estudio>(url, { headers })
             .pipe(
                 tap(data => console.log('eliminar Estudio: ' + id)),
@@ -51,7 +52,7 @@ export class EstudioService {
 
     updateEstudio(estudio: Estudio): Observable<Estudio> {
         const headers = new HttpHeaders({ 'Content-type': 'application/json' });
-        const url = `${this.estudioUrl}/actualizar/${estudio.id}`;
+        const url = `${this.estudioUrl}/update/${estudio.id}`;
         return this.http.put<Estudio>(url, estudio, { headers })
             .pipe(
                 tap(() => console.log('update Estudio: ' + estudio.id)),

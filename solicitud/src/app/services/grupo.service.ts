@@ -7,7 +7,7 @@ import { Grupo } from '../models/grupo';
 
 @Injectable({providedIn: 'root'})
 export class GrupoService {
-    private grupoUrl = 'http://localhost:9191/grupos';
+    private grupoUrl = 'http://localhost:9191/grupo';
     // headers = new HttpHeaders({
     //     'Content-Type': 'application/json',
     //     'Access-Control-Allow-Origin': "*"
@@ -16,7 +16,8 @@ export class GrupoService {
     constructor(private http: HttpClient) { }
 
     getGrupos(): Observable<Grupo[]> {
-        return this.http.get<Grupo[]>(this.grupoUrl)
+        const url = `${this.grupoUrl}/grupos`;
+        return this.http.get<Grupo[]>(url)
             .pipe(
                 tap(data => console.log(JSON.stringify(data))),
                 catchError(this.handleError)
@@ -37,7 +38,7 @@ export class GrupoService {
 
     createGrupo(grupo: Grupo): Observable<Grupo> {
         const headers = new HttpHeaders({ 'Content-type': 'application/json' });
-        const url = `${this.grupoUrl}/agregar`;
+        const url = `${this.grupoUrl}/save`;
         grupo.idGrupo = null;
         return this.http.post<Grupo>(url, grupo, { headers })
             .pipe(
@@ -48,7 +49,7 @@ export class GrupoService {
 
     deleteGrupo(id: number): Observable<{}> {
         const headers = new HttpHeaders({ 'Content-type': 'application/json' });
-        const url = `${this.grupoUrl}/eliminar/${id}`;
+        const url = `${this.grupoUrl}/delete/${id}`;
         return this.http.delete<Grupo>(url, { headers })
             .pipe(
                 tap(data => console.log('eliminar Grupo: ' + id)),
@@ -58,7 +59,7 @@ export class GrupoService {
 
     updateGrupo(grupo: Grupo): Observable<Grupo> {
         const headers = new HttpHeaders({ 'Content-type': 'application/json' });
-        const url = `${this.grupoUrl}/actualizar/${grupo.idGrupo}`;
+        const url = `${this.grupoUrl}/update/${grupo.idGrupo}`;
         return this.http.put<Grupo>(url, grupo, { headers })
             .pipe(
                 tap(() => console.log('update Grupo: ' + grupo.idGrupo)),

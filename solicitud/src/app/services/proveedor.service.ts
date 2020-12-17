@@ -7,12 +7,13 @@ import { catchError, tap, map } from 'rxjs/operators';
 @Injectable({ providedIn: 'root' })
 
 export class ProveedorService {
-    private proveedorUrl = 'http://localhost:9191/proveedores';
+    private proveedorUrl = 'http://localhost:9191/proveedor';
 
     constructor(private http: HttpClient) { }
 
     getProveedores(): Observable<Proveedor[]> {
-        return this.http.get<Proveedor[]>(this.proveedorUrl)
+        const url = `${this.proveedorUrl}/proveedores`;
+        return this.http.get<Proveedor[]>(url)
             .pipe(
                 tap(data => console.log(JSON.stringify(data))),
                 catchError(this.handleError)
@@ -33,7 +34,7 @@ export class ProveedorService {
 
     createProveedor(proveedor: Proveedor): Observable<Proveedor> {
         const headers = new HttpHeaders({ 'Content-type': 'application/json' });
-        const url = `${this.proveedorUrl}/agregar`;
+        const url = `${this.proveedorUrl}/save`;
         proveedor.idProveedor = null;
         return this.http.post<Proveedor>(url, proveedor, { headers })
             .pipe(
@@ -44,7 +45,7 @@ export class ProveedorService {
 
     deleteProveedor(id: number): Observable<{}> {
         const headers = new HttpHeaders({ 'Content-type': 'application/json' });
-        const url = `${this.proveedorUrl}/eliminar/${id}`;
+        const url = `${this.proveedorUrl}/delete/${id}`;
         return this.http.delete<Proveedor>(url, { headers })
             .pipe(
                 tap(data => console.log('eliminar Proveedor: ' + id)),
@@ -54,7 +55,7 @@ export class ProveedorService {
 
     updateProveedor(proveedor: Proveedor): Observable<Proveedor> {
         const headers = new HttpHeaders({ 'Content-type': 'application/json' });
-        const url = `${this.proveedorUrl}/actualizar/${proveedor.idProveedor}`;
+        const url = `${this.proveedorUrl}/update/${proveedor.idProveedor}`;
         return this.http.put<Proveedor>(url, proveedor, { headers })
             .pipe(
                 tap(() => console.log('update Proveedor: ' + proveedor.idProveedor)),

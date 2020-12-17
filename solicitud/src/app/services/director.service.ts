@@ -7,12 +7,13 @@ import { Director } from '../models/director';
 
 @Injectable({providedIn: 'root'})
 export class DirectorService {
-    private directorUrl = 'http://localhost:9191/directores';
+    private directorUrl = 'http://localhost:9191/director';
 
     constructor(private http: HttpClient) { }
 
     getDirectores(): Observable<Director[]> {
-        return this.http.get<Director[]>(this.directorUrl)
+        const url = `${this.directorUrl}/directores`;
+        return this.http.get<Director[]>(url)
             .pipe(
                 tap(data => console.log(JSON.stringify(data))),
                 catchError(this.handleError)
@@ -30,7 +31,7 @@ export class DirectorService {
 
     createDirector(director: Director): Observable<Director> {
         const headers = new HttpHeaders({ 'Content-type': 'application/json' });
-        const url = `${this.directorUrl}/agregar`;
+        const url = `${this.directorUrl}/save`;
         director.id = null;
         return this.http.post<Director>(url, director, { headers })
             .pipe(
@@ -41,7 +42,7 @@ export class DirectorService {
 
     deleteDirector(id: number): Observable<{}> {
         const headers = new HttpHeaders({ 'Content-type': 'application/json' });
-        const url = `${this.directorUrl}/eliminar/${id}`;
+        const url = `${this.directorUrl}/delete/${id}`;
         return this.http.delete<Director>(url, { headers })
             .pipe(
                 tap(data => console.log('eliminar Director: ' + id)),
@@ -51,7 +52,7 @@ export class DirectorService {
 
     updateDirector(director: Director): Observable<Director> {
         const headers = new HttpHeaders({ 'Content-type': 'application/json' });
-        const url = `${this.directorUrl}/actualizar/${director.id}`;
+        const url = `${this.directorUrl}/update/${director.id}`;
         return this.http.put<Director>(url, director, { headers })
             .pipe(
                 tap(() => console.log('update Director: ' + director.id)),

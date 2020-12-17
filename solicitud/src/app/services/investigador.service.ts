@@ -7,12 +7,13 @@ import { Investigador } from '../models/investigador';
 
 @Injectable({providedIn: 'root'})
 export class InvestigadorService {
-    private investigadorUrl = 'http://localhost:9191/investigadores';
+    private investigadorUrl = 'http://localhost:9191/investigador';
 
     constructor(private http: HttpClient) { }
 
     getInvestigadores(): Observable<Investigador[]> {
-        return this.http.get<Investigador[]>(this.investigadorUrl)
+        const url = `${this.investigadorUrl}/investigadores`;
+        return this.http.get<Investigador[]>(url)
             .pipe(
                 tap(data => console.log(JSON.stringify(data))),
                 catchError(this.handleError)
@@ -33,7 +34,7 @@ export class InvestigadorService {
 
     createInvestigador(investigador: Investigador): Observable<Investigador> {
         const headers = new HttpHeaders({ 'Content-type': 'application/json' });
-        const url = `${this.investigadorUrl}/agregar`;
+        const url = `${this.investigadorUrl}/save`;
         investigador.idInvestigador = null;
         return this.http.post<Investigador>(url, investigador, { headers })
             .pipe(
@@ -44,7 +45,7 @@ export class InvestigadorService {
 
     deleteInvestigador(id: number): Observable<{}> {
         const headers = new HttpHeaders({ 'Content-type': 'application/json' });
-        const url = `${this.investigadorUrl}/eliminar/${id}`;
+        const url = `${this.investigadorUrl}/delete/${id}`;
         return this.http.delete<Investigador>(url, { headers })
             .pipe(
                 tap(data => console.log('eliminar Investigador: ' + id)),
@@ -54,7 +55,7 @@ export class InvestigadorService {
 
     updateInvestigador(investigador: Investigador): Observable<Investigador> {
         const headers = new HttpHeaders({ 'Content-type': 'application/json' });
-        const url = `${this.investigadorUrl}/actualizar/${investigador.idInvestigador}`;
+        const url = `${this.investigadorUrl}/update/${investigador.idInvestigador}`;
         return this.http.put<Investigador>(url, investigador, { headers })
             .pipe(
                 tap(() => console.log('update Investigador: ' + investigador.idInvestigador)),

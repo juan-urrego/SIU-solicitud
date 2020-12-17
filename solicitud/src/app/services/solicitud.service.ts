@@ -7,12 +7,13 @@ import { Solicitud } from '../models/solicitud';
 
 @Injectable({providedIn: 'root'})
 export class SolicitudService {
-    private solicitudUrl = 'http://localhost:9191/solicitudes';
+    private solicitudUrl = 'http://localhost:9191/solicitud';
 
     constructor(private http: HttpClient) { }
 
     getSolicitudes(): Observable<Solicitud[]> {
-        return this.http.get<Solicitud[]>(this.solicitudUrl)
+        const url = `${this.solicitudUrl}/solicitudes`;
+        return this.http.get<Solicitud[]>(url)
             .pipe(
                 tap(data => console.log(JSON.stringify(data))),
                 catchError(this.handleError)
@@ -33,7 +34,7 @@ export class SolicitudService {
 
     createSolicitud(solicitud: Solicitud): Observable<Solicitud> {
         const headers = new HttpHeaders({ 'Content-type': 'application/json' });
-        const url = `${this.solicitudUrl}/agregar`;
+        const url = `${this.solicitudUrl}/save`;
         solicitud.idSolicitud = null;
         return this.http.post<Solicitud>(url, solicitud, { headers })
             .pipe(
@@ -50,7 +51,7 @@ export class SolicitudService {
 
     deleteSolicitud(id: number): Observable<{}> {
         const headers = new HttpHeaders({ 'Content-type': 'application/json' });
-        const url = `${this.solicitudUrl}/eliminar/${id}`;
+        const url = `${this.solicitudUrl}/delete/${id}`;
         return this.http.delete<Solicitud>(url, { headers })
             .pipe(
                 tap(data => console.log('eliminar Solicitud: ' + id)),
@@ -60,7 +61,7 @@ export class SolicitudService {
 
     updateSolicitud(solicitud: Solicitud): Observable<Solicitud> {
         const headers = new HttpHeaders({ 'Content-type': 'application/json' });
-        const url = `${this.solicitudUrl}/actualizar/${solicitud.idSolicitud}`;
+        const url = `${this.solicitudUrl}/update/${solicitud.idSolicitud}`;
         return this.http.put<Solicitud>(url, solicitud, { headers })
             .pipe(
                 tap(() => console.log('update Solicitud: ' + solicitud.idSolicitud)),
