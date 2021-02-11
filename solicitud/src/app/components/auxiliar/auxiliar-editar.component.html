@@ -1,21 +1,23 @@
-<app-menu></app-menu>
-<div class="container">
-<div class="card">
-    <div class="card-header text-white">
-        <h2>{{title}}</h2>
+<div class="d-flex">
 
-    </div>
-    <div class="card-body">
-
-        <form novalidate (ngSubmit)="saveAuxiliar()" [formGroup]="auxiliarForm">
-
-            <div class="form-group row mb-3">
-                <label for="nombreId" class="col-md-2 col-form-label">Nombre: </label>
-                <div class="col-md-8">
-                    <input id="nombreId" class="form-control" type="text" placeholder="Ingrese el nombre"
-                        formControlName="{{'nombre' | lowercase}}" [ngClass]="{'is-invalid': (auxiliarForm.get('nombre').touched || auxiliarForm.get('nombre').dirty) && !auxiliarForm.get('nombre').valid}">
-                    <span class="invalid-feedback">
-                        <span *ngIf="auxiliarForm.get('nombre').errors?.required">
+    <app-menu></app-menu>
+    <div class="container">
+        <div class="card">
+            <div class="card-header text-white">
+                <h2>{{title}}</h2>
+                
+            </div>
+            <div class="card-body">
+                
+                <form novalidate (ngSubmit)="saveAuxiliar()" [formGroup]="auxiliarForm">
+                    
+                    <div class="form-group row mb-3">
+                        <label for="nombreId" class="col-md-2 col-form-label">Nombre: </label>
+                        <div class="col-md-8">
+                            <input id="nombreId" class="form-control" type="text" placeholder="Ingrese el nombre"
+                            formControlName="{{'nombre' | lowercase}}" [ngClass]="{'is-invalid': (auxiliarForm.get('nombre').touched || auxiliarForm.get('nombre').dirty) && !auxiliarForm.get('nombre').valid}">
+                            <span class="invalid-feedback">
+                                <span *ngIf="auxiliarForm.get('nombre').errors?.required">
                             Por favor ingrese su nombre.
                           </span>
                           <span *ngIf="auxiliarForm.get('nombre').errors?.minlength">
@@ -101,3 +103,4 @@
 
     {{auxiliarForm.value | json}}
 </pre>
+</div>

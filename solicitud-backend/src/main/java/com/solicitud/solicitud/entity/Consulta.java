@@ -2,8 +2,7 @@ package com.solicitud.solicitud.entity;
 
 
 import javax.persistence.*;
-
-import com.solicitud.solicitud.enums.Estado;
+import javax.validation.constraints.NotNull;
 
 
 @Entity
@@ -11,29 +10,29 @@ import com.solicitud.solicitud.enums.Estado;
 public class Consulta {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "con_sol_id")
     private int id;
-    private String acuerdo;
-    private String porque;
-    @Enumerated(EnumType.STRING)
-    private Estado estado;
+
+    @Column(name = "con_parametro")
+    private String parametro;
 
     @OneToOne
-    private Precotizacion precotizacion;
-
-    @OneToOne
-    @JoinColumn(name = "solicitud_id_solicitud")
+    @MapsId
+    @JoinColumn(name = "con_sol_id")
     private Solicitud solicitud;
 
-    public Consulta(String acuerdo, String porque, Estado estado, Precotizacion precotizacion, Solicitud solicitud) {
-        this.acuerdo = acuerdo;
-        this.porque = porque;
-        this.estado = estado;
-        this.precotizacion = precotizacion;
-        this.solicitud = solicitud;
-    }
+    @NotNull
+    @ManyToOne
+    @JoinColumn(name = "con_est_id")
+    private Estado estado;
 
     public Consulta() {
+    }
+
+    public Consulta(String parametro, Solicitud solicitud, @NotNull Estado estado) {
+        this.parametro = parametro;
+        this.solicitud = solicitud;
+        this.estado = estado;
     }
 
     public int getId() {
@@ -44,36 +43,12 @@ public class Consulta {
         this.id = id;
     }
 
-    public String getAcuerdo() {
-        return acuerdo;
+    public String getParametro() {
+        return parametro;
     }
 
-    public void setAcuerdo(String acuerdo) {
-        this.acuerdo = acuerdo;
-    }
-
-    public String getPorque() {
-        return porque;
-    }
-
-    public void setPorque(String porque) {
-        this.porque = porque;
-    }
-
-    public Estado getEstado() {
-        return estado;
-    }
-
-    public void setEstado(Estado estado) {
-        this.estado = estado;
-    }
-
-    public Precotizacion getPrecotizacion() {
-        return precotizacion;
-    }
-
-    public void setPrecotizacion(Precotizacion precotizacion) {
-        this.precotizacion = precotizacion;
+    public void setParametro(String parametro) {
+        this.parametro = parametro;
     }
 
     public Solicitud getSolicitud() {
@@ -83,5 +58,12 @@ public class Consulta {
     public void setSolicitud(Solicitud solicitud) {
         this.solicitud = solicitud;
     }
-    
+
+    public Estado getEstado() {
+        return estado;
+    }
+
+    public void setEstado(Estado estado) {
+        this.estado = estado;
+    }
 }

@@ -1,5 +1,5 @@
 package com.solicitud.solicitud.enums;
 
-public enum Estado {
+public enum EstadoNombre {
         CREADA,VERIFICADA,DOCUMENTADA,DILIGENCIADO, FIRMADO, FINALIZADO
 }

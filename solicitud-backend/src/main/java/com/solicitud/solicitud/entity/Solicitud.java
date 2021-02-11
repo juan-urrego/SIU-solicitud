@@ -1,99 +1,109 @@
 package com.solicitud.solicitud.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.solicitud.solicitud.enums.Estado;
+import com.solicitud.solicitud.security.entity.Usuario;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 @Entity
-@Table(name = "sol_tramites")
+@Table(name = "solicitudes")
 public class Solicitud {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_solicitud")
-    private int idSolicitud;
+    @Column(name = "sol_id")
+    private int id;
+    @NotNull
+    @Column(name = "sol_tipo_tramite")
+    private String tipoTramite;
+    @NotNull
+    @Column(name = "sol_necesidad")
     private String necesidad;
-    private String descripcion;
+    @NotNull
+    @Column(name = "sol_fecha")
+    private Date fecha;
+    @NotNull
+    @Column(name = "sol_valor")
     private double valor;
+    @NotNull
+    @NotNull
+    @Column(name = "sol_verificacion")
     private String verificacion;
+    @NotNull
+    @Column(name = "sol_observacion")
     private String observacion;
-    private String cargo;
-    @Column(name = "nombre_proyecto")
-    private String nombreProyecto;
-    private String fecha;
 
-    private String rubro;
-    private String subrubro;
-    private String financiador;
-    @Column(name = "centro_costos")
-    private String centroCostos;
+    @NotNull
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "sol_grupo_investigador_id")
+    private GrupoInvestigador grupoInvestigador;
 
-    @Enumerated(EnumType.STRING)
+    @NotNull
+    @ManyToOne
+    @JoinColumn(name = "sol_estado_id")
     private Estado estado;
 
-    @ManyToOne
-    @JoinColumn(name = "id_grup" , nullable = false)
-    @JsonIgnoreProperties({"solicitudes","investigadores"})
-    private Grupo grupo;
-
-    @ManyToOne
-    @JoinColumn(name = "id_inv", nullable = false)
-    @JsonIgnoreProperties({"grupos", "solicitudes"})
-    private Investigador investigador;
-
-    @OneToMany(cascade = CascadeType.ALL)
-//    @JsonIgnoreProperties({"proveedor"})
-    @JoinTable(
-            name = "solicitud_precotizacion",
-            joinColumns = @JoinColumn(name = "id_solicitudes"),
-            inverseJoinColumns = @JoinColumn(name = "id_precotizaciones")
-
-    )
-    private List<Precotizacion> precotizaciones;
-
-    @JsonIgnoreProperties({"director","solicitud"})
-    @OneToOne(cascade = CascadeType.PERSIST, mappedBy = "solicitud")
+    @OneToOne(mappedBy = "solicitud")
+    @PrimaryKeyJoinColumn
     private Estudio estudio;
 
-    @JsonIgnoreProperties({"director","solicitud"})
-    @OneToOne(cascade = CascadeType.PERSIST, mappedBy = "solicitud")
+    @OneToOne(mappedBy = "solicitud")
+    @PrimaryKeyJoinColumn
     private Consulta consulta;
 
-    public Solicitud(String necesidad, String descripcion, double valor, String verificacion, String observacion,
-            String cargo, String nombreProyecto, String fecha, String rubro, String subrubro, String financiador,
-            String centroCostos, Estado estado, Grupo grupo, Investigador investigador,
-            List<Precotizacion> precotizaciones, Estudio estudio, Consulta consulta) {
+    @OneToMany(mappedBy = "solicitud", cascade = CascadeType.ALL)
+    private Set<Precotizacion> precotizaciones;
+
+    @OneToOne
+    @JoinColumn(name = "sol_precotizacion_elegida_id")
+    private Precotizacion precotizacionElegida;
+
+    @OneToMany(mappedBy = "solicitud", cascade = CascadeType.ALL)
+    private Set<DetalleTramite> detalleTramites;
+
+    public Solicitud(@NotNull String tipoTramite, @NotNull String necesidad, @NotNull Date fecha, @NotNull double valor, @NotNull @NotNull String verificacion, @NotNull String observacion, @NotNull GrupoInvestigador grupoInvestigador, @NotNull Estado estado, Set<Precotizacion> precotizaciones, Precotizacion precotizacionElegida, Set<DetalleTramite> detalleTramites) {
+        this.tipoTramite = tipoTramite;
         this.necesidad = necesidad;
-        this.descripcion = descripcion;
+        this.fecha = fecha;
         this.valor = valor;
         this.verificacion = verificacion;
         this.observacion = observacion;
-        this.cargo = cargo;
-        this.nombreProyecto = nombreProyecto;
-        this.fecha = fecha;
-        this.rubro = rubro;
-        this.subrubro = subrubro;
-        this.financiador = financiador;
-        this.centroCostos = centroCostos;
+        this.grupoInvestigador = grupoInvestigador;
         this.estado = estado;
-        this.grupo = grupo;
-        this.investigador = investigador;
         this.precotizaciones = precotizaciones;
-        this.estudio = estudio;
-        this.consulta = consulta;
+        this.precotizacionElegida = precotizacionElegida;
+        this.detalleTramites = detalleTramites;
     }
 
     public Solicitud() {
     }
 
-    public int getIdSolicitud() {
-        return idSolicitud;
+    public int getId() {
+        return id;
     }
 
-    public void setIdSolicitud(int idSolicitud) {
-        this.idSolicitud = idSolicitud;
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getTipoTramite() {
+        return tipoTramite;
+    }
+
+    public Set<DetalleTramite> getDetalleTramites() {
+        return detalleTramites;
+    }
+
+    public void setDetalleTramites(Set<DetalleTramite> detalleTramites) {
+        this.detalleTramites = detalleTramites;
+    }
+
+    public void setTipoTramite(String tipoTramite) {
+        this.tipoTramite = tipoTramite;
     }
 
     public String getNecesidad() {
@@ -104,12 +114,12 @@ public class Solicitud {
         this.necesidad = necesidad;
     }
 
-    public String getDescripcion() {
-        return descripcion;
+    public Date getFecha() {
+        return fecha;
     }
 
-    public void setDescripcion(String descripcion) {
-        this.descripcion = descripcion;
+    public void setFecha(Date fecha) {
+        this.fecha = fecha;
     }
 
     public double getValor() {
@@ -136,60 +146,12 @@ public class Solicitud {
         this.observacion = observacion;
     }
 
-    public String getCargo() {
-        return cargo;
+    public GrupoInvestigador getGrupoInvestigador() {
+        return grupoInvestigador;
     }
 
-    public void setCargo(String cargo) {
-        this.cargo = cargo;
-    }
-
-    public String getNombreProyecto() {
-        return nombreProyecto;
-    }
-
-    public void setNombreProyecto(String nombreProyecto) {
-        this.nombreProyecto = nombreProyecto;
-    }
-
-    public String getFecha() {
-        return fecha;
-    }
-
-    public void setFecha(String fecha) {
-        this.fecha = fecha;
-    }
-
-    public String getRubro() {
-        return rubro;
-    }
-
-    public void setRubro(String rubro) {
-        this.rubro = rubro;
-    }
-
-    public String getSubrubro() {
-        return subrubro;
-    }
-
-    public void setSubrubro(String subrubro) {
-        this.subrubro = subrubro;
-    }
-
-    public String getFinanciador() {
-        return financiador;
-    }
-
-    public void setFinanciador(String financiador) {
-        this.financiador = financiador;
-    }
-
-    public String getCentroCostos() {
-        return centroCostos;
-    }
-
-    public void setCentroCostos(String centroCostos) {
-        this.centroCostos = centroCostos;
+    public void setGrupoInvestigador(GrupoInvestigador grupoInvestigador) {
+        this.grupoInvestigador = grupoInvestigador;
     }
 
     public Estado getEstado() {
@@ -198,30 +160,6 @@ public class Solicitud {
 
     public void setEstado(Estado estado) {
         this.estado = estado;
-    }
-
-    public Grupo getGrupo() {
-        return grupo;
-    }
-
-    public void setGrupo(Grupo grupo) {
-        this.grupo = grupo;
-    }
-
-    public Investigador getInvestigador() {
-        return investigador;
-    }
-
-    public void setInvestigador(Investigador investigador) {
-        this.investigador = investigador;
-    }
-
-    public List<Precotizacion> getPrecotizaciones() {
-        return precotizaciones;
-    }
-
-    public void setPrecotizaciones(List<Precotizacion> precotizaciones) {
-        this.precotizaciones = precotizaciones;
     }
 
     public Estudio getEstudio() {
@@ -240,5 +178,19 @@ public class Solicitud {
         this.consulta = consulta;
     }
 
-    
+    public Set<Precotizacion> getPrecotizaciones() {
+        return precotizaciones;
+    }
+
+    public void setPrecotizaciones(Set<Precotizacion> precotizaciones) {
+        this.precotizaciones = precotizaciones;
+    }
+
+    public Precotizacion getPrecotizacionElegida() {
+        return precotizacionElegida;
+    }
+
+    public void setPrecotizacionElegida(Precotizacion precotizacionElegida) {
+        this.precotizacionElegida = precotizacionElegida;
+    }
 }

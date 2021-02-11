@@ -7,39 +7,35 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
 public class GrupoService {
 
     @Autowired
-    GrupoRepository  repository;
+    GrupoRepository grupoRepository;
 
-    public Grupo saveGrupo(Grupo grupo){
-        return repository.save(grupo);
+    public Optional<Grupo> getOne(int id){
+        return grupoRepository.findById(id);
     }
 
-    public List<Grupo> getGrupos(){
-        return repository.findAll();
+    public boolean existsById(final int id){
+        return grupoRepository.existsById(id);
     }
 
-    public Grupo getGrupoById(int id){
-        return repository.findById(id).orElse(null);
+    public List<Grupo> getGrupo(){
+        final List<Grupo> grupos;
+        grupos = grupoRepository.findAll();
+        return grupos;
     }
 
-    public String deleteGrupo(int id){
-        repository.deleteById(id);
-        return "Grupo Eliminado " + id;
+    public void save(final Grupo grupo){
+        grupoRepository.save(grupo);
     }
 
-    public Grupo updateGrupo(Grupo grupoExistente, int id){
-        return repository.findById(id)
-                .map(grupo -> {
-                    grupo.setNombre(grupoExistente.getNombre());
-                    grupo.setCodCol(grupoExistente.getCodCol());
-                    grupo.setInvestigadores(grupoExistente.getInvestigadores());
-                    return repository.save(grupo);
-                })
-                .orElse(null);
+    public void delete(int id){
+        grupoRepository.deleteById(id);
     }
+
 }

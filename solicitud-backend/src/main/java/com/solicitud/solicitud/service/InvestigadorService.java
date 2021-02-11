@@ -6,40 +6,34 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class InvestigadorService {
 
     @Autowired
-    InvestigadorRepository repository;
+    InvestigadorRepository investigadorRepository;
 
-    public Investigador saveInvestigador(Investigador investigador){
-        return repository.save(investigador);
+    public Optional<Investigador> getOne(int id){
+        return investigadorRepository.findById(id);
     }
 
-    public List<Investigador> getInvestigadores(){
-        return repository.findAll();
+    public boolean existsById(final int id){
+        return investigadorRepository.existsById(id);
     }
 
-    public Investigador getInvestigadorById(int id){
-        return repository.findById(id).orElse(null);
+    public List<Investigador> getInvestigador(){
+        final List<Investigador> investigadors;
+        investigadors = investigadorRepository.findAll();
+        return investigadors;
     }
 
-    public String deleteInvestigador(int id){
-        repository.deleteById(id);
-        return "Investigador Eliminado " + id;
+    public void save(final Investigador investigador){
+        investigadorRepository.save(investigador);
     }
 
-    public Investigador updateInvestigador(Investigador investigadorExistente, int id){
-        return repository.findById(id)
-                .map(investigador -> {
-                    investigador.setIdentificacion(investigadorExistente.getIdentificacion());
-                    investigador.setNombre(investigadorExistente.getNombre());
-                    investigador.setTelefono(investigadorExistente.getTelefono());
-                    investigador.setGrupos(investigadorExistente.getGrupos());
-                    investigador.setEmail(investigadorExistente.getEmail());
-                    return repository.save(investigador);
-                })
-                .orElse(null);
+    public void delete(int id){
+        investigadorRepository.deleteById(id);
     }
+
 }

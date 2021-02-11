@@ -8,7 +8,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.util.List;
+import java.util.Set;
 
 
 @Entity
@@ -16,41 +18,41 @@ import java.util.List;
 public class Proveedor {
 
     @Id
-    @Column(name = "id_proveedor")
+    @Column(name = "pro_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int idProveedor;
-    private int nit;
+    private int id;
+    @NotNull
+    @Column(name = "pro_nombre")
     private String nombre;
-    private int telefono;
+    @NotNull
+    @Column(name = "pro_nit")
+    private String nit;
+    @NotNull
+    @Column(name = "pro_telefono")
+    private String telefono;
+    @NotNull
+    @Column(name = "pro_ciudad")
+    private String ciudad;
 
-    @JsonIgnoreProperties({"proveedor"})
     @OneToMany(mappedBy = "proveedor")
-    private List<Precotizacion> precotizaciones;
+    private Set<Precotizacion> precotizaciones;
 
-    public Proveedor(int nit, String nombre, int telefono, List<Precotizacion> precotizaciones) {
-        this.nit = nit;
+    public Proveedor(@NotNull String nombre, @NotNull String nit, @NotNull String telefono, @NotNull String ciudad) {
         this.nombre = nombre;
+        this.nit = nit;
         this.telefono = telefono;
-        this.precotizaciones = precotizaciones;
+        this.ciudad = ciudad;
     }
 
     public Proveedor() {
     }
 
-    public int getIdProveedor() {
-        return idProveedor;
+    public int getId() {
+        return id;
     }
 
-    public void setIdProveedor(int idProveedor) {
-        this.idProveedor = idProveedor;
-    }
-
-    public int getNit() {
-        return nit;
-    }
-
-    public void setNit(int nit) {
-        this.nit = nit;
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getNombre() {
@@ -61,20 +63,35 @@ public class Proveedor {
         this.nombre = nombre;
     }
 
-    public int getTelefono() {
+    public String getNit() {
+        return nit;
+    }
+
+    public void setNit(String nit) {
+        this.nit = nit;
+    }
+
+    public String getTelefono() {
         return telefono;
     }
 
-    public void setTelefono(int telefono) {
+    public void setTelefono(String telefono) {
         this.telefono = telefono;
     }
 
-    public List<Precotizacion> getPrecotizaciones() {
+    public String getCiudad() {
+        return ciudad;
+    }
+
+    public void setCiudad(String ciudad) {
+        this.ciudad = ciudad;
+    }
+
+    public Set<Precotizacion> getPrecotizaciones() {
         return precotizaciones;
     }
 
-    public void setPrecotizaciones(List<Precotizacion> precotizaciones) {
+    public void setPrecotizaciones(Set<Precotizacion> precotizaciones) {
         this.precotizaciones = precotizaciones;
     }
-    
 }

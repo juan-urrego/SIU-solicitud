@@ -5,53 +5,55 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "investigadores")
 public class Investigador {
 
     @Id
-    @Column(name = "id_investigador")
+    @Column(name = "inv_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int idInvestigador;
+    private int id;
+    @NotNull
+    @Column(name = "inv_identificacion")
     private String identificacion;
+    @NotNull
+    @Column(name = "inv_nombre")
     private String nombre;
-    private double telefono;
+    @NotNull
+    @Column(name = "inv_telefono")
+    private String telefono;
+    @NotNull
+    @Column(name = "inv_email")
     private String email;
+    @NotNull
+    @Column(name = "inv_firma")
+    private String firma;
 
     @OneToMany(mappedBy = "investigador")
-    @JsonIgnoreProperties({"grupo","investigador","precotizaciones"})
-    private List<Solicitud> solicitudes;
+    private Set<GrupoInvestigador> grupoInvestigadores;
 
-    @JsonIgnoreProperties({"solicitudes","investigadores"})
-    @ManyToMany( fetch = FetchType.EAGER)
-    @JoinTable(
-            name = "inv_grupos",
-            joinColumns = @JoinColumn(name = "id_investigadores"),
-            inverseJoinColumns = @JoinColumn(name = "id_grupos")
-    )
-    private List<Grupo> grupos;
-
-    public Investigador(String identificacion, String nombre, double telefono, String email,
-            List<Solicitud> solicitudes, List<Grupo> grupos) {
+    public Investigador(@NotNull String identificacion, @NotNull String nombre, @NotNull String telefono, @NotNull String email, @NotNull String firma) {
         this.identificacion = identificacion;
         this.nombre = nombre;
         this.telefono = telefono;
         this.email = email;
-        this.solicitudes = solicitudes;
-        this.grupos = grupos;
+        this.firma = firma;
     }
 
     public Investigador() {
     }
 
-    public int getIdInvestigador() {
-        return idInvestigador;
+    public int getId() {
+        return id;
     }
 
-    public void setIdInvestigador(int idInvestigador) {
-        this.idInvestigador = idInvestigador;
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getIdentificacion() {
@@ -70,11 +72,19 @@ public class Investigador {
         this.nombre = nombre;
     }
 
-    public double getTelefono() {
+    public String getTelefono() {
         return telefono;
     }
 
-    public void setTelefono(double telefono) {
+    public String getFirma() {
+        return firma;
+    }
+
+    public void setFirma(String firma) {
+        this.firma = firma;
+    }
+
+    public void setTelefono(String telefono) {
         this.telefono = telefono;
     }
 
@@ -86,22 +96,11 @@ public class Investigador {
         this.email = email;
     }
 
-    public List<Solicitud> getSolicitudes() {
-        return solicitudes;
+    public Set<GrupoInvestigador> getGrupoInvestigadores() {
+        return grupoInvestigadores;
     }
 
-    public void setSolicitudes(List<Solicitud> solicitudes) {
-        this.solicitudes = solicitudes;
+    public void setGrupoInvestigadores(Set<GrupoInvestigador> grupoInvestigadores) {
+        this.grupoInvestigadores = grupoInvestigadores;
     }
-
-    public List<Grupo> getGrupos() {
-        return grupos;
-    }
-
-    public void setGrupos(List<Grupo> grupos) {
-        this.grupos = grupos;
-    }
-
-
-    
 }

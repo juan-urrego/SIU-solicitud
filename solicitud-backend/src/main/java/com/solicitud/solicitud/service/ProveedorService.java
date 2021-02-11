@@ -4,40 +4,38 @@ import com.solicitud.solicitud.entity.Proveedor;
 import com.solicitud.solicitud.repository.ProveedorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
+@Transactional
 public class ProveedorService {
 
     @Autowired
-    ProveedorRepository repository;
+    ProveedorRepository proveedorRepository;
 
-    public Proveedor saveProveedor(Proveedor proveedor){
-        return repository.save(proveedor);
+    public Optional<Proveedor> getOne(int id){
+        return proveedorRepository.findById(id);
     }
 
-    public List<Proveedor> getProveedores(){
-        return repository.findAll();
+    public boolean existsById(final int id){
+        return proveedorRepository.existsById(id);
     }
 
-    public Proveedor getProveedorById(int id){
-        return repository.findById(id).orElse(null);
+    public List<Proveedor> getProveedor(){
+        final List<Proveedor> proveedors;
+        proveedors = proveedorRepository.findAll();
+        return proveedors;
     }
 
-    public String deleteProveedor(int id){
-        repository.deleteById(id);
-        return "Proveedor Eliminado " + id;
+    public void save(final Proveedor proveedor){
+        proveedorRepository.save(proveedor);
     }
 
-    public Proveedor updateProveedor(Proveedor newProveedor, int id){
-        return repository.findById(id)
-                .map(proveedor -> {
-                    proveedor.setNombre(newProveedor.getNombre());
-                    proveedor.setNit(newProveedor.getNit());
-                    proveedor.setTelefono((newProveedor.getTelefono()));
-                    return repository.save(proveedor);
-                })
-                .orElse(null);
+    public void delete(int id){
+        proveedorRepository.deleteById(id);
     }
+
 }

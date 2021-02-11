@@ -1,2 +1,29 @@
-<router-outlet></router-outlet>
+<div class="d-flex" >
+    <div id="sidebar-container" class="bg-primary" *ngIf="isLogged">
+      <div class="logo">
+        <h4 class="text-light font-weight-bold">Solicitudes de trámites SIU</h4>
+
+      </div>
+      <div class="menu">
+        <a class="d-block text-light p-3" [routerLink]="['/solicitud']" *ngIf="isLogged">Solicitud</a>
+        <a class="d-block text-light p-3" [routerLink]="['/estudio']" *ngIf="isLogged">Estudio Previo</a>
+        <a class="d-block text-light p-3" [routerLink]="['/consulta']" *ngIf="isLogged">Consulta de precios</a>
+        <a class="d-block text-light p-3" [routerLink]="['/grupo']" *ngIf="isLogged">Grupo</a>
+        <a class="d-block text-light p-3" [routerLink]="['/investigador']" *ngIf="isLogged">Investigador</a>
+        <a class="d-block text-light p-3" [routerLink]="['/proveedor']" *ngIf="isLogged">Proveedor</a>
+      </div>
+    </div>
+
+<div class="w-100">
+
+    <nav class="navbar navbar-light bg-light">
+        <div *ngIf="isLogged" (click)="onLogOut()">
+            <a class="nav-link" style="cursor: pointer;"> Cerrar Sesión</a>
+        </div>
+      </nav>
+      <router-outlet></router-outlet>
+</div>
+  
+
+</div>
 

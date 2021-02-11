@@ -59,7 +59,7 @@ public class AuthController {
             return new ResponseEntity<Mensaje>(new Mensaje("este email ya existe"), HttpStatus.BAD_REQUEST);
         Usuario usuario =
                 new Usuario(nuevoUsuario.getNombre(), nuevoUsuario.getApellido(), nuevoUsuario.getEmail(),
-                        passwordEncoder.encode(nuevoUsuario.getPassword()));
+                        passwordEncoder.encode(nuevoUsuario.getPassword()), nuevoUsuario.getFirma());
         Set<Rol> roles = new HashSet<>();
         roles.add(rolService.getByRolNombre(RolNombre.ROLE_USER).get());
         if(nuevoUsuario.getRoles().contains("admin"))
@@ -121,11 +121,14 @@ public class AuthController {
             return new ResponseEntity<Mensaje>(new Mensaje("el email es obligatorio"), HttpStatus.BAD_REQUEST);
         if(StringUtils.isBlank(nuevoUsuario.getPassword()))
             return new ResponseEntity<Mensaje>(new Mensaje("La contraseña es obligatoria"), HttpStatus.BAD_REQUEST);
+        if(StringUtils.isBlank(nuevoUsuario.getFirma()))
+            return new ResponseEntity<Mensaje>(new Mensaje("La Firma es obligatoria"), HttpStatus.BAD_REQUEST);
         Usuario usuario = usuarioService.getOne(id).get();
         usuario.setNombre(nuevoUsuario.getNombre());
         usuario.setApellido(nuevoUsuario.getApellido());
         usuario.setEmail(nuevoUsuario.getEmail());
-        usuario.setPassword(nuevoUsuario.getPassword());
+        usuario.setPassword(passwordEncoder.encode(nuevoUsuario.getPassword()));
+        usuario.setFirma(nuevoUsuario.getFirma());
         Set<Rol> roles = new HashSet<>();
         roles.add(rolService.getByRolNombre(RolNombre.ROLE_USER).get());
         if(nuevoUsuario.getRoles().contains("admin"))

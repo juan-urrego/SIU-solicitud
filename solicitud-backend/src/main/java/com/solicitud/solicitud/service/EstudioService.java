@@ -1,56 +1,41 @@
 package com.solicitud.solicitud.service;
 
 import com.solicitud.solicitud.entity.Estudio;
-import com.solicitud.solicitud.enums.Estado;
 import com.solicitud.solicitud.repository.EstudioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
+@Transactional
 public class EstudioService {
 
     @Autowired
-    EstudioRepository repository;
+    EstudioRepository estudioRepository;
 
-
-    public Estudio saveEstudio(Estudio estudio){
-        estudio.setEstado(updateEstado(estudio));
-        return repository.save(estudio);
+    public Optional<Estudio> getOne(int id){
+        return estudioRepository.findById(id);
     }
 
-    public List<Estudio> getEstudios(){
-        return repository.findAll();
+    public boolean existsById(final int id){
+        return estudioRepository.existsById(id);
     }
 
-    public Estudio getEstudioById(int id){
-        return repository.findById(id).orElse(null);
+    public List<Estudio> getEstudio(){
+        final List<Estudio> estudios;
+        estudios = estudioRepository.findAll();
+        return estudios;
     }
 
-    public String deleteEstudio(int id){
-        repository.deleteById(id);
-        return "Estudio Eliminado " + id;
+    public void save(final Estudio estudio){
+        estudioRepository.save(estudio);
     }
 
-    public Estudio updateEstudio(Estudio estudioExistente, int id){
-        return repository.findById(id)
-                .map(estudio -> {
-                    estudio.setFirma(estudioExistente.getFirma());
-                    estudio.setAcuerdo(estudioExistente.getAcuerdo());
-                    estudio.setDirector(estudioExistente.getDirector());
-                    estudio.setSolicitud(estudioExistente.getSolicitud());
-                    estudio.setEstado(updateEstado(estudioExistente));
-                    return repository.save(estudio);
-                })
-                .orElse(null);
+    public void delete(int id){
+        estudioRepository.deleteById(id);
     }
 
-    public Estado updateEstado(Estudio estudio) {
-        if(estudio.getFirma() != null) {
-            return Estado.FIRMADO;
-        }else{
-            return Estado.CREADA;
-        }
-    }
 }

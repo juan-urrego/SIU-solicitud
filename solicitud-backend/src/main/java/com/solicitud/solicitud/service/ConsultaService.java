@@ -1,55 +1,41 @@
 package com.solicitud.solicitud.service;
 
 import com.solicitud.solicitud.entity.Consulta;
-import com.solicitud.solicitud.enums.Estado;
 import com.solicitud.solicitud.repository.ConsultaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
+@Transactional
 public class ConsultaService {
 
     @Autowired
-    ConsultaRepository repository;
+    ConsultaRepository consultaRepository;
 
-  
-    public Consulta saveConsulta(Consulta consulta){
-        consulta.setEstado(updateEstado(consulta));
-        return repository.save(consulta);
+    public Optional<Consulta> getOne(int id){
+        return consultaRepository.findById(id);
     }
 
-    public List<Consulta> getConsultas(){
-        return repository.findAll();
+    public boolean existsById(final int id){
+        return consultaRepository.existsById(id);
     }
 
-    public Consulta getConsultaById(int id){
-        return repository.findById(id).orElse(null);
+    public List<Consulta> getConsulta(){
+        final List<Consulta> consultas;
+        consultas = consultaRepository.findAll();
+        return consultas;
     }
 
-    public String deleteConsulta(int id){
-        repository.deleteById(id);
-        return "Consulta Eliminado " + id;
+    public void save(final Consulta consulta){
+        consultaRepository.save(consulta);
     }
 
-    public Consulta updateConsulta(Consulta consultaExistente, int id){
-        return repository.findById(id)
-                .map(consulta -> {
-                    consulta.setPorque(consultaExistente.getPorque());
-                    consulta.setPrecotizacion(consultaExistente.getPrecotizacion());
-                    consulta.setSolicitud(consultaExistente.getSolicitud());
-                    consulta.setEstado(updateEstado(consultaExistente));
-                    return repository.save(consulta);
-                })
-                .orElse(null);
+    public void delete(int id){
+        consultaRepository.deleteById(id);
     }
 
-    public Estado updateEstado(Consulta consulta) {
-        if(consulta.getPrecotizacion() != null && consulta.getPorque() != "" &&consulta.getAcuerdo() != "") {
-            return Estado.DILIGENCIADO;
-        }else{
-            return Estado.CREADA;
-        }
-    }
 }

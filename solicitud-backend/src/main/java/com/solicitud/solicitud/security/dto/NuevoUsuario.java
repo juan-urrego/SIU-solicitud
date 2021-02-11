@@ -14,6 +14,8 @@ public class NuevoUsuario {
     private String email;
     @NotBlank
     private String password;
+    @NotBlank
+    private String firma;
     private Set<String> roles = new HashSet<>();
 
     public String getNombre() {
@@ -54,5 +56,13 @@ public class NuevoUsuario {
 
     public void setRoles(Set<String> roles) {
         this.roles = roles;
+    }
+
+    public String getFirma() {
+        return firma;
+    }
+
+    public void setFirma(String firma) {
+        this.firma = firma;
     }
 }

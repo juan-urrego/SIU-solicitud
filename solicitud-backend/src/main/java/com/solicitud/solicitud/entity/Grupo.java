@@ -4,50 +4,45 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "grupos")
 public class Grupo {
 
     @Id
-    @Column(name = "id_grupo")
+    @Column(name = "gr_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int idGrupo;
+    private int id;
+    @NotNull
+    @Column(name = "gr_nombre")
     private String nombre;
-    @Column(name = "codigo_col")
-    private String codCol;
-
+    @NotNull
+    @Column(name = "gr_cod_colciencia")
+    private String codColciencia;
 
     @OneToMany(mappedBy = "grupo")
-    @JsonIgnoreProperties({"grupo","investigador","precotizaciones"})
-    private List<Solicitud> solicitudes;
+    Set<Proyecto> proyectos;
 
-    @ManyToMany( fetch = FetchType.EAGER)
-    @JoinTable(
-            name = "inv_grupos",
-            joinColumns = @JoinColumn(name = "id_grupos"),
-            inverseJoinColumns = @JoinColumn(name = "id_investigadores")
-    )
-    @JsonIgnoreProperties({"grupos","solicitudes"})
-    private List<Investigador> investigadores;
+    @OneToMany(mappedBy = "grupo")
+    Set<GrupoInvestigador> grupoInvestigadores;
 
-    public Grupo(String nombre, String codCol, List<Solicitud> solicitudes, List<Investigador> investigadores) {
+    public Grupo(@NotNull String nombre, @NotNull String codColciencia) {
         this.nombre = nombre;
-        this.codCol = codCol;
-        this.solicitudes = solicitudes;
-        this.investigadores = investigadores;
+        this.codColciencia = codColciencia;
     }
 
     public Grupo() {
     }
 
-    public int getIdGrupo() {
-        return idGrupo;
+    public int getId() {
+        return id;
     }
 
-    public void setIdGrupo(int idGrupo) {
-        this.idGrupo = idGrupo;
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getNombre() {
@@ -58,29 +53,27 @@ public class Grupo {
         this.nombre = nombre;
     }
 
-    public String getCodCol() {
-        return codCol;
+    public String getCodColciencia() {
+        return codColciencia;
     }
 
-    public void setCodCol(String codCol) {
-        this.codCol = codCol;
+    public void setCodColciencia(String codColciencia) {
+        this.codColciencia = codColciencia;
     }
 
-    public List<Solicitud> getSolicitudes() {
-        return solicitudes;
+    public Set<GrupoInvestigador> getGrupoInvestigadores() {
+        return grupoInvestigadores;
     }
 
-    public void setSolicitudes(List<Solicitud> solicitudes) {
-        this.solicitudes = solicitudes;
+    public void setGrupoInvestigadores(Set<GrupoInvestigador> grupoInvestigadores) {
+        this.grupoInvestigadores = grupoInvestigadores;
     }
 
-    public List<Investigador> getInvestigadores() {
-        return investigadores;
+    public Set<Proyecto> getProyectos() {
+        return proyectos;
     }
 
-    public void setInvestigadores(List<Investigador> investigadores) {
-        this.investigadores = investigadores;
+    public void setProyectos(Set<Proyecto> proyectos) {
+        this.proyectos = proyectos;
     }
-
-    
 }

@@ -1,4 +1,4 @@
-package com.solicitud.solicitud.entity;
+package com.solicitud.solicitud.dto;
 
 public class Mail {
     private String nombre;

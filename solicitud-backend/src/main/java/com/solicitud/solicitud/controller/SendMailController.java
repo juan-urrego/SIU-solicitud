@@ -1,6 +1,6 @@
 package com.solicitud.solicitud.controller;
 
-import com.solicitud.solicitud.entity.Mail;
+import com.solicitud.solicitud.dto.Mail;
 
 import com.solicitud.solicitud.service.SendMailService;
 

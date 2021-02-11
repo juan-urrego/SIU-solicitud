@@ -6,38 +6,30 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class PrecotizacionService {
 
     @Autowired
-    PrecotizacionRepository repository;
+    PrecotizacionRepository precotizacionRepository;
 
-    public Precotizacion savePrecotizacion(Precotizacion precotizacion){
-        return repository.save(precotizacion);
+    public Optional<Precotizacion> getOne(int id){
+        return precotizacionRepository.findById(id);
     }
 
-    public List<Precotizacion> getPrecotizaciones(){
-        return repository.findAll();
+    public List<Precotizacion> getPrecotizacion(){
+        final List<Precotizacion> precotizacions;
+        precotizacions = precotizacionRepository.findAll();
+        return precotizacions;
     }
 
-    public Precotizacion getPrecotizacionById(int id){
-        return repository.findById(id).orElse(null);
+    public void save(final Precotizacion precotizacion){
+        precotizacionRepository.save(precotizacion);
     }
 
-    public String deletePrecotizacion(int id){
-        repository.deleteById(id);
-        return "Precotizacion Eliminado " + id;
+    public void delete(int id){
+        precotizacionRepository.deleteById(id);
     }
 
-    public Precotizacion updatePrecotizacion(Precotizacion newPrecotizacion, int id){
-        return repository.findById(id)
-                .map(precotizacion -> {
-                    precotizacion.setProveedor(newPrecotizacion.getProveedor());
-//                    precotizacion.setSolicitud(newPrecotizacion.getSolicitud());
-                    precotizacion.setValor(newPrecotizacion.getValor());
-                    return repository.save(precotizacion);
-                })
-                .orElse(null);
-    }
 }

@@ -1,39 +1,59 @@
 package com.solicitud.solicitud.entity;
 
-import javax.persistence.*;
+import com.solicitud.solicitud.security.entity.Usuario;
 
-import com.solicitud.solicitud.enums.Estado;
+import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "estudios")
 public class Estudio {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "est_id")
     private int id;
-    private String firma;
-    @Enumerated(EnumType.STRING)
-    private Estado estado;
-    private String unidad;
 
-    @OneToOne
-    private Director director;
+    @NotNull
+    @Column(name = "est_acuerdo")
     private String acuerdo;
 
+    @NotNull
+    @Column(name = "est_firma_usuario")
+    private byte firmaUsuario;
+
+    @NotNull
+    @Column(name = "est_firma_investigador")
+    private byte firmaInvestigador;
+
     @OneToOne
-    @JoinColumn(name = "solicitud_id_solicitud")
+    @MapsId
+    @JoinColumn(name = "est_id")
     private Solicitud solicitud;
 
-    public Estudio(String firma, Estado estado, String unidad, Director director, String acuerdo, Solicitud solicitud) {
-        this.firma = firma;
-        this.estado = estado;
-        this.unidad = unidad;
-        this.director = director;
-        this.acuerdo = acuerdo;
-        this.solicitud = solicitud;
-    }
+    @ManyToOne
+    @JoinColumn(name = "est_unidad_academica_id")
+    private UnidadAcademica unidadAcademica;
+
+    @NotNull
+    @ManyToOne
+    @JoinColumn(name = "est_estado_id")
+    private Estado estado;
+
+    @ManyToOne
+    @JoinColumn(name = "est_usuario_id")
+    private Usuario usuario;
 
     public Estudio() {
+    }
+
+    public Estudio(@NotNull String acuerdo, @NotNull byte firmaUsuario, @NotNull byte firmaInvestigador, Solicitud solicitud, UnidadAcademica unidadAcademica, @NotNull Estado estado, Usuario usuario) {
+        this.acuerdo = acuerdo;
+        this.firmaUsuario = firmaUsuario;
+        this.firmaInvestigador = firmaInvestigador;
+        this.solicitud = solicitud;
+        this.unidadAcademica = unidadAcademica;
+        this.estado = estado;
+        this.usuario = usuario;
     }
 
     public int getId() {
@@ -44,12 +64,44 @@ public class Estudio {
         this.id = id;
     }
 
-    public String getFirma() {
-        return firma;
+    public String getAcuerdo() {
+        return acuerdo;
     }
 
-    public void setFirma(String firma) {
-        this.firma = firma;
+    public void setAcuerdo(String acuerdo) {
+        this.acuerdo = acuerdo;
+    }
+
+    public byte getFirmaUsuario() {
+        return firmaUsuario;
+    }
+
+    public void setFirmaUsuario(byte firmaUsuario) {
+        this.firmaUsuario = firmaUsuario;
+    }
+
+    public byte getFirmaInvestigador() {
+        return firmaInvestigador;
+    }
+
+    public void setFirmaInvestigador(byte firmaInvestigador) {
+        this.firmaInvestigador = firmaInvestigador;
+    }
+
+    public Solicitud getSolicitud() {
+        return solicitud;
+    }
+
+    public void setSolicitud(Solicitud solicitud) {
+        this.solicitud = solicitud;
+    }
+
+    public UnidadAcademica getUnidadAcademica() {
+        return unidadAcademica;
+    }
+
+    public void setUnidadAcademica(UnidadAcademica unidadAcademica) {
+        this.unidadAcademica = unidadAcademica;
     }
 
     public Estado getEstado() {
@@ -60,37 +112,11 @@ public class Estudio {
         this.estado = estado;
     }
 
-    public String getUnidad() {
-        return unidad;
+    public Usuario getUsuario() {
+        return usuario;
     }
 
-    public void setUnidad(String unidad) {
-        this.unidad = unidad;
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
     }
-
-    public Director getDirector() {
-        return director;
-    }
-
-    public void setDirector(Director director) {
-        this.director = director;
-    }
-
-    public String getAcuerdo() {
-        return acuerdo;
-    }
-
-    public void setAcuerdo(String acuerdo) {
-        this.acuerdo = acuerdo;
-    }
-
-    public Solicitud getSolicitud() {
-        return solicitud;
-    }
-
-    public void setSolicitud(Solicitud solicitud) {
-        this.solicitud = solicitud;
-    }
-    
-
 }

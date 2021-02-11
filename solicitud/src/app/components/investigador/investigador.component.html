@@ -1,3 +1,4 @@
+<div class="d-flex">
 <app-menu></app-menu>
 <div class="container">
 <div class="card">
@@ -29,8 +30,7 @@
                     </th>
                     <th>Investigador</th>
                     <th>Identificacion</th>
-                    <th>Telefono</th>
-                    <th>Numero de Grupos</th>                
+                    <th>Telefono</th>                               
                     <th><button class="btn btn-outline-primary btn-sm" 
                                 [routerLink]="['/investigador/0/editar']">
                             Agregar
@@ -50,8 +50,7 @@
                     </td>
 
                     <td>{{investigador.identificacion}}</td>
-                    <td>{{investigador.telefono}}</td>
-                    <td>{{investigador.grupos.length}}</td>                
+                    <td>{{investigador.telefono}}</td>                              
                     <td><button class="btn btn-outline-secondary btn-sm"
                         [routerLink]="['/investigador', investigador.idInvestigador, 'editar']">
                   Editar
@@ -63,5 +62,6 @@
             </tbody>
         </table>
     </div>
+</div>
 </div>
 </div>

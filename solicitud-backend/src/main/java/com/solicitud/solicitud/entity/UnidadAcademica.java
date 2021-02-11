@@ -2,39 +2,51 @@ package com.solicitud.solicitud.entity;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.util.Set;
 
 @Entity
-@Table(name = "ma_unidad_académica")
-public class UnidadAcadémica {
+@Table(name = "ma_unidad_academicas")
+public class UnidadAcademica {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "uni_id")
-    private int uniId;
+    private int id;
     @NotNull
     @Column(name = "uni_nombre")
-    private String uniNombre;
+    private String nombre;
 
-    public UnidadAcadémica(@NotNull String uniNombre) {
-        this.uniNombre = uniNombre;
+    @OneToMany(mappedBy = "unidadAcademica")
+    private Set<Estudio> estudios;
+
+    public UnidadAcademica(@NotNull String nombre) {
+        this.nombre = nombre;
     }
 
-    public UnidadAcadémica() {
+    public UnidadAcademica() {
     }
 
-    public int getUniId() {
-        return uniId;
+    public int getId() {
+        return id;
     }
 
-    public void setUniId(int uniId) {
-        this.uniId = uniId;
+    public void setId(int id) {
+        this.id = id;
     }
 
-    public String getUniNombre() {
-        return uniNombre;
+    public String getNombre() {
+        return nombre;
     }
 
-    public void setUniNombre(String uniNombre) {
-        this.uniNombre = uniNombre;
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
+    public Set<Estudio> getEstudios() {
+        return estudios;
+    }
+
+    public void setEstudios(Set<Estudio> estudios) {
+        this.estudios = estudios;
     }
 }
