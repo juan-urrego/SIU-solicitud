@@ -55,7 +55,7 @@ public class ParametroConsultaController {
         if(bindingResult.hasErrors())
             return new ResponseEntity<Mensaje>(new Mensaje("Campos mal puestos"), HttpStatus.BAD_REQUEST);
         ParametroConsulta parametroConsulta= new ParametroConsulta(parametroDto.getDescripcion(), (byte) 0);
-        if (parametroConsultaService.getConsulta() == null)
+        if (parametroConsultaService.getConsulta().isEmpty())
             parametroConsulta.setParametro((byte) 1);
         parametroConsultaService.save(parametroConsulta);
         return new ResponseEntity<Mensaje>(new Mensaje("Parametro-consulta guardado"), HttpStatus.OK);

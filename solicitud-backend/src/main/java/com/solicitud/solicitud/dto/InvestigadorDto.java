@@ -13,16 +13,8 @@ public class InvestigadorDto {
     private String telefono;
     @Email
     private String email;
-    @NotBlank
-    private String firma;
 
-    public String getFirma() {
-        return firma;
-    }
 
-    public void setFirma(String firma) {
-        this.firma = firma;
-    }
 
     public String getIdentificacion() {
         return identificacion;

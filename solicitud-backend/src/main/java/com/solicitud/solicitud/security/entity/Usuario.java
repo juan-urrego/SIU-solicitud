@@ -1,5 +1,6 @@
 package com.solicitud.solicitud.security.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.solicitud.solicitud.entity.Estudio;
 
 import javax.persistence.*;
@@ -36,6 +37,7 @@ public class Usuario {
     private Set<Rol> roles = new HashSet<>();
 
     @OneToMany(mappedBy = "usuario")
+    @JsonIgnore
     private Set<Estudio> estudios;
 
     public Usuario() {

@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 @Transactional
@@ -28,6 +29,10 @@ public class DetalleTramiteService {
         final List<DetalleTramite> detalleTramites;
         detalleTramites = detalleTramiteRepository.findAll();
         return detalleTramites;
+    }
+
+    public void saveList(Set<DetalleTramite> detalleTramites){
+        detalleTramiteRepository.saveAll(detalleTramites);
     }
 
     public void save(final DetalleTramite detalleTramite){

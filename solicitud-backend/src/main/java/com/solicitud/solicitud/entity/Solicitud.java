@@ -1,5 +1,6 @@
 package com.solicitud.solicitud.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.solicitud.solicitud.security.entity.Usuario;
 
@@ -25,7 +26,7 @@ public class Solicitud {
     private String necesidad;
     @NotNull
     @Column(name = "sol_fecha")
-    private Date fecha;
+    private String fecha;
     @NotNull
     @Column(name = "sol_valor")
     private double valor;
@@ -38,7 +39,7 @@ public class Solicitud {
     private String observacion;
 
     @NotNull
-    @ManyToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "sol_grupo_investigador_id")
     private GrupoInvestigador grupoInvestigador;
 
@@ -49,23 +50,26 @@ public class Solicitud {
 
     @OneToOne(mappedBy = "solicitud")
     @PrimaryKeyJoinColumn
+    @JsonIgnore
     private Estudio estudio;
 
     @OneToOne(mappedBy = "solicitud")
     @PrimaryKeyJoinColumn
+    @JsonIgnore
     private Consulta consulta;
 
-    @OneToMany(mappedBy = "solicitud", cascade = CascadeType.ALL)
+    @JsonIgnoreProperties({"solicitud", "solicitudElegida", "argumentos"})
+    @OneToMany(mappedBy = "solicitud", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Precotizacion> precotizaciones;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "sol_precotizacion_elegida_id")
     private Precotizacion precotizacionElegida;
 
-    @OneToMany(mappedBy = "solicitud", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "solicitud", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<DetalleTramite> detalleTramites;
 
-    public Solicitud(@NotNull String tipoTramite, @NotNull String necesidad, @NotNull Date fecha, @NotNull double valor, @NotNull @NotNull String verificacion, @NotNull String observacion, @NotNull GrupoInvestigador grupoInvestigador, @NotNull Estado estado, Set<Precotizacion> precotizaciones, Precotizacion precotizacionElegida, Set<DetalleTramite> detalleTramites) {
+    public Solicitud(@NotNull String tipoTramite, @NotNull String necesidad, @NotNull String fecha, @NotNull double valor, @NotNull @NotNull String verificacion, @NotNull String observacion, @NotNull GrupoInvestigador grupoInvestigador, @NotNull Estado estado) {
         this.tipoTramite = tipoTramite;
         this.necesidad = necesidad;
         this.fecha = fecha;
@@ -74,9 +78,6 @@ public class Solicitud {
         this.observacion = observacion;
         this.grupoInvestigador = grupoInvestigador;
         this.estado = estado;
-        this.precotizaciones = precotizaciones;
-        this.precotizacionElegida = precotizacionElegida;
-        this.detalleTramites = detalleTramites;
     }
 
     public Solicitud() {
@@ -99,7 +100,12 @@ public class Solicitud {
     }
 
     public void setDetalleTramites(Set<DetalleTramite> detalleTramites) {
-        this.detalleTramites = detalleTramites;
+        if (this.detalleTramites == null) {
+            this.detalleTramites = detalleTramites;
+        }else {
+            this.detalleTramites.clear();
+            this.detalleTramites.addAll(detalleTramites);
+        }
     }
 
     public void setTipoTramite(String tipoTramite) {
@@ -114,11 +120,11 @@ public class Solicitud {
         this.necesidad = necesidad;
     }
 
-    public Date getFecha() {
+    public String getFecha() {
         return fecha;
     }
 
-    public void setFecha(Date fecha) {
+    public void setFecha(String fecha) {
         this.fecha = fecha;
     }
 
@@ -183,7 +189,12 @@ public class Solicitud {
     }
 
     public void setPrecotizaciones(Set<Precotizacion> precotizaciones) {
-        this.precotizaciones = precotizaciones;
+        if (this.precotizaciones == null) {
+            this.precotizaciones = precotizaciones;
+        }else {
+            this.precotizaciones.clear();
+            this.precotizaciones.addAll(precotizaciones);
+        }
     }
 
     public Precotizacion getPrecotizacionElegida() {

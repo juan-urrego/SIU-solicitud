@@ -29,7 +29,7 @@ public class SolicitudDto {
     @NotBlank
     private String necesidad;
     @NotBlank
-    private Date fecha;
+    private String fecha;
     @NotBlank
     private int valor;
     @NotBlank
@@ -109,11 +109,11 @@ public class SolicitudDto {
         this.necesidad = necesidad;
     }
 
-    public Date getFecha() {
+    public String getFecha() {
         return fecha;
     }
 
-    public void setFecha(Date fecha) {
+    public void setFecha(String fecha) {
         this.fecha = fecha;
     }
 

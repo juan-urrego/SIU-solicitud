@@ -56,8 +56,8 @@ public class EstudioController {
         UnidadAcademica unidadAcademica = unidadAcademicaService.getOne(estudioDto.getUnidadAcademica()).get();
         estudio.setUnidadAcademica(unidadAcademica);
         estudio.setAcuerdo(estudioDto.getAcuerdo());
-        estudio.setFirmaInvestigador(estudioDto.getFirmaInvestigador());
-        estudio.setFirmaUsuario(estudioDto.getFirmaUsuario());
+        estudio.setFirmaInvestigador((byte) estudioDto.getFirmaInvestigador());
+        estudio.setFirmaUsuario((byte) estudioDto.getFirmaUsuario());
         estudioService.save(estudio);
         return new ResponseEntity<Mensaje>(new Mensaje("Estudio actualizado"), HttpStatus.OK);
     }
@@ -65,11 +65,14 @@ public class EstudioController {
     @PostMapping("/confirmar/{id}")
     public ResponseEntity<Mensaje> confirmar(@PathVariable int id){
         if (!estudioService.existsById(id))
-            new ResponseEntity<Mensaje>(new Mensaje("No existe un estudio con esa id"), HttpStatus.NOT_FOUND);
+            return new ResponseEntity<Mensaje>(new Mensaje("No existe un estudio con esa id"), HttpStatus.NOT_FOUND);
         Estudio estudio = estudioService.getOne(id).get();
         Estado estado = estadoService.getByEstadoNombre(EstadoNombre.VERIFICADA).get();
-        if ((estudio.getFirmaInvestigador() == (byte) 1) && (estudio.getFirmaUsuario() == (byte) 1))
+        if ((estudio.getFirmaInvestigador() == (byte) 1) && (estudio.getFirmaUsuario() == (byte) 1)){
             estudio.setEstado(estado);
+        } else {
+            return new ResponseEntity<Mensaje>(new Mensaje("Documento aún no firmado"), HttpStatus.BAD_REQUEST);
+        }
         estudioService.save(estudio);
         return new ResponseEntity<Mensaje>(new Mensaje("Estudio verificado correctamente"), HttpStatus.OK);
     }

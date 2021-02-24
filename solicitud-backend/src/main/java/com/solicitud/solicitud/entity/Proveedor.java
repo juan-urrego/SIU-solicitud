@@ -1,6 +1,7 @@
 package com.solicitud.solicitud.entity;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import lombok.AllArgsConstructor;
@@ -35,6 +36,7 @@ public class Proveedor {
     private String ciudad;
 
     @OneToMany(mappedBy = "proveedor")
+    @JsonIgnore
     private Set<Precotizacion> precotizaciones;
 
     public Proveedor(@NotNull String nombre, @NotNull String nit, @NotNull String telefono, @NotNull String ciudad) {

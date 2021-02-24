@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 @Transactional
@@ -30,6 +31,10 @@ public class ArgumentoService {
         final List<Argumento> argumentos;
         argumentos = argumentoRepository.findAll();
         return argumentos;
+    }
+
+    public void saveAll(final Set<Argumento> argumentos) {
+        argumentoRepository.saveAll(argumentos);
     }
 
     public void save(final Argumento argumento){

@@ -53,7 +53,7 @@ public class ParametroNecesidadController {
         if(bindingResult.hasErrors())
             return new ResponseEntity<Mensaje>(new Mensaje("Campos mal puestos"), HttpStatus.BAD_REQUEST);
         ParametroNecesidad parametroNecesidad= new ParametroNecesidad(parametroDto.getDescripcion(), (byte) 0);
-        if (parametroNecesidadService.getNecesidad() == null)
+        if (parametroNecesidadService.getNecesidad().isEmpty())
             parametroNecesidad.setParametro((byte) 1);
         parametroNecesidadService.save(parametroNecesidad);
         return new ResponseEntity<Mensaje>(new Mensaje("Parametro-necesidad guardado"), HttpStatus.OK);

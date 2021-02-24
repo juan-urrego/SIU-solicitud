@@ -1,5 +1,6 @@
 package com.solicitud.solicitud.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import lombok.AllArgsConstructor;
@@ -27,26 +28,27 @@ public class Precotizacion {
     @Column(name = "pre_valor_iva")
     private int valorIva;
 
-    @NotNull
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "pre_pro_id")
     private Proveedor proveedor;
 
-    @NotNull
     @ManyToOne
     @JoinColumn(name = "pre_sol_id")
+    @JsonIgnore
     private Solicitud solicitud;
 
     @OneToOne(mappedBy = "precotizacionElegida")
+    @JsonIgnore
     private Solicitud solicitudElegida;
 
-    @OneToMany(mappedBy = "precotizacion")
+    @OneToMany(mappedBy = "precotizacion", cascade = CascadeType.ALL)
     private Set<Argumento> argumentos;
 
-    public Precotizacion(@NotNull int valorTotal, @NotNull int valorIva, @NotNull Proveedor proveedor) {
+    public Precotizacion(@NotNull int valorTotal, @NotNull int valorIva, @NotNull Proveedor proveedor, Solicitud solicitud) {
         this.valorTotal = valorTotal;
         this.valorIva = valorIva;
         this.proveedor = proveedor;
+        this.solicitud = solicitud;
     }
 
     public Precotizacion() {

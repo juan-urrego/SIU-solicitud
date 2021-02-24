@@ -1,5 +1,8 @@
 package com.solicitud.solicitud.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
@@ -21,6 +24,7 @@ public class DetalleTramite {
     private int cantidad;
 
     @ManyToOne
+    @JsonIgnore
     @JoinColumn(name = "det_solicitud_id")
     private Solicitud solicitud;
 
@@ -31,10 +35,11 @@ public class DetalleTramite {
     public DetalleTramite() {
     }
 
-    public DetalleTramite(@NotNull String descripcion, @NotNull int cantidad, LineaProducto lineaProducto) {
+    public DetalleTramite(@NotNull String descripcion, @NotNull int cantidad, LineaProducto lineaProducto, Solicitud solicitud) {
         this.descripcion = descripcion;
         this.cantidad = cantidad;
         this.lineaProducto = lineaProducto;
+        this.solicitud = solicitud;
     }
 
     public int getId() {

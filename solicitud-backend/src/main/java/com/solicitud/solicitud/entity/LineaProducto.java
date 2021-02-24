@@ -1,5 +1,7 @@
 package com.solicitud.solicitud.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.Set;
@@ -18,6 +20,7 @@ public class LineaProducto {
     private String nombre;
 
     @OneToMany(mappedBy = "lineaProducto")
+    @JsonIgnore
     private Set<DetalleTramite> detalleTramites;
 
     public LineaProducto() {

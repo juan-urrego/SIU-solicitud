@@ -28,7 +28,7 @@ public class ParametroObservacionController {
         return new ResponseEntity<List<ParametroObservacion>>(list, HttpStatus.OK);
     }
 
-    @GetMapping("/necesidades/selected")
+    @GetMapping("/observaciones/selected")
     public ResponseEntity<ParametroObservacion> getByParametro(){
         ParametroObservacion parametroObservacion = parametroObservacionService.getByParametro((byte) 1).get();
         return new ResponseEntity<ParametroObservacion>(parametroObservacion, HttpStatus.OK);
@@ -55,7 +55,7 @@ public class ParametroObservacionController {
         if(bindingResult.hasErrors())
             return new ResponseEntity<Mensaje>(new Mensaje("Campos mal puestos"), HttpStatus.BAD_REQUEST);
         ParametroObservacion parametroObservacion= new ParametroObservacion(parametroDto.getDescripcion(), (byte) 0);
-        if (parametroObservacionService.getObservacion() == null)
+        if (parametroObservacionService.getObservacion().isEmpty())
             parametroObservacion.setParametro((byte) 1);
         parametroObservacionService.save(parametroObservacion);
         return new ResponseEntity<Mensaje>(new Mensaje("Parametro-observacion guardado"), HttpStatus.OK);

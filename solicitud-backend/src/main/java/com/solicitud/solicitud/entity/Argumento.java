@@ -1,5 +1,8 @@
 package com.solicitud.solicitud.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
@@ -16,6 +19,7 @@ public class Argumento {
     private String descripcion;
 
     @ManyToOne
+    @JsonIgnore
     @JoinColumn(name = "args_precotizacion_elegida")
     private Precotizacion precotizacion;
 

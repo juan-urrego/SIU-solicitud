@@ -1,5 +1,7 @@
 package com.solicitud.solicitud.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
@@ -22,6 +24,7 @@ public class Proyecto {
     private String centoCostos;
 
     @ManyToOne
+    @JsonIgnoreProperties("proyectos")
     @JoinColumn(name = "pr_grupo_id")
     private Grupo grupo;
 

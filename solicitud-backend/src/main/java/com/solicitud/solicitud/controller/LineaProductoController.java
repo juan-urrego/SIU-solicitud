@@ -1,6 +1,8 @@
 package com.solicitud.solicitud.controller;
 
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.solicitud.solicitud.dto.LineaProductoDto;
 import com.solicitud.solicitud.dto.Mensaje;
 import com.solicitud.solicitud.dto.UnidadAcademicaDto;
@@ -13,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -48,12 +51,14 @@ public class LineaProductoController {
     }
 
     @PostMapping("/save")
-    public ResponseEntity<?> save(@RequestBody LineaProductoDto lineaProductoDto, BindingResult bindingResult){
-        if(bindingResult.hasErrors())
-            return new ResponseEntity<Mensaje>(new Mensaje("Campos mal puestos"), HttpStatus.BAD_REQUEST);
-        LineaProducto lineaProducto = new LineaProducto(lineaProductoDto.getLineaNombre());
-        lineaProductoService.save(lineaProducto);
-        return new ResponseEntity<Mensaje>(new Mensaje("LineaProducto guardada"), HttpStatus.OK);
+    public ResponseEntity<?> save(@RequestParam(value = "lineaProductoDto") String model, @RequestParam(value = "file", required = false)MultipartFile file) throws JsonProcessingException {
+//        if(bindingResult.hasErrors())
+//            return new ResponseEntity<Mensaje>(new Mensaje("Campos mal puestos"), HttpStatus.BAD_REQUEST);
+//        ObjectMapper mapper = new ObjectMapper();
+//        LineaProductoDto lineaProductoDto = mapper.readValue(model, LineaProductoDto.class);
+//        LineaProducto lineaProducto = new LineaProducto(lineaProductoDto.getLineaNombre());
+//        lineaProductoService.save(lineaProducto);
+        return new ResponseEntity<MultipartFile>(file, HttpStatus.OK);
     }
 
     @PutMapping("/update/{id}")

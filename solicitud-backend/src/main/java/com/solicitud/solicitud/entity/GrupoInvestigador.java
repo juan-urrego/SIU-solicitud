@@ -1,5 +1,7 @@
 package com.solicitud.solicitud.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.Set;
@@ -32,8 +34,9 @@ public class GrupoInvestigador {
     @JoinColumn(name = "gi_investigador_id")
     private Investigador investigador;
 
-    @OneToMany(mappedBy = "grupoInvestigador")
-    private Set<Solicitud> solicitudes;
+    @JsonIgnore
+    @OneToOne(mappedBy = "grupoInvestigador")
+    private Solicitud solicitud;
 
     public GrupoInvestigador(@NotNull String cargo, @NotNull String nombreContacto, @NotNull String telefonoContacto, @NotNull Grupo grupo, @NotNull Investigador investigador) {
         this.cargo = cargo;
@@ -78,12 +81,12 @@ public class GrupoInvestigador {
         this.investigador = investigador;
     }
 
-    public Set<Solicitud> getSolicitudes() {
-        return solicitudes;
+    public Solicitud getSolicitud() {
+        return solicitud;
     }
 
-    public void setSolicitudes(Set<Solicitud> solicitudes) {
-        this.solicitudes = solicitudes;
+    public void setSolicitudes(Solicitud solicitud) {
+        this.solicitud = solicitud;
     }
 
     public String getNomreContacto() {

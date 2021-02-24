@@ -1,5 +1,6 @@
 package com.solicitud.solicitud.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.solicitud.solicitud.security.entity.Usuario;
 
 import javax.persistence.*;
@@ -40,6 +41,7 @@ public class Estudio {
     private Estado estado;
 
     @ManyToOne
+    @JsonIgnoreProperties({"password","roles"})
     @JoinColumn(name = "est_usuario_id")
     private Usuario usuario;
 

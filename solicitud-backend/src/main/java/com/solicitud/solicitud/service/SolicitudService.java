@@ -30,8 +30,8 @@ public class SolicitudService {
         return solicituds;
     }
 
-    public void save(final Solicitud solicitud){
-        solicitudRepository.save(solicitud);
+    public Solicitud save(final Solicitud solicitud){
+        return solicitudRepository.save(solicitud);
     }
 
     public void delete(int id){

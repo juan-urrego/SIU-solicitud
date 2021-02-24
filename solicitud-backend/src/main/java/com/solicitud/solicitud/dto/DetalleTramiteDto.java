@@ -12,7 +12,7 @@ public class DetalleTramiteDto {
     @NotBlank
     private int cantidad;
     @NotBlank
-    private LineaProducto lineaProducto;
+    private int lineaProducto;
 
     public String getDescripcion() {
         return descripcion;
@@ -30,11 +30,11 @@ public class DetalleTramiteDto {
         this.cantidad = cantidad;
     }
 
-    public LineaProducto getLineaProducto() {
+    public int getLineaProducto() {
         return lineaProducto;
     }
 
-    public void setLineaProducto(LineaProducto lineaProducto) {
+    public void setLineaProducto(int lineaProducto) {
         this.lineaProducto = lineaProducto;
     }
 }

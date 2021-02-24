@@ -56,11 +56,11 @@ public class ConsultaController {
     @PostMapping("/confirmar/{id}")
     public ResponseEntity<Mensaje> confirmar(@PathVariable int id){
         if (!consultaService.existsById(id))
-            new ResponseEntity<Mensaje>(new Mensaje("No existe una consulta con esa id"), HttpStatus.NOT_FOUND);
+            return new ResponseEntity<Mensaje>(new Mensaje("No existe una consulta con esa id"), HttpStatus.NOT_FOUND);
         Consulta consulta = consultaService.getOne(id).get();
         Estado estado = estadoService.getByEstadoNombre(EstadoNombre.VERIFICADA).get();
         consulta.setEstado(estado);
         consultaService.save(consulta);
-        return new ResponseEntity<Mensaje>(new Mensaje("Solicitud verificada correctamente"), HttpStatus.OK);
+        return new ResponseEntity<Mensaje>(new Mensaje("Consulta de precios verificada correctamente"), HttpStatus.OK);
     }
 }

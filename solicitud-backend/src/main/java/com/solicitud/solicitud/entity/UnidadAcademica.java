@@ -1,5 +1,8 @@
 package com.solicitud.solicitud.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.Set;
@@ -16,6 +19,7 @@ public class UnidadAcademica {
     @Column(name = "uni_nombre")
     private String nombre;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "unidadAcademica")
     private Set<Estudio> estudios;
 

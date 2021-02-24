@@ -1,5 +1,6 @@
 package com.solicitud.solicitud.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 
@@ -23,9 +24,11 @@ public class Grupo {
     @Column(name = "gr_cod_colciencia")
     private String codColciencia;
 
+    @JsonIgnoreProperties("grupo")
     @OneToMany(mappedBy = "grupo")
     Set<Proyecto> proyectos;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "grupo")
     Set<GrupoInvestigador> grupoInvestigadores;
 

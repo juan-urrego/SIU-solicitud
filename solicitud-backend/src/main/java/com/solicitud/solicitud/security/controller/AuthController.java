@@ -135,6 +135,6 @@ public class AuthController {
             roles.add(rolService.getByRolNombre(RolNombre.ROLE_ADMIN).get());
         usuario.setRoles(roles);
         usuarioService.save(usuario);
-        return new ResponseEntity<Mensaje>(new Mensaje("producto actualizado"), HttpStatus.OK);
+        return new ResponseEntity<Mensaje>(new Mensaje("usuario actualizado"), HttpStatus.OK);
     }
 }

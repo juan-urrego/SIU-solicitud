@@ -57,7 +57,7 @@ public class ParametroAcuerdoController {
         if(bindingResult.hasErrors())
             return new ResponseEntity<Mensaje>(new Mensaje("Campos mal puestos"), HttpStatus.BAD_REQUEST);
         ParametroAcuerdo parametroAcuerdo = new ParametroAcuerdo(parametroDto.getDescripcion(), (byte) 0);
-        if (parametroAcuerdoService.getAcuerdo() == null)
+        if (parametroAcuerdoService.getAcuerdo().isEmpty())
                 parametroAcuerdo.setParametro((byte) 1);
         parametroAcuerdoService.save(parametroAcuerdo);
         return new ResponseEntity<Mensaje>(new Mensaje("Parametro-acuerdo guardado"), HttpStatus.OK);

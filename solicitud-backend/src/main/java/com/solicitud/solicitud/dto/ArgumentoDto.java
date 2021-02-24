@@ -9,7 +9,7 @@ public class ArgumentoDto {
     @NotBlank
     private String descripcion;
     @NotBlank
-    private Precotizacion precotizacion;
+    private PrecotizacionDto precotizacion;
 
     public String getDescripcion() {
         return descripcion;
@@ -19,11 +19,11 @@ public class ArgumentoDto {
         this.descripcion = descripcion;
     }
 
-    public Precotizacion getPrecotizacion() {
+    public PrecotizacionDto getPrecotizacion() {
         return precotizacion;
     }
 
-    public void setPrecotizacion(Precotizacion precotizacion) {
+    public void setPrecotizacion(PrecotizacionDto precotizacion) {
         this.precotizacion = precotizacion;
     }
 }

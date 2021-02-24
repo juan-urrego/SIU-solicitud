@@ -1,5 +1,6 @@
 package com.solicitud.solicitud.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.solicitud.solicitud.enums.EstadoNombre;
 
 import javax.persistence.*;
@@ -20,12 +21,15 @@ public class Estado {
     private EstadoNombre estadoNombre;
 
     @OneToMany(mappedBy = "estado")
+    @JsonIgnore
     private Set<Solicitud> solicitudes;
 
     @OneToMany(mappedBy = "estado")
+    @JsonIgnore
     private Set<Estudio> estudios;
 
     @OneToMany(mappedBy = "estado")
+    @JsonIgnore
     private Set<Consulta> consultas;
 
     public Estado(@NotNull EstadoNombre estadoNombre) {
