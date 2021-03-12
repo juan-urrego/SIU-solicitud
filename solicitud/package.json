@@ -21,7 +21,7 @@
     "@angular/router": "~9.1.7",
     "bootstrap": "^4.5.0",
     "dom-to-image": "^2.6.0",
-    "jspdf": "^1.5.3",
+    "jspdf": "^2.3.1",
     "mat-currency-format": "0.0.7",
     "ngx-bootstrap": "^5.6.1",
     "rxjs": "~6.5.4",
