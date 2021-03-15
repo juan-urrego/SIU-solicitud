@@ -198,7 +198,7 @@
             <div class="form-group col-4 mb-3">
               <label for="fechaId" class="col-form-label"><b>Fecha:</b></label>
               
-                <input id="fechaId" class="form-control" bsDatepicker [bsConfig]="{ dateInputFormat: 'DD/MM/YYYY'}" formControlName="fecha"
+                <input id="fechaId" class="form-control" formControlName="fecha" type="date"
                   [ngClass]="{'is-invalid': (solicitudForm.get('fecha').touched || solicitudForm.get('fecha').dirty) && !solicitudForm.get('fecha').valid}">
                 <span class="invalid-feedback">
                   <span *ngIf="solicitudForm.get('fecha').errors?.required">

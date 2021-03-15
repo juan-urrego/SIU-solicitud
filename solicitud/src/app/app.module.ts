@@ -61,9 +61,7 @@ import { AuxiliarComponent } from './components/auxiliar/auxiliar.component';
     HttpClientModule,
     FormsModule,
     MatCurrencyFormatModule,
-    BrowserAnimationsModule,
-    BsDatepickerModule.forRoot(),
-    BsDropdownModule.forRoot()
+    BrowserAnimationsModule
   ],
   providers: [CurrencyPipe, interceptorProvider],
   bootstrap: [AppComponent]
