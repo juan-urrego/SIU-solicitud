@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { TokenService } from './services/login/token.service';
+import { JwtDto } from './models/login/jwt-dto';
+import { AuthService } from './services/login/auth.service';
 
 
 @Component({
@@ -8,29 +9,19 @@ import { TokenService } from './services/login/token.service';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-export class AppComponent{
+export class AppComponent {
+  currentUser: JwtDto;
 
-  isLogged = false;
+  constructor(private authService: AuthService,
+    private router: Router) {
 
-  constructor(private tokenService: TokenService,
-              private router: Router){
-
+    this.authService.currentUser.subscribe(x => this.currentUser = x);
   }
 
-  ngOnInit(): void {
-    if(this.tokenService.getToken()){
-      this.isLogged = true;
-    }
-    else {
-      this.isLogged = false;
-    }
+
+  onLogOut() {
+    this.authService.logOut();
+    this.router.navigate(['/login']);
   }
 
-  onLogOut(){
-    this.tokenService.logOut();
-    window.location.reload();
-    
-  }
-
- 
 }

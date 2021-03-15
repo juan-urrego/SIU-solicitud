@@ -1,11 +1,9 @@
-import { Precotizacion } from './precotizacion';
+import { Estado } from './settings/estado';
 import { Solicitud } from './solicitud';
 
 export interface Consulta {
-    id: number,
-    acuerdo?: string,
-    porque?: string,
-    estado?: string,
-    precotizacion ?: Precotizacion,
-    solicitud ?: Solicitud
+    id ?: number,
+    parametro ?: string,
+    solicitud : Solicitud,
+    estado : Estado
 }

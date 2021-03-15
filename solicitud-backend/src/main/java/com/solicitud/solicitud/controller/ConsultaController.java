@@ -31,36 +31,38 @@ public class ConsultaController {
     @GetMapping("/consultas")
     public ResponseEntity<List<Consulta>> list(){
         List<Consulta> list = consultaService.getConsulta();
-        return new ResponseEntity<List<Consulta>>(list, HttpStatus.OK);
+        return new ResponseEntity<>(list, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getById(@PathVariable("id") int id){
         if(!consultaService.existsById(id))
-            return new ResponseEntity<Mensaje>(new Mensaje("No existe una consulta con esa id"), HttpStatus.NOT_FOUND);
-        Consulta consulta = consultaService.getOne(id).get();
-        return new ResponseEntity<Consulta>(consulta, HttpStatus.OK);
+            return new ResponseEntity<>(new Mensaje("No existe una consulta con esa id"), HttpStatus.NOT_FOUND);
+        Consulta consulta = consultaService.getOne(id).orElse(null);
+        return new ResponseEntity<>(consulta, HttpStatus.OK);
     }
 
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<Mensaje> update(@PathVariable("id") int id, @RequestBody ConsultaDto consultaDto){
+    public ResponseEntity<Mensaje> update(@PathVariable("id") int id, @RequestBody ConsultaDto consultaDto , BindingResult bindingResult){
+        if (bindingResult.hasErrors())
+            return new ResponseEntity<>(new Mensaje("Campos mal puestos") , HttpStatus.BAD_REQUEST);
         if (!consultaService.existsById(id))
-            return new ResponseEntity<Mensaje>(new Mensaje("No existe una consulta con esa id"), HttpStatus.NOT_FOUND);
-        Consulta consulta = consultaService.getOne(id).get();
+            return new ResponseEntity<>(new Mensaje("No existe una consulta con esa id"), HttpStatus.NOT_FOUND);
+        Consulta consulta = consultaService.getOne(id).orElse(null);
         consulta.setParametro(consultaDto.getParametro());
         consultaService.save(consulta);
-        return new ResponseEntity<Mensaje>(new Mensaje("Consulta actualizada"), HttpStatus.OK);
+        return new ResponseEntity<>(new Mensaje("Consulta actualizada"), HttpStatus.OK);
     }
 
     @PostMapping("/confirmar/{id}")
     public ResponseEntity<Mensaje> confirmar(@PathVariable int id){
         if (!consultaService.existsById(id))
-            return new ResponseEntity<Mensaje>(new Mensaje("No existe una consulta con esa id"), HttpStatus.NOT_FOUND);
-        Consulta consulta = consultaService.getOne(id).get();
-        Estado estado = estadoService.getByEstadoNombre(EstadoNombre.VERIFICADA).get();
+            return new ResponseEntity<>(new Mensaje("No existe una consulta con esa id"), HttpStatus.NOT_FOUND);
+        Consulta consulta = consultaService.getOne(id).orElse(null);
+        Estado estado = estadoService.getByEstadoNombre(EstadoNombre.VERIFICADA).orElse(null);
         consulta.setEstado(estado);
         consultaService.save(consulta);
-        return new ResponseEntity<Mensaje>(new Mensaje("Consulta de precios verificada correctamente"), HttpStatus.OK);
+        return new ResponseEntity<>(new Mensaje("Consulta de precios verificada correctamente"), HttpStatus.OK);
     }
 }

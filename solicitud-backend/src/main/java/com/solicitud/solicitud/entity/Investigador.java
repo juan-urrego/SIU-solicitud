@@ -34,25 +34,17 @@ public class Investigador {
     @NotNull
     @Column(name = "inv_firma")
     private String firma;
-    @NotNull
-    @Column(name = "inv_type")
-    private String type;
-    @NotNull
-    @Column(name = "inv_picByte", length = 1000)
-    private byte[] picByte;
 
     @OneToMany(mappedBy = "investigador")
     @JsonIgnore
     private Set<GrupoInvestigador> grupoInvestigadores;
 
-    public Investigador(@NotNull String identificacion, @NotNull String nombre, @NotNull String telefono, @NotNull String email, @NotNull String firma, @NotNull String type, @NotNull byte[] picByte) {
+    public Investigador(@NotNull String identificacion, @NotNull String nombre, @NotNull String telefono, @NotNull String email, @NotNull String firma) {
         this.identificacion = identificacion;
         this.nombre = nombre;
         this.telefono = telefono;
         this.email = email;
         this.firma = firma;
-        this.type = type;
-        this.picByte = picByte;
     }
 
     public Investigador() {
@@ -114,18 +106,6 @@ public class Investigador {
         this.grupoInvestigadores = grupoInvestigadores;
     }
 
-    public String getType() {
-        return type;
-    }
-    public void setType(String type) {
-        this.type = type;
-    }
-    public byte[] getPicByte() {
-        return picByte;
-    }
-    public void setPicByte(byte[] picByte) {
-        this.picByte = picByte;
-    }
 }
 
 

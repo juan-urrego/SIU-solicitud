@@ -45,7 +45,6 @@ export class EstudioPrevioEditarComponent implements OnInit {
             acuerdo: '',
             unidad: '',
             firma: '',
-            director: '',
             solicitud: this.fb.group({
                 idSolicitud: ''
             })
@@ -70,81 +69,81 @@ export class EstudioPrevioEditarComponent implements OnInit {
             this.estudioForm.reset();
         }
         this.estudio = estudio;
-        this.title  = `Editar estudio: ${this.estudio.solicitud.nombreProyecto}`;
-        this.fecha.setValue(this.estudio.solicitud.fecha);
-        this.centroCostos .setValue(this.estudio.solicitud.centroCostos);
-        this.necesidad.setValue(this.estudio.solicitud.necesidad);
-        this.descripcion.setValue(this.estudio.solicitud.descripcion);
-        this.valor.setValue(this.estudio.solicitud.valor);
-        this.verificacion.setValue(this.estudio.solicitud.verificacion);
-        this.estudioForm.patchValue({
-            acuerdo: estudio.acuerdo,
-            unidad: estudio.unidad,
-            firma: estudio.unidad,
-            director: estudio.director,
-            solicitud: {
-                idSolicitud: estudio.solicitud.idSolicitud
-            }
-        });
+        // this.title  = `Editar estudio: ${this.estudio.solicitud.nombreProyecto}`;
+        // this.fecha.setValue(this.estudio.solicitud.fecha);
+        // this.centroCostos .setValue(this.estudio.solicitud.centroCostos);
+        // this.necesidad.setValue(this.estudio.solicitud.necesidad);
+        // this.descripcion.setValue(this.estudio.solicitud.descripcion);
+        // this.valor.setValue(this.estudio.solicitud.valor);
+        // this.verificacion.setValue(this.estudio.solicitud.verificacion);
+        // this.estudioForm.patchValue({
+        //     acuerdo: estudio.acuerdo,
+        //     unidad: estudio.unidad,
+        //     firma: estudio.unidad,
+        //     director: estudio.director,
+        //     solicitud: {
+        //         idSolicitud: estudio.solicitud.idSolicitud
+        //     }
+        // });
     }
 
     save(): void {
         
     }
 
-    public downloadPdf(){
-        var node = document.getElementById('content');
+    // public downloadPdf(){
+    //     var node = document.getElementById('content');
 
-        var img;
-        var filename;
-        var newImage;
-
-
-        domtoimage.toPng(node, { bgcolor: '#fff' })
-
-          .then(function(dataUrl) {
-
-            img = new Image();
-            img.src = dataUrl;
-            newImage = img.src;
-
-            img.onload = function(){
-
-            var pdfWidth = img.width;
-            var pdfHeight = img.height;
-
-              // FileSaver.saveAs(dataUrl, 'my-pdfimage.png'); // Save as Image
-
-              var doc;
-
-              if(pdfWidth > pdfHeight)
-              {
-                doc = new jsPDF('l', 'px', [pdfWidth , pdfHeight]);
-              }
-              else
-              {
-                doc = new jsPDF('p', 'px', [pdfWidth , pdfHeight]);
-              }
+    //     var img;
+    //     var filename;
+    //     var newImage;
 
 
-              var width = doc.internal.pageSize.getWidth();
-              var height = doc.internal.pageSize.getHeight();
+    //     domtoimage.toPng(node, { bgcolor: '#fff' })
+
+    //       .then(function(dataUrl) {
+
+    //         img = new Image();
+    //         img.src = dataUrl;
+    //         newImage = img.src;
+
+    //         img.onload = function(){
+
+    //         var pdfWidth = img.width;
+    //         var pdfHeight = img.height;
+
+    //           // FileSaver.saveAs(dataUrl, 'my-pdfimage.png'); // Save as Image
+
+    //           var doc;
+
+    //           if(pdfWidth > pdfHeight)
+    //           {
+    //             doc = new jsPDF('l', 'px', [pdfWidth , pdfHeight]);
+    //           }
+    //           else
+    //           {
+    //             doc = new jsPDF('p', 'px', [pdfWidth , pdfHeight]);
+    //           }
 
 
-              doc.addImage(newImage, 'PNG',  10, 10, width, height);
-              filename = 'mypdf_' + '.pdf';
-              doc.save(filename);
-
-            };
+    //           var width = doc.internal.pageSize.getWidth();
+    //           var height = doc.internal.pageSize.getHeight();
 
 
-          })
-          .catch(function(error) {
+    //           doc.addImage(newImage, 'PNG',  10, 10, width, height);
+    //           filename = 'mypdf_' + '.pdf';
+    //           doc.save(filename);
 
-           // Error Handling
-
-          });
+    //         };
 
 
-    }
+    //       })
+    //       .catch(function(error) {
+
+    //        // Error Handling
+
+    //       });
+
+
+    // }
 }

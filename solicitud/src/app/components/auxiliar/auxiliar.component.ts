@@ -24,14 +24,14 @@ export class AuxiliarComponent implements OnInit {
   constructor(private auxiliarService: AuthService) { }
 
   ngOnInit(): void {
-      this.auxiliarService.getAuxiliares().subscribe({
-          next: auxiliares => {
-              this.auxiliares = auxiliares;;
-              this.filtrados = this.auxiliares;
+    //   this.auxiliarService.getAuxiliares().subscribe({
+    //       next: auxiliares => {
+    //           this.auxiliares = auxiliares;;
+    //           this.filtrados = this.auxiliares;
               
-          },
-          error: err => this.mensajeError = err
-      });
+    //       },
+    //       error: err => this.mensajeError = err
+    //   });
 
   }
 

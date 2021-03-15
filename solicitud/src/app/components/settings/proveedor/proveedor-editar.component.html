@@ -1,0 +1,96 @@
+<div class="d-flex">
+<div class="container">
+<div class="card">
+    <div class="card-header text-white">
+        <h2>{{title}}</h2>
+
+    </div>
+    <div class="card-body">
+
+        <form novalidate (ngSubmit)="saveProveedor()" [formGroup]="proveedorForm">
+
+            <div class="form-group row mb-3">
+                <label for="nombreId" class="col-md-2 col-form-label">Nombre proveedor: </label>
+                <div class="col-md-8">
+                    <input id="nombreId" class="form-control" type="text" placeholder="Ingrese el nombre"
+                        formControlName="{{'nombre' | lowercase}}" [ngClass]="{'is-invalid': (proveedorForm.get('nombre').touched || proveedorForm.get('nombre').dirty) && !proveedorForm.get('nombre').valid}">
+                    <span class="invalid-feedback">
+                        <span *ngIf="proveedorForm.get('nombre').errors?.required">
+                            Por favor ingrese su nombre.
+                          </span>
+                          <span *ngIf="proveedorForm.get('nombre').errors?.minlength">
+                            El nombre debe ser mayor de 3 letras.
+                          </span>
+                    </span>
+                </div>
+            </div>
+
+            <div class="form-group row mb-3">
+                <label for="nitId" class="col-md-2 col-form-label">Nit / cédula</label>
+                <div class="col-md-8">
+                    <input id="nitId" class="form-control" type="text" placeholder="Ingrese el Nit"
+                        formControlName="nit" [ngClass]="{'is-invalid': (proveedorForm.get('nit').touched || proveedorForm.get('nit').dirty) && !proveedorForm.get('nit').valid}">
+                    <span class="invalid-feedback">
+                        <span *ngIf="proveedorForm.get('nit').errors?.required">
+                            Por favor ingrese el nit.
+                          </span>
+                    </span>
+                </div>
+            </div>
+
+            <div class="form-group row mb-3">
+                <label for="telefonoId" class="col-md-2 col-form-label">Teléfono:</label>
+                <div class="col-md-8">
+                    <input matInput id="telefonoId" class="form-control" placeholder="Ingrese el telefono" mvndrMatCurrencyFormat [allowNegative]="false" (blur)="updateUSAmount($event)" [currencyCode]="'USD'"
+                        formControlName="telefono" type="text" [ngClass]="{'is-invalid':(proveedorForm.get('telefono').touched || proveedorForm.get('telefono').dirty) && !proveedorForm.get('telefono').valid}">
+                    <span class="invalid-feedback">
+                        <span *ngIf="proveedorForm.get('telefono').errors?.required"></span>
+                    </span>                                
+                </div>
+            </div>
+
+            <div class="form-group row mb-2">
+                <div class="offset-md-2 col-md-4">
+                  <button class="btn btn-success mr-3"
+                          style="width:90px;"
+                          type="submit"
+                          [title]="proveedorForm.valid ? 'Save your entered data' : 'Disabled until the form data is valid'"
+                          [disabled]="!proveedorForm.valid"
+                          >
+                    Enviar
+                  </button>
+                  <button class="btn btn-outline-secondary mr-3"
+                          style="width:90px;"
+                          type="button"
+                          title="Cancelar"
+                          [routerLink]="['/proveedor']">
+                    Cancelar
+                  </button>
+                  <button class="btn btn-outline-warning"
+                            *ngIf="proveedor.id != 0"
+                          style="width:90px"
+                          type="button"
+                          title="Borrar proveedor"
+                          (click)="deleteProveedor()">
+                    Borrar
+                  </button>
+                </div>
+              </div>
+        </form>
+    </div>
+</div>
+
+{{123456 | currency:'COP'}}
+{{proveedorForm.dirty}}: DIrtu
+<br>
+{{proveedorForm.valid}}: vlaid
+<br>
+{{proveedorForm.touched}}: touched
+<br>
+
+{{proveedorForm.value | json}}
+<br>
+{{proveedor | json}}
+{{proveedor.id}}
+</div>
+</div>

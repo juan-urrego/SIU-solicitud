@@ -30,7 +30,7 @@
                   <label class="col-form-label" for="idGrupoId"><b>Grupo de investigacion:</b></label>
                   
                     <select class="form-control" id="idGrupoId" formControlName="idGrupo" (change)="update($event.target.value)">
-                      <option [value]="grupo.idGrupo" *ngFor="let grupo of grupos">
+                      <option [value]="grupo.id" *ngFor="let grupo of grupos">
                         {{grupo.nombre}}</option>
                       </select>
                     </div>
@@ -48,8 +48,8 @@
                   (change)="updateInvestigador($event.target.value)">
                   <ng-container *ngIf="grupo">
                     <option disabled selected hidden>Select a State...</option>
-                    <option *ngFor="let investigador of grupo.investigadores" value="{{investigador.idInvestigador}}">
-                      {{investigador.nombre}}</option>
+                    <option>
+                      sdfgdfg</option>
                     </ng-container>
                   </select>
                 </div>      
@@ -257,7 +257,7 @@
                     <select class="form-control" id="idProveedor" formControlName="idProveedor"
                     (change)="updateProveedor($event.target.value, address)">
                     <option disabled selected hidden>Select a State...</option>
-                    <option value="{{proveedor.idProveedor}}" *ngFor="let proveedor of proveedores">
+                    <option value="{{proveedor.id}}" *ngFor="let proveedor of proveedores">
                       {{proveedor.nombre}}</option>
                     </select>
                     

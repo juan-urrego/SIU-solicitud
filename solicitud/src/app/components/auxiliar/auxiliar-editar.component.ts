@@ -37,7 +37,7 @@ export class AuxiliarEditarComponent implements OnInit {
               this.id = id;
               if (id != 0){
 
-                this.getAuxiliar(id);
+                // this.getAuxiliar(id);
               }
           }
       );
@@ -48,13 +48,13 @@ export class AuxiliarEditarComponent implements OnInit {
   }
 
 
-  getAuxiliar(id: number) {
-      this.auxiliarService.getAuxiliar(id)
-          .subscribe({
-              next: (auxiliar: NuevoUsuario) => this.displayAuxiliar(auxiliar),
-              error: err => this.mensajeError = err
-          });
-  }
+//   getAuxiliar(id: number) {
+//       this.auxiliarService.getAuxiliar(id)
+//           .subscribe({
+//               next: (auxiliar: NuevoUsuario) => this.displayAuxiliar(auxiliar),
+//               error: err => this.mensajeError = err
+//           });
+//   }
   
   displayAuxiliar(auxiliar: NuevoUsuario): void {
       if (this.auxiliarForm) {
@@ -77,19 +77,19 @@ export class AuxiliarEditarComponent implements OnInit {
   }
 
 
-  deleteAuxiliar(): void {
-      if (this.auxiliar.id === 0) {
-          this.onSaveComplete();
-      } else {
-          if (confirm(`Realmente desea eliminar el proveedor: ${this.auxiliar.nombre}  ${this,this.auxiliar.apellido}?`)) {
-              this.auxiliarService.delete(this.auxiliar.id)
-                  .subscribe({
-                      next: () => this.onSaveComplete(),
-                      error: err => this.mensajeError = err
-                  });
-          }
-      }
-  }
+//   deleteAuxiliar(): void {
+//       if (this.auxiliar.id === 0) {
+//           this.onSaveComplete();
+//       } else {
+//           if (confirm(`Realmente desea eliminar el proveedor: ${this.auxiliar.nombre}  ${this,this.auxiliar.apellido}?`)) {
+//               this.auxiliarService.delete(this.auxiliar.id)
+//                   .subscribe({
+//                       next: () => this.onSaveComplete(),
+//                       error: err => this.mensajeError = err
+//                   });
+//           }
+//       }
+//   }
 
   onSaveComplete(): void {
       this.auxiliarForm.reset();
@@ -105,17 +105,17 @@ export class AuxiliarEditarComponent implements OnInit {
               console.log(p);
               
               if (p.id === 0) {
-                  this.auxiliarService.nuevo(p)
-                      .subscribe({
-                          next: () => this.onSaveComplete(),
-                          error: err => this.mensajeError = err
-                      });
+                //   this.auxiliarService.nuevo(p)
+                //       .subscribe({
+                //           next: () => this.onSaveComplete(),
+                //           error: err => this.mensajeError = err
+                //       });
               } else {
-                  this.auxiliarService.update(p.id,p)
-                      .subscribe({
-                          next: () => this.onSaveComplete(),
-                          error: err => this.mensajeError = err
-                      });
+                //   this.auxiliarService.update(p.id,p)
+                //       .subscribe({
+                //           next: () => this.onSaveComplete(),
+                //           error: err => this.mensajeError = err
+                //       });
               }
           } else {
               this.onSaveComplete();

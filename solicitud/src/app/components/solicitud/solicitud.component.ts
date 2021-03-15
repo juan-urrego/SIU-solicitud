@@ -60,7 +60,7 @@ export class SolicitudComponent implements OnInit {
 
 
     sendDocuments(id): void {
-        this.solicitudService.createDocuments(id).subscribe({
+        this.solicitudService.crearDocumentos(id,null).subscribe({
             next: mensaje => {console.log(mensaje)},
             error: error => this.mensajeError = error
         });

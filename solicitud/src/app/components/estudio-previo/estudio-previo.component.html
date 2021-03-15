@@ -1,5 +1,4 @@
 <div class="d-flex">
-<app-menu></app-menu>
 <div class="container">
 <div class="card">
     <div class="card-header text-white">
@@ -41,16 +40,16 @@
                         {{(i+1)}}
                     </td>
                     <td>                        
-                        <div *ngIf="estudio.estado === 'CREADA'"  >
+                        <div *ngIf="estudio.estado.nombre === 'CREADA'"  >
                             <span class="badge badge-secondary">{{estudio.estado}}</span>
                         </div>                        
-                        <div *ngIf="estudio.estado === 'FIRMADA'">
+                        <div *ngIf="estudio.estado.nombre === 'FIRMADA'">
                             <span class="badge badge-success">{{estudio.estado}}</span>
                         </div>                   
                     </td>
                 
                     
-                    <td>{{estudio.solicitud.nombreProyecto}}</td>
+                    <td>{{estudio.solicitud.tipoTramite}}</td>
                     <td><button class="btn btn-outline-secondary btn-sm"
                         [routerLink]="['/estudio', estudio.id, 'editar']">
                   Editar

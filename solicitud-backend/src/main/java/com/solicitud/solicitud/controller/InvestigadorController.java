@@ -6,15 +6,13 @@ import com.solicitud.solicitud.dto.Mensaje;
 import com.solicitud.solicitud.entity.Investigador;
 import com.solicitud.solicitud.service.InvestigadorService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/investigador")
@@ -24,6 +22,7 @@ public class InvestigadorController {
 
     @Autowired
     InvestigadorService investigadorService;
+
 
     @GetMapping("/investigadores")
     public ResponseEntity<List<Investigador>> list(){
@@ -36,8 +35,15 @@ public class InvestigadorController {
         if(!investigadorService.existsById(id))
             return new ResponseEntity<Mensaje>(new Mensaje("No existe un investigador con esa id"), HttpStatus.NOT_FOUND);
         Investigador investigador = investigadorService.getOne(id).get();
-        Investigador investigador1 = new Investigador(investigador.getIdentificacion(), investigador.getNombre(), investigador.getTelefono(), investigador.getEmail(), investigador.getFirma(), investigador.getType(), investigadorService.decompressBytes(investigador.getPicByte()));
-        return new ResponseEntity<Investigador>(investigador1, HttpStatus.OK);
+        return new ResponseEntity<Investigador>(investigador, HttpStatus.OK);
+    }
+
+    @GetMapping("/image/{id}")
+    public ResponseEntity<?> getImageById(@PathVariable("id") int id){
+        if (!investigadorService.existsById(id))
+            return new ResponseEntity<Mensaje>(new Mensaje("No existe un investigador con esa id"), HttpStatus.NOT_FOUND);
+        FileSystemResource file = investigadorService.findImageById(id);
+        return new ResponseEntity<FileSystemResource>(file, HttpStatus.OK);
     }
 
     @DeleteMapping("/delete/{id}")
@@ -49,27 +55,27 @@ public class InvestigadorController {
     }
 
     @PostMapping("/save")
-    public ResponseEntity<?> save(@RequestParam(value = "investigador") String model, @RequestParam(value = "imageFile") MultipartFile file) throws IOException {
+    public ResponseEntity<?> save(@RequestParam(value = "investigador") String model, @RequestParam(value = "imageFile") MultipartFile file) throws Exception {
         ObjectMapper mapper = new ObjectMapper();
         InvestigadorDto investigadorDto = mapper.readValue(model, InvestigadorDto.class);
         if(investigadorService.existByIdentificacion(investigadorDto.getIdentificacion()))
             return new ResponseEntity<Mensaje>(new Mensaje("Ya hay un investigador con esa identificacion"), HttpStatus.BAD_REQUEST);
-        Investigador investigador = new Investigador(investigadorDto.getIdentificacion(), investigadorDto.getNombre(), investigadorDto.getTelefono(), investigadorDto.getEmail(), file.getOriginalFilename(), file.getContentType(), investigadorService.compressBytes(file.getBytes()));
+        Investigador investigador = new Investigador(investigadorDto.getIdentificacion(), investigadorDto.getNombre(), investigadorDto.getTelefono(), investigadorDto.getEmail(), investigadorService.saveImage(file.getBytes(), file.getOriginalFilename()));
         investigadorService.save(investigador);
         return new ResponseEntity<Mensaje>(new Mensaje("Investigador guardado"), HttpStatus.OK);
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<Mensaje> update(@PathVariable("id") int id, @RequestBody InvestigadorDto investigadorDto, @RequestParam("imageFile") MultipartFile file) throws IOException {
+    public ResponseEntity<Mensaje> update(@PathVariable("id") int id, @RequestParam(value = "investigador") String model, @RequestParam("imageFile") MultipartFile file) throws Exception  {
+        ObjectMapper mapper = new ObjectMapper();
+        InvestigadorDto investigadorDto = mapper.readValue(model, InvestigadorDto.class);
         if (!investigadorService.existsById(id))
             return new ResponseEntity<Mensaje>(new Mensaje("No existe un investigador con esa id"), HttpStatus.NOT_FOUND);
         Investigador investigador = investigadorService.getOne(id).get();
         investigador.setNombre(investigadorDto.getNombre());
         investigador.setTelefono(investigadorDto.getTelefono());
         investigador.setEmail(investigadorDto.getEmail());
-        investigador.setFirma(file.getOriginalFilename());
-        investigador.setType(file.getContentType());
-        investigador.setPicByte(investigadorService.compressBytes(file.getBytes()));
+        investigador.setFirma(investigadorService.saveImage(file.getBytes(), file.getOriginalFilename()));
         investigadorService.save(investigador);
         return new ResponseEntity<Mensaje>(new Mensaje("Investigador actualizado"), HttpStatus.OK);
     }

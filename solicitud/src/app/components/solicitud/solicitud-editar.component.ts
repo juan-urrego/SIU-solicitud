@@ -1,15 +1,15 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Solicitud } from '../../models/solicitud';
 import { FormGroup, FormBuilder, Validators, FormArray, FormControl } from '@angular/forms';
-import { Subscription, zip } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SolicitudService } from '../../services/solicitud.service';
-import { GrupoService } from '../../services/grupo.service';
-import { Grupo } from '../../models/grupo';
-import { Proveedor } from '../../models/proveedor';
-import { ProveedorService } from '../../services/proveedor.service';
-import { InvestigadorService } from '../../services/investigador.service';
-import { Investigador } from '../../models/investigador';
+import { GrupoService } from '../../services/settings/grupo.service';
+import { Grupo } from '../../models/settings/grupo';
+import { Proveedor } from '../../models/settings/proveedor';
+import { ProveedorService } from '../../services/settings/proveedor.service';
+import { InvestigadorService } from '../../services/settings/investigador.service';
+import { Investigador } from '../../models/settings/investigador';
 
 @Component({
     templateUrl: 'solicitud-editar.component.html'
@@ -150,11 +150,11 @@ export class SolicitudEditarComponent implements OnInit, OnDestroy {
     }
 
     deleteSolicitud(): void {
-        if (this.solicitud.idSolicitud === 0) {
+        if (this.solicitud.id === 0) {
             this.onSaveComplete();
         } else {
-            if (confirm(`Realmente desea eliminar la solicitud: ${this.solicitud.nombreProyecto}?`)) {
-                this.solicitudService.deleteSolicitud(this.solicitud.idSolicitud)
+            if (confirm(`Realmente desea eliminar la solicitud: ${this.solicitud.tipoTramite}?`)) {
+                this.solicitudService.deleteSolicitud(this.solicitud.id)
                     .subscribe({
                         next: () => this.onSaveComplete(),
                         error: err => this.mensajeError = err
@@ -178,26 +178,26 @@ export class SolicitudEditarComponent implements OnInit, OnDestroy {
         }
         this.solicitud = solicitud;
 
-        if (this.solicitud.idSolicitud === 0) {
+        if (this.solicitud.id === 0) {
             this.title = "Agregar solicitud";
         } else {
-            this.title = `Editar solicitud: ${this.solicitud.idSolicitud}`;
+            this.title = `Editar solicitud: ${this.solicitud.id}`;
             this.solicitudForm.controls['investigador'].get('idInvestigador').enable();
-            this.update(this.solicitud.grupo.idGrupo)
-            this.updateInvestigador(this.solicitud.investigador.idInvestigador)
+            this.update(this.solicitud.grupoInvestigador.investigador.id)
+            this.updateInvestigador(this.solicitud.grupoInvestigador.investigador.id)
         }
         this.solicitudForm.patchValue({
-            grupo: { idGrupo: this.solicitud.grupo.idGrupo },
-            investigador: { idInvestigador: this.solicitud.investigador.idInvestigador },
-            cargo: this.solicitud.cargo,
-            nombreProyecto: this.solicitud.nombreProyecto,
-            rubro: this.solicitud.rubro,
-            subrubro: this.solicitud.subrubro,
-            financiador: this.solicitud.financiador,
-            centroCostos: this.solicitud.centroCostos,
+            grupo: { idGrupo: this.solicitud.grupoInvestigador.grupo.id },
+            investigador: { idInvestigador: this.solicitud.grupoInvestigador.investigador.id },
+            cargo: this.solicitud.grupoInvestigador.cargo,
+            nombreProyecto: this.solicitud.grupoInvestigador.nombreContacto,
+            // rubro: this.solicitud.rubro,
+            // subrubro: this.solicitud.subrubro,
+            // financiador: this.solicitud.financiador,
+            // centroCostos: this.solicitud.centroCostos,
             fecha: this.solicitud.fecha,
             necesidad: this.solicitud.necesidad,
-            descripcion: this.solicitud.descripcion,
+            descripcion: this.solicitud.observacion,
             valor: this.solicitud.valor,
             verificacion: this.solicitud.verificacion,
             observacion: this.solicitud.observacion
@@ -210,11 +210,11 @@ export class SolicitudEditarComponent implements OnInit, OnDestroy {
             // control.push(this.fb.group(this.solicitud.precotizaciones[i]));
             control.push(this.fb.group({
                 proveedor: this.fb.group({
-                    idProveedor: this.solicitud.precotizaciones[i].proveedor.idProveedor,
+                    idProveedor: this.solicitud.precotizaciones[i].proveedor.id,
                     telefono: this.solicitud.precotizaciones[i].proveedor.telefono,
                     nit: this.solicitud.precotizaciones[i].proveedor.nit
                 }),
-                valor: this.solicitud.precotizaciones[i].valor
+                valor: this.solicitud.precotizaciones[i].valorTotal
             }));
         }
     }

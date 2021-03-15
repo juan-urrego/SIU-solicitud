@@ -38,6 +38,6 @@ export class EstudioPrevioComponent implements OnInit {
     performFilter(filterBy: string): Estudio[] {
         filterBy = filterBy.toLocaleLowerCase();
         return this.estudios.filter((estudio: Estudio) =>
-            estudio.estado.toLocaleLowerCase().indexOf(filterBy) !== -1);
+            estudio.estado.nombre.toLocaleLowerCase().indexOf(filterBy) !== -1);
     }
 }

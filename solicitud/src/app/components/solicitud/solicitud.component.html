@@ -39,7 +39,7 @@
                     <td>
                         <div class="btn-group" dropdown>
                             <button type="button" class="btn btn-outline-secondary btn-sm"
-                            [routerLink]="['/solicitud', solicitud.idSolicitud, 'editar']">Editar</button>
+                            [routerLink]="['/solicitud', solicitud.id, 'editar']">Editar</button>
                             <button id="button-split" type="button" dropdownToggle
                             class="btn btn-outline-secondary dropdown-toggle dropdown-toggle-split"
                             aria-controls="dropdown-split">
@@ -47,8 +47,8 @@
                         </button>
                         <ul id="dropdown-split" *dropdownMenu class="dropdown-menu" role="menu"
                         aria-labelledby="button-split">
-                        <li role="menuitem" *ngIf="solicitud.estado === 'VERIFICADA'"><a role="button" class="dropdown-item" (click)="sendDocuments(solicitud.idSolicitud)">Crear Documentos</a></li>
-                        <li role="menuitem" *ngIf="solicitud.estado === 'DOCUMENTADA'"><a role="button" class="dropdown-item" (click)="downloadPdfs()">descargar documentos</a></li>
+                        <li role="menuitem" *ngIf="solicitud.estado.nombre === 'VERIFICADA'"><a role="button" class="dropdown-item" (click)="sendDocuments(solicitud.id)">Crear Documentos</a></li>
+                        <li role="menuitem" *ngIf="solicitud.estado.nombre === 'DOCUMENTADA'"><a role="button" class="dropdown-item" (click)="downloadPdfs()">descargar documentos</a></li>
                         <li role="menuitem"><a class="dropdown-item" href="#">Eliminar</a>
                         </li>
 
@@ -57,20 +57,20 @@
             </td>
             <th scope="row">{{i+1}}</th>
                     <td>
-                        <div *ngIf="solicitud.estado === 'CREADA'">
+                        <div *ngIf="solicitud.estado.nombre === 'CREADA'">
                             <span class="badge badge-secondary">{{solicitud.estado}}</span>
                         </div>
-                        <div *ngIf="solicitud.estado === 'VERIFICADA'">
+                        <div *ngIf="solicitud.estado.nombre === 'VERIFICADA'">
                             <span class="badge badge-success">{{solicitud.estado}}</span>
                         </div>
-                        <div *ngIf="solicitud.estado === 'DOCUMENTADA'">
+                        <div *ngIf="solicitud.estado.nombre === 'DOCUMENTADA'">
                             <span class="badge badge-success">{{solicitud.estado}}</span>
                         </div>
                     </td>
 
-                    <td>{{solicitud.nombreProyecto}}</td>
-                    <td>{{solicitud.investigador.nombre}}</td>
-                    <td>{{solicitud.grupo.nombre}}</td>
+                    <td>{{solicitud.tipoTramite}}</td>
+                    <td>{{solicitud.grupoInvestigador.nombreContacto}}</td>
+                    <td>{{solicitud.grupoInvestigador.nombreContacto}}</td>
                     <td>{{solicitud.fecha | date}}</td>
 
 

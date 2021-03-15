@@ -56,8 +56,8 @@ public class EstudioController {
         UnidadAcademica unidadAcademica = unidadAcademicaService.getOne(estudioDto.getUnidadAcademica()).get();
         estudio.setUnidadAcademica(unidadAcademica);
         estudio.setAcuerdo(estudioDto.getAcuerdo());
-        estudio.setFirmaInvestigador((byte) estudioDto.getFirmaInvestigador());
-        estudio.setFirmaUsuario((byte) estudioDto.getFirmaUsuario());
+        estudio.setFirmaInvestigador(estudioDto.getFirmaInvestigador());
+        estudio.setFirmaUsuario(estudioDto.getFirmaUsuario());
         estudioService.save(estudio);
         return new ResponseEntity<Mensaje>(new Mensaje("Estudio actualizado"), HttpStatus.OK);
     }

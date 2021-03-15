@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { NuevoUsuario } from '../models/login/nuevo-usuario';
+import { UserService } from '../services/login/user.service';
 import { AuthService } from '../services/login/auth.service';
-import { TokenService } from '../services/login/token.service';
 
 @Component({
   selector: 'app-registro',
@@ -22,20 +22,20 @@ export class RegistroComponent implements OnInit {
   errMensaje: string;
 
   constructor(
-    private tokenService: TokenService,
     private authService: AuthService,
+    private userService: UserService,
     private router: Router
   ) { }
 
   ngOnInit(): void {
-    if (this.tokenService.getToken()) {
+    if (this.authService.getToken()) {
       this.isLogged = true;
     }
   }
 
   onRegister(): void{
     this.nuevoUsuario = new NuevoUsuario(this.nombre, this.apellido, this.email, this.password);
-    this.authService.nuevo(this.nuevoUsuario).subscribe(
+    this.userService.nuevo(this.nuevoUsuario).subscribe(
       data =>{
         this.isRegister = true
         this.isRegisterFail = false;

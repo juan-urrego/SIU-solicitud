@@ -1,23 +1,19 @@
-import { Investigador } from './investigador';
-import { Grupo } from './grupo';
-import { Precotizacion } from './precotizacion';
+import { Precotizacion } from './settings/precotizacion';
+import { GrupoInvestigador } from './settings/grupoInvestigador';
+import { Estado } from './settings/estado';
+import { DetalleTramite } from './settings/detalleTramite';
 
 export interface Solicitud {
-    idSolicitud: number,
-    grupo ?: Grupo,
-    investigador ?: Investigador,
-    necesidad: string,
-    descripcion: string,
-    valor: number,
-    verificacion: string,
-    observacion: string,
-    cargo: string,
-    nombreProyecto: string,
-    fecha: string,
-    rubro: string,
-    subrubro: string,
-    financiador: string,
-    centroCostos: string,
-    precotizaciones ?: Precotizacion[],
-    estado: string
+    id ?: number,
+    tipoTramite : string,
+    necesidad : string,
+    fecha : string,
+    valor : number,
+    verificacion : number,
+    observacion : string,
+    grupoInvestigador : GrupoInvestigador,
+    estado : Estado,
+    precotizaciones : Precotizacion[],
+    precotizacionElegida : Precotizacion,
+    detalleTramites : DetalleTramite
 }

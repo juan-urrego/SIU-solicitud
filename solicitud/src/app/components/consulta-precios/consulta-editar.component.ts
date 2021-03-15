@@ -1,14 +1,13 @@
 import { Component, OnInit } from '@angular/core';
-import { Form, FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { Consulta } from 'src/app/models/consulta';
-import { Grupo } from 'src/app/models/grupo';
-import { Investigador } from 'src/app/models/investigador';
-import { Precotizacion } from 'src/app/models/precotizacion';
+import { Grupo } from 'src/app/models/settings/grupo';
+import { Investigador } from 'src/app/models/settings/investigador';
+import { Precotizacion } from 'src/app/models/settings/precotizacion';
 import { Solicitud } from 'src/app/models/solicitud';
 import { ConsultaService } from 'src/app/services/consulta.service';
-import { SolicitudService } from 'src/app/services/solicitud.service';
 
 @Component({
     
@@ -37,8 +36,7 @@ export class ConsultaEditarComponent implements OnInit {
     constructor(private consultaService: ConsultaService,
         private router: Router,
         private route: ActivatedRoute,
-        private fb: FormBuilder,
-        private solicitudService: SolicitudService) { }
+        private fb: FormBuilder) { }
 
     ngOnInit() {
 
@@ -51,13 +49,6 @@ export class ConsultaEditarComponent implements OnInit {
 
         this.consultaForm = this.fb.group({
             acuerdo: '',
-            porque: '',
-            solicitud: this.fb.group({
-                idSolicitud: ''
-            }),
-            precotizacion: this.fb.group({
-                idPrecotizacion: ''
-            })
 
         })
      }
@@ -74,14 +65,14 @@ export class ConsultaEditarComponent implements OnInit {
          this.router.navigate(['/consulta']);
      }
 
-     update(id){        
-        let control = this.consulta.solicitud.precotizaciones;
-        control.forEach(x => {        
-            if(x.idPrecotizacion == id){
-                this.valor= x.valor;
-            }
-        });
-     }
+    //  update(id){        
+    //     let control = this.consulta.solicitud.precotizaciones;
+    //     control.forEach(x => {        
+    //         if(x.id == id){
+    //             this.valor= x.valorTotal;
+    //         }
+    //     });
+    //  }
 
      displayConsulta(consulta: Consulta): void {
          if(this.consultaForm){
@@ -89,24 +80,13 @@ export class ConsultaEditarComponent implements OnInit {
          }
          this.consulta = consulta;
          this.solicitud = consulta.solicitud;
-         if(this.consulta.precotizacion == null){
-             this.consulta.precotizacion = {
-                 idPrecotizacion: 0,
-                 valor:0
-             }
-
-         }
-         this.title = `Editar consulta: ${this.consulta.solicitud.nombreProyecto}`;         
+        //  this.title = `Editar consulta: ${this.consulta.solicitud.nombreProyecto}`;         
          
-         this.consultaForm.patchValue({
-            acuerdo: this.consulta.acuerdo,
-            porque: this.consulta.porque,
-            solicitud:{
-                idSolicitud: this.consulta.solicitud.idSolicitud
-            },
-            precotizacion: this.consulta.precotizacion
+        //  this.consultaForm.patchValue({
+        //     acuerdo: this.consulta.,
+        //     porque: this.consulta.porque
 
-        });
+        // });
      }
 
 

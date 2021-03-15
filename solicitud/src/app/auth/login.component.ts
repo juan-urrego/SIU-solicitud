@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { TokenService } from '../services/login/token.service';
 import { AuthService } from '../services/login/auth.service';
-import { Router } from '@angular/router';
+import { UserService } from '../services/login/user.service';
+import { ActivatedRoute, Router } from '@angular/router';
 import { LoginUsuario } from '../models/login/login-usuario';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { first } from 'rxjs/operators';
 
 @Component({
   selector: 'app-login',
@@ -13,44 +15,53 @@ export class LoginComponent implements OnInit {
   isLogged = false;
   isLoginFail = false;
   loginUsuario: LoginUsuario;
-  email: string;
-  password: string;
   roles: string[] = [];
   errMensaje: string;
+  loginForm : FormGroup;
+  submitted = false;
+  loading = false;
+  returnUrl : string;
 
   constructor(
-    private tokenService: TokenService,
+    private userService: UserService,
     private authService: AuthService,
-    private router: Router
-  ) { }
+    private router: Router,
+    private route : ActivatedRoute,
+    private fb: FormBuilder
+  ) { 
 
-  ngOnInit(): void {
-
-    if (this.tokenService.getToken()){
-      this.isLogged = true;
-      this.isLoginFail = false;
-      this.roles = this.tokenService.getAuthorities();
+    if (this.authService.currentUserValue){
+      this.router.navigate(['/']);
     }
   }
 
+  ngOnInit(): void {
+    this.loginForm = this.fb.group({
+      email: ['', [Validators.required, Validators.email]],
+      password : ['', [Validators.required]]
+    });
+
+    this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
+  }
+
   onLogin(): void{
-    this.loginUsuario = new LoginUsuario(this.email, this.password);
-    this.authService.login(this.loginUsuario).subscribe(
+    this.submitted = true;
+
+    if(this.loginForm.invalid) {
+      return;
+    }
+    this.loading = true;
+
+    this.loginUsuario = new LoginUsuario(this.loginForm.get('email').value, this.loginForm.get('password').value);
+    this.authService.login(this.loginUsuario).pipe(first()).subscribe(
       data =>{
-        this.isLogged = true;
-        this.isLoginFail = false;
-        this.tokenService.setToken(data.token);
-        this.tokenService.setEmail(data.email);
-        this.tokenService.setAuthorities(data.authorities);
         this.roles = data.authorities;
-        this.router.navigate(['/solicitud'])
+        this.router.navigate([this.returnUrl]);
       },
       err => {
-        this.isLogged = false;
         this.isLoginFail = true;
         this.errMensaje = err.error.mensaje;
-        
-        
+        this.loading = false;
       }
     );
   }

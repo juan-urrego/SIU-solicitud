@@ -1,5 +1,4 @@
 <div class="d-flex">
-<app-menu></app-menu>
 <div class="container">
     <div class="card">
         <div class="card-header text-white">
@@ -40,15 +39,15 @@
                             {{(i+1)}}
                         </td>
                         <td>
-                            <div *ngIf="consulta.estado === 'CREADA'">
+                            <div *ngIf="consulta.estado.nombre === 'CREADA'">
                                 <span class="badge badge-secondary">{{consulta.estado}}</span>
                             </div>
-                            <div *ngIf="consulta.estado === 'DILIGENCIADA'">
+                            <div *ngIf="consulta.estado.nombre === 'DILIGENCIADA'">
                                 <span class="badge badge-success">{{consulta.estado}}</span>
                             </div>
                         </td>
 
-                        <td>{{consulta.solicitud.nombreProyecto}}</td>
+                        <td>{{consulta.solicitud.tipoTramite}}</td>
                         <td><button class="btn btn-outline-secondary btn-sm"
                                 [routerLink]="['/consulta', consulta.id, 'editar']">
                                 Editar

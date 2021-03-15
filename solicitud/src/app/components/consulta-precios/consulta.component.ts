@@ -39,6 +39,6 @@ export class ConsultaComponent implements OnInit {
     performFilter(filterBy: string): Consulta[] {
         filterBy = filterBy.toLocaleLowerCase();
         return this.consultas.filter((consulta: Consulta) =>
-            consulta.estado.toLocaleLowerCase().indexOf(filterBy) !== -1);
+            consulta.estado.nombre.toLocaleLowerCase().indexOf(filterBy) !== -1);
     }
 }

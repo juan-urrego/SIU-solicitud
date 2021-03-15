@@ -24,6 +24,7 @@ public class ConsultaService {
         return consultaRepository.existsById(id);
     }
 
+
     public List<Consulta> getConsulta(){
         final List<Consulta> consultas;
         consultas = consultaRepository.findAll();

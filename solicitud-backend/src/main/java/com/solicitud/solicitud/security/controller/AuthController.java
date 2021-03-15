@@ -1,5 +1,8 @@
 package com.solicitud.solicitud.security.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.solicitud.solicitud.dto.InvestigadorDto;
 import com.solicitud.solicitud.dto.Mensaje;
 import com.solicitud.solicitud.security.dto.JwtDto;
 import com.solicitud.solicitud.security.dto.LoginUsuario;
@@ -13,6 +16,7 @@ import com.solicitud.solicitud.security.service.UsuarioService;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -22,10 +26,13 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -52,14 +59,14 @@ public class AuthController {
 
     
     @PostMapping("/nuevo")
-    public ResponseEntity<?> nuevo(@Valid @RequestBody NuevoUsuario nuevoUsuario, BindingResult bindingResult){
-        if(bindingResult.hasErrors())
-            return new ResponseEntity<Mensaje>(new Mensaje("campos mal puestos o email inválido"), HttpStatus.BAD_REQUEST);
+    public ResponseEntity<?> nuevo(@RequestParam("usuario") String model, @RequestParam(value = "imageFile") MultipartFile file) throws Exception {
+        ObjectMapper mapper = new ObjectMapper();
+        NuevoUsuario nuevoUsuario = mapper.readValue(model, NuevoUsuario.class);
         if(usuarioService.existsByEmail(nuevoUsuario.getEmail()))
             return new ResponseEntity<Mensaje>(new Mensaje("este email ya existe"), HttpStatus.BAD_REQUEST);
         Usuario usuario =
                 new Usuario(nuevoUsuario.getNombre(), nuevoUsuario.getApellido(), nuevoUsuario.getEmail(),
-                        passwordEncoder.encode(nuevoUsuario.getPassword()), nuevoUsuario.getFirma());
+                        passwordEncoder.encode(nuevoUsuario.getPassword()), usuarioService.saveImage(file.getBytes(),file.getOriginalFilename()));
         Set<Rol> roles = new HashSet<>();
         roles.add(rolService.getByRolNombre(RolNombre.ROLE_USER).get());
         if(nuevoUsuario.getRoles().contains("admin"))
@@ -89,6 +96,11 @@ public class AuthController {
     public ResponseEntity<List<Usuario>> list(){
         List<Usuario> list = usuarioService.getUsuario();
         return new ResponseEntity<List<Usuario>>(list, HttpStatus.OK);
+    }
+
+    @GetMapping("/image/{id}")
+    public FileSystemResource getImageById(@PathVariable("id") int id){
+        return usuarioService.findImageById(id);
     }
 
     

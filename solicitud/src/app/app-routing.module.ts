@@ -1,14 +1,14 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { SolicitudComponent } from './components/solicitud/solicitud.component';
-import { GrupoComponent } from './components/grupo/grupo.component';
+import { GrupoComponent } from './components/settings/grupo/grupo.component';
 
-import { GrupoEditarComponent } from './components/grupo/grupo-editar.component';
-import { InvestigadorComponent } from './components/investigador/investigador.component';
+import { GrupoEditarComponent } from './components/settings/grupo/grupo-editar.component';
+import { InvestigadorComponent } from './components/settings/investigador/investigador.component';
 
-import { InvestigadorEditarComponent } from './components/investigador/investigador-editar.component';
-import { ProveedorEditarComponent } from './components/proveedor/proveedor-editar.component';
-import { ProveedorComponent } from './components/proveedor/proveedor.component';
+import { InvestigadorEditarComponent } from './components/settings/investigador/investigador-editar.component';
+import { ProveedorEditarComponent } from './components/settings/proveedor/proveedor-editar.component';
+import { ProveedorComponent } from './components/settings/proveedor/proveedor.component';
 
 
 import { SolicitudEditarComponent } from './components/solicitud/solicitud-editar.component';
@@ -29,7 +29,7 @@ const routes: Routes = [];
 
 @NgModule({
   imports: [RouterModule.forRoot([
-    { path: 'solicitud', component: SolicitudComponent, canActivate: [guard], data: { expectedRol: ['admin','user']}},
+    { path: '', component: SolicitudComponent, canActivate: [guard], data: { expectedRol: ['admin','user']}},
     { path: 'solicitud/:id/editar', component: SolicitudEditarComponent, canActivate: [guard], data: { expectedRol: ['admin','user']} },
     { path: 'estudio', component: EstudioPrevioComponent, canActivate: [guard], data: { expectedRol: ['admin','user']} },
     { path: 'estudio/:id/editar', component: EstudioPrevioEditarComponent, canActivate: [guard], data: { expectedRol: ['admin','user']} },
@@ -45,8 +45,8 @@ const routes: Routes = [];
     { path: 'auxiliar/:id/editar', component: AuxiliarEditarComponent, canActivate: [guard], data: { expectedRol: ['admin']} },
     { path: 'login', component: LoginComponent },
     { path: 'registro', component: RegistroComponent, canActivate: [guard], data: { expectedRol: ['admin']} },
-    { path: '**', redirectTo: 'login', pathMatch: 'full' },
-    { path: '', redirectTo: 'login', pathMatch: 'full' }
+    { path: '**', redirectTo: '', pathMatch: 'full' },
+    { path: '', redirectTo: 'solicitud', pathMatch: 'full' }
   ])],
   exports: [RouterModule]
 })

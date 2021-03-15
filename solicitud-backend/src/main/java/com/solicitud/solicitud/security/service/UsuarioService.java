@@ -1,8 +1,11 @@
 package com.solicitud.solicitud.security.service;
 
+import com.solicitud.solicitud.entity.Investigador;
+import com.solicitud.solicitud.repository.FileSystemRepository;
 import com.solicitud.solicitud.security.entity.Usuario;
 import com.solicitud.solicitud.security.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,6 +18,9 @@ public class UsuarioService {
 
     @Autowired
     UsuarioRepository usuarioRepository;
+
+    @Autowired
+    FileSystemRepository fileSystemRepository;
 
     public Optional<Usuario> getByEmail(final String email){
         return usuarioRepository.findByEmail(email);
@@ -37,6 +43,16 @@ public class UsuarioService {
         final List<Usuario> usuarios;
         usuarios = usuarioRepository.findAll();
         return usuarios;
+    }
+
+    public String saveImage(byte[] bytes, String nombre) throws Exception{
+        return fileSystemRepository.saveImageFileSystem(bytes, nombre);
+    }
+
+    //encontrar imagen por Id de investigador
+    public FileSystemResource findImageById(int id) {
+        Usuario usuario = usuarioRepository.findById(id).get();
+        return fileSystemRepository.findInFileSystem(usuario.getFirma());
     }
 
     public void save(final Usuario usuario){

@@ -25,6 +25,7 @@ public class Usuario {
     @Column(name = "usr_email")
     private String email;
     @NotNull
+    @JsonIgnore
     @Column(name = "usr_password")
     private String password;
     @NotNull

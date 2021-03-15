@@ -1,0 +1,66 @@
+<div class="d-flex">
+<div class="container">
+<div class="card">
+    <div class="card-header text-white">
+        <h2>
+            {{titulo}}
+
+        </h2>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-2">Buscar por nombre:</div>
+            <div class="col-md-4">
+                <input type="text" [(ngModel)]="filtrar">
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <h4>Filtrado por: {{filtrar}}</h4>
+        </div>
+    </div>
+    <div class="table-responsive">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>
+                        #
+                    </th>
+                    <th>Investigador</th>
+                    <th>Identificacion</th>
+                    <th>Telefono</th>                               
+                    <th><button class="btn btn-outline-primary btn-sm" 
+                                [routerLink]="['/investigador/0/editar']">
+                            Agregar
+                        </button></th>
+
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let investigador of filtrados; let i=index">
+                    <td>
+                        {{(i+1)}}
+                    </td>
+                    <td>
+                        
+                            {{investigador.nombre}}
+                      
+                    </td>
+
+                    <td>{{investigador.identificacion}}</td>
+                    <td>{{investigador.telefono}}</td>                              
+                    <td><button class="btn btn-outline-secondary btn-sm"
+                        [routerLink]="['/investigador', investigador.id, 'editar']">
+                  Editar
+                </button></td>
+
+
+
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+</div>
+</div>
