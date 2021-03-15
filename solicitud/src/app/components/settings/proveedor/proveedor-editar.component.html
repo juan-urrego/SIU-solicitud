@@ -41,8 +41,8 @@
             <div class="form-group row mb-3">
                 <label for="telefonoId" class="col-md-2 col-form-label">Teléfono:</label>
                 <div class="col-md-8">
-                    <input matInput id="telefonoId" class="form-control" placeholder="Ingrese el telefono" mvndrMatCurrencyFormat [allowNegative]="false" (blur)="updateUSAmount($event)" [currencyCode]="'USD'"
-                        formControlName="telefono" type="text" [ngClass]="{'is-invalid':(proveedorForm.get('telefono').touched || proveedorForm.get('telefono').dirty) && !proveedorForm.get('telefono').valid}">
+                    <input id="telefonoId" class="form-control" placeholder="Ingrese el telefono" 
+                     formControlName="telefono" type="text" [ngClass]="{'is-invalid':(proveedorForm.get('telefono').touched || proveedorForm.get('telefono').dirty) && !proveedorForm.get('telefono').valid}">
                     <span class="invalid-feedback">
                         <span *ngIf="proveedorForm.get('telefono').errors?.required"></span>
                     </span>                                

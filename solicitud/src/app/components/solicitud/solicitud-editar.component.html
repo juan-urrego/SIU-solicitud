@@ -186,7 +186,7 @@
             <div class="form-group col-8 mb-3">
               <label for="valorId" class="col-form-label"><b>Valor o presupuesto estimado(discriminar valor con IVA y sin IVA):</b></label>
               
-                <input id="valorId" class="form-control" matInput mvndrMatCurrencyFormat [allowNegative]="false" (blur)="updateUSAmount($event)" [currencyCode]="'USD'" type="text" formControlName="valor"                  
+                <input id="valorId" class="form-control"  type="text" formControlName="valor"                  
                   [ngClass]="{'is-invalid': (solicitudForm.get('valor').touched || solicitudForm.get('valor').dirty) && !solicitudForm.get('valor').valid}">
                 <span class="invalid-feedback">
                   <span *ngIf="solicitudForm.get('valor').errors?.required">
@@ -296,8 +296,7 @@
                   <div class="form-group col-8 mb-3">
                     <label class="col-form-label">Valor precotizado + IVA</label>
                     
-                    <input matInput id="valorid" class="form-control" type="text"
-                    mvndrMatCurrencyFormat [allowNegative]="false" (blur)="updateUSAmount2($event)" [currencyCode]="'USD'"
+                    <input  id="valorid" class="form-control" type="text"
                     formControlName="valor">
                     
                
