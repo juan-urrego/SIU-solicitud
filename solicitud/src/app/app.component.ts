@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { JwtDto } from './models/login/jwt-dto';
-import { AuthService } from './services/login/auth.service';
+import { JwtDto } from './shared/models/login/jwt-dto';
+import { AuthService } from './auth/auth.service';
 
 
 @Component({
@@ -10,6 +10,7 @@ import { AuthService } from './services/login/auth.service';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
+  public isCollapsed = false;
   currentUser: JwtDto;
 
   constructor(private authService: AuthService,

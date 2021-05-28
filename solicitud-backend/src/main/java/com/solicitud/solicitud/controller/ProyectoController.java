@@ -68,7 +68,7 @@ public class ProyectoController {
         Proyecto proyecto = proyectoService.getOne(id).get();
         proyecto.setNombre(proyectoDto.getNombre());
         proyecto.setCodigoProyecto(proyectoDto.getCodigoProyecto());
-        proyecto.setCentoCostos(proyectoDto.getCentroCostos());
+        proyecto.setCentroCostos(proyectoDto.getCentroCostos());
         proyecto.setGrupo(grupo);
         proyectoService.save(proyecto);
         return new ResponseEntity<Mensaje>(new Mensaje("Proyecto actualizado"), HttpStatus.OK);

@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.util.Set;
 
 @Entity
 @Table(name = "detalles_tramites")
@@ -29,17 +30,27 @@ public class DetalleTramite {
     private Solicitud solicitud;
 
     @ManyToOne
-    @JoinColumn(name = "det_linea_producto_id")
-    private LineaProducto lineaProducto;
+    @JsonIgnoreProperties({"detalleTramites", "lineaEspecificas"})
+    @JoinColumn(name = "det_general_id")
+    private LineaGeneral lineaGeneral;
+
+    @ManyToOne
+    @JoinColumn(name = "det_especifica_id")
+    private LineaEspecifica lineaEspecifica;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "detalleTramite", cascade = CascadeType.ALL, orphanRemoval = true)
+    Set<ProveedorDetalle> proveedorDetalles;
 
     public DetalleTramite() {
     }
 
-    public DetalleTramite(@NotNull String descripcion, @NotNull int cantidad, LineaProducto lineaProducto, Solicitud solicitud) {
+    public DetalleTramite(@NotNull String descripcion, @NotNull int cantidad, LineaGeneral lineaGeneral, Solicitud solicitud, LineaEspecifica lineaEspecifica) {
         this.descripcion = descripcion;
         this.cantidad = cantidad;
-        this.lineaProducto = lineaProducto;
+        this.lineaGeneral = lineaGeneral;
         this.solicitud = solicitud;
+        this.lineaEspecifica = lineaEspecifica;
     }
 
     public int getId() {
@@ -74,11 +85,28 @@ public class DetalleTramite {
         this.solicitud = solicitud;
     }
 
-    public LineaProducto getLineaProducto() {
-        return lineaProducto;
+    public LineaGeneral getLineaGeneral() {
+        return lineaGeneral;
     }
 
-    public void setLineaProducto(LineaProducto lineaProducto) {
-        this.lineaProducto = lineaProducto;
+    public void setLineaGeneral(LineaGeneral lineaGeneral) {
+        this.lineaGeneral = lineaGeneral;
     }
+
+    public LineaEspecifica getLineaEspecifica() {
+        return lineaEspecifica;
+    }
+
+    public void setLineaEspecifica(LineaEspecifica lineaEspecifica) {
+        this.lineaEspecifica = lineaEspecifica;
+    }
+
+    public Set<ProveedorDetalle> getProveedorDetalles() {
+        return proveedorDetalles;
+    }
+
+    public void setProveedorDetalles(Set<ProveedorDetalle> proveedorDetalles) {
+        this.proveedorDetalles = proveedorDetalles;
+    }
+
 }

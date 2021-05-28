@@ -1,0 +1,130 @@
+
+<p-toast></p-toast>
+<p-card header="Proveedores" styleClass="p-card-shadow">
+
+    <p-table [value]="proveedores">
+        <ng-template pTemplate="header">
+            <tr>                
+                <th>Nombre del proveedor</th>
+                <th>Numero de identificacion</th>
+                <th>Tipo proveedor</th>
+                <th>Telefono</th>
+                <th>Ciudad</th>
+                <th>
+                    <button type="button" pButton pRipple icon="pi pi-plus" (click)="openNew()"></button>
+                </th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-proveedor>
+            <tr>                
+                <td>{{proveedor.nombre}}</td>
+                <td>{{proveedor.identificacion}}</td>
+                <td>{{proveedor.tipo}}</td>
+                <td>{{proveedor.telefono}}</td>
+                <td>{{proveedor.ciudad}}</td>                
+                <td>
+                    <button type="button" pButton pRipple class="p-button-warning p-mr-2" icon="pi pi-pencil" (click)="openNew(proveedor)"></button>
+                    <button type="button" pButton pRipple class="p-button-danger p-mr-2" icon="pi pi-trash" (click)="deleteProveedor(proveedor)"></button>
+                </td>
+            </tr>
+        </ng-template>
+    </p-table>
+</p-card>
+
+<p-dialog [(visible)]="proveedorDialog" [style]="{width: '600px'}"
+          header="Proveedor" [modal]="true" styleClass="p-fluid">
+
+          <ng-template pTemplate="content">
+              <form [formGroup]="proveedorForm" novalidate>
+                <div class="row">
+                    <div class="col-12 mb-3 form-group">
+        
+                      <label for="identificacion" class="col-form-label"><b>NIT / identificacion:</b></label>            
+                      <input id="identificacion" class="form-control mb-3"
+                      formControlName="identificacion"  rows="5" type="text"
+                      [ngClass]="{'is-invalid': (proveedorForm.get('identificacion').touched || proveedorForm.get('identificacion').dirty) && !proveedorForm.get('identificacion').valid}">
+                      <span class="invalid-feedback">
+                        <span *ngIf="proveedorForm.get('identificacion').errors?.required">
+                          Por favor ingrese la necesidad.
+                        </span>
+                      </span>
+                      
+                    </div>
+                  </div>
+                <div class="row">
+                    <div class="col-12 mb-3 form-group">
+        
+                      <label for="nombre" class="col-form-label"><b>Nombre Proveedor:</b></label>            
+                      <input id="nombre" class="form-control mb-3"
+                      formControlName="nombre"  rows="5" type="text"
+                      [ngClass]="{'is-invalid': (proveedorForm.get('nombre').touched || proveedorForm.get('nombre').dirty) && !proveedorForm.get('nombre').valid}">
+                      <span class="invalid-feedback">
+                        <span *ngIf="proveedorForm.get('nombre').errors?.required">
+                          Por favor ingrese la necesidad.
+                        </span>
+                      </span>
+                      
+                    </div>
+                  </div>
+                <div class="row">
+                    <div class="col-12 mb-3 form-group">
+        
+                      <label for="telefono" class="col-form-label"><b>Telefono Proveedor:</b></label>            
+                      <input id="telefono" class="form-control mb-3"
+                      formControlName="telefono"  rows="5" type="text"
+                      [ngClass]="{'is-invalid': (proveedorForm.get('telefono').touched || proveedorForm.get('telefono').dirty) && !proveedorForm.get('telefono').valid}">
+                      <span class="invalid-feedback">
+                        <span *ngIf="proveedorForm.get('telefono').errors?.required">
+                          Por favor ingrese la necesidad.
+                        </span>
+                      </span>
+                      
+                    </div>
+                  </div>
+                <div class="row">
+                    <div class="col-12 mb-3 form-group">
+        
+                      <label for="ciudad" class="col-form-label"><b>Ciudad del Proveedor:</b></label>            
+                      <input id="ciudad" class="form-control mb-3"
+                      formControlName="ciudad"  rows="5" type="text"
+                      [ngClass]="{'is-invalid': (proveedorForm.get('ciudad').touched || proveedorForm.get('ciudad').dirty) && !proveedorForm.get('ciudad').valid}">
+                      <span class="invalid-feedback">
+                        <span *ngIf="proveedorForm.get('ciudad').errors?.required">
+                          Por favor ingrese la necesidad.
+                        </span>
+                      </span>
+                      
+                    </div>
+                  </div>
+                <div class="row">
+                    <div class="col-12 mb-3 form-group">
+        
+                      <label for="tipo" class="col-form-label"><b>Tipo de Proveedor:</b></label>            
+                      <input id="tipo" class="form-control mb-3"
+                      formControlName="tipo"  rows="5" type="text"
+                      [ngClass]="{'is-invalid': (proveedorForm.get('tipo').touched || proveedorForm.get('tipo').dirty) && !proveedorForm.get('tipo').valid}">
+                      <span class="invalid-feedback">
+                        <span *ngIf="proveedorForm.get('tipo').errors?.required">
+                          Por favor ingrese la necesidad.
+                        </span>
+                      </span>
+                      
+                    </div>
+                  </div>
+              </form>
+          </ng-template>
+
+          <ng-template pTemplate="footer">      
+            <button pButton pRipple label="Cancel" icon="pi pi-times" 
+            class="p-button-text" (click)="hideDialog()"></button>
+            <button pButton 
+            [disabled]="proveedorForm.get('nombre').invalid" 
+            pRipple label="Save" icon="pi pi-check" class="p-button-text" 
+            (click)="saveProveedor()"></button>
+            <button *ngIf="proveedorForm.get('id').value != 0" pButton pRipple 
+            label="Delete" icon="pi pi-trash" class="p-button-text" 
+            (click)="deleteProveedor(proveedorSelected)"></button>
+          </ng-template>
+
+</p-dialog>
+<p-confirmDialog [style]="{width: '450px'}"></p-confirmDialog>

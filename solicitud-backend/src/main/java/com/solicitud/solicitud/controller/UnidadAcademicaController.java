@@ -1,6 +1,7 @@
 package com.solicitud.solicitud.controller;
 
 import com.solicitud.solicitud.dto.Mensaje;
+import com.solicitud.solicitud.dto.ParametroDto;
 import com.solicitud.solicitud.dto.UnidadAcademicaDto;
 import com.solicitud.solicitud.entity.UnidadAcademica;
 import com.solicitud.solicitud.service.UnidadAcademicaService;
@@ -44,20 +45,20 @@ public class UnidadAcademicaController {
     }
 
     @PostMapping("/save")
-    public ResponseEntity<?> save(@RequestBody UnidadAcademicaDto unidadAcademicaDto, BindingResult bindingResult){
+    public ResponseEntity<?> save(@RequestBody ParametroDto parametroDto, BindingResult bindingResult){
         if(bindingResult.hasErrors())
             return new ResponseEntity<Mensaje>(new Mensaje("Campos mal puestos"), HttpStatus.BAD_REQUEST);
-        UnidadAcademica unidadAcademica = new UnidadAcademica(unidadAcademicaDto.getNombre());
+        UnidadAcademica unidadAcademica = new UnidadAcademica(parametroDto.getDescripcion());
         unidadAcademicaService.save(unidadAcademica);
         return new ResponseEntity<Mensaje>(new Mensaje("UnidadAcademica guardada"), HttpStatus.OK);
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<Mensaje> update(@PathVariable("id") int id, @RequestBody UnidadAcademicaDto unidadAcademicaDto){
+    public ResponseEntity<Mensaje> update(@PathVariable("id") int id, @RequestBody ParametroDto parametroDto){
         if (!unidadAcademicaService.existsById(id))
             return new ResponseEntity<Mensaje>(new Mensaje("No existe un unidadAcademica con esa id"), HttpStatus.NOT_FOUND);
         UnidadAcademica unidadAcademica = unidadAcademicaService.getOne(id).get();
-        unidadAcademica.setNombre(unidadAcademicaDto.getNombre());
+        unidadAcademica.setDescripcion(parametroDto.getDescripcion());
         unidadAcademicaService.save(unidadAcademica);
         return new ResponseEntity<Mensaje>(new Mensaje("UnidadAcademica actualizado"), HttpStatus.OK);
     }

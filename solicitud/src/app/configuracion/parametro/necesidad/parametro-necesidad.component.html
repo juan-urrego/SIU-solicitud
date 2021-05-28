@@ -1,0 +1,64 @@
+
+<p-card header="Necesidad"  styleClass="p-card-shadow">
+
+  <div class="p-field-radiobutton"
+       *ngFor="let necesidad of necesidades">
+      <p-radioButton name="necesidad" [value]="necesidad" 
+                     [(ngModel)]="necesidadSelected" 
+                     [inputId]="'Necesidad' + necesidad.id">
+                    </p-radioButton>
+      <label [for]="'Necesidad' + necesidad.id">{{necesidad.descripcion}}
+      </label>
+  </div>
+
+  <ng-template pTemplate="footer">
+      <p-button label="Activar" 
+                [disabled]="necesidadSelected.parametro === 1"
+                (click)="updateSelected(necesidadSelected)"
+                class="mr-3">
+      </p-button>
+      <button pButton pRipple label="Editar" 
+              icon="pi pi-pencil" 
+              class="p-button-warning p-mr-2" 
+              (click)="openNew(necesidadSelected)"></button>
+      <button pButton pRipple 
+              icon="pi pi-plus" 
+              class="p-button-success p-mr-2" 
+              (click)="openNew()"></button>
+            </ng-template>    
+</p-card>
+
+
+<p-dialog [(visible)]="necesidadDialog" [style]="{width: '450px'}" 
+          header="Necesidad" [modal]="true" styleClass="p-fluid">
+  
+  <ng-template pTemplate="content">
+    <form [formGroup]="necesidadForm" novalidate>
+      <div class="p-field">
+          <label for="descripcion">Descripcion:</label>
+          <textarea id="descripcion" pInputTextarea 
+          formControlName="descripcion" rows="3" cols="20">
+        </textarea>
+          <small class="p-invalid" 
+          *ngIf="submitted || 
+          necesidadForm.get('descripcion').errors?.required">
+          Descripcion es obligatoria.
+        </small>
+      </div>
+    </form>
+    </ng-template>
+    
+    <ng-template pTemplate="footer">      
+      <button pButton pRipple label="Cancel" icon="pi pi-times" 
+      class="p-button-text" (click)="hideDialog()"></button>
+      <button pButton 
+      [disabled]="necesidadForm.get('descripcion').invalid" 
+      pRipple label="Save" icon="pi pi-check" class="p-button-text" 
+      (click)="saveNecesidad()"></button>
+      <button *ngIf="necesidadForm.get('id').value != 0" pButton pRipple 
+      label="Delete" icon="pi pi-trash" class="p-button-text" 
+      (click)="deleteNecesidad()"></button>
+    </ng-template>
+  
+</p-dialog>
+

@@ -26,24 +26,32 @@ public class Proveedor {
     @Column(name = "pro_nombre")
     private String nombre;
     @NotNull
-    @Column(name = "pro_nit")
-    private String nit;
+    @Column(name = "pro_identificacion")
+    private String identificacion;
     @NotNull
     @Column(name = "pro_telefono")
     private String telefono;
     @NotNull
     @Column(name = "pro_ciudad")
     private String ciudad;
+    @NotNull
+    @Column(name = "pro_tipo")
+    private String tipo;
 
     @OneToMany(mappedBy = "proveedor")
     @JsonIgnore
     private Set<Precotizacion> precotizaciones;
 
-    public Proveedor(@NotNull String nombre, @NotNull String nit, @NotNull String telefono, @NotNull String ciudad) {
+    @JsonIgnore
+    @OneToMany(mappedBy = "proveedor")
+    Set<ProveedorDetalle> proveedorDetalles;
+
+    public Proveedor(@NotNull String nombre, @NotNull String identificacion, @NotNull String telefono, @NotNull String ciudad, @NotNull String tipo) {
         this.nombre = nombre;
-        this.nit = nit;
+        this.identificacion = identificacion;
         this.telefono = telefono;
         this.ciudad = ciudad;
+        this.tipo = tipo;
     }
 
     public Proveedor() {
@@ -65,12 +73,12 @@ public class Proveedor {
         this.nombre = nombre;
     }
 
-    public String getNit() {
-        return nit;
+    public String getIdentificacion() {
+        return identificacion;
     }
 
-    public void setNit(String nit) {
-        this.nit = nit;
+    public void setIdentificacion(String identificacion) {
+        this.identificacion = identificacion;
     }
 
     public String getTelefono() {
@@ -96,4 +104,21 @@ public class Proveedor {
     public void setPrecotizaciones(Set<Precotizacion> precotizaciones) {
         this.precotizaciones = precotizaciones;
     }
+
+    public String getTipo() {
+        return tipo;
+    }
+
+    public void setTipo(String tipo) {
+        this.tipo = tipo;
+    }
+
+    public Set<ProveedorDetalle> getProveedorDetalles() {
+        return proveedorDetalles;
+    }
+
+    public void setProveedorDetalles(Set<ProveedorDetalle> proveedorDetalles) {
+        this.proveedorDetalles = proveedorDetalles;
+    }
+
 }

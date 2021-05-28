@@ -32,6 +32,7 @@ public class Grupo {
     @OneToMany(mappedBy = "grupo")
     Set<GrupoInvestigador> grupoInvestigadores;
 
+
     public Grupo(@NotNull String nombre, @NotNull String codColciencia) {
         this.nombre = nombre;
         this.codColciencia = codColciencia;
@@ -78,5 +79,12 @@ public class Grupo {
 
     public void setProyectos(Set<Proyecto> proyectos) {
         this.proyectos = proyectos;
+    }
+
+    public Proyecto getProyectoById(int idP) {
+        return this.proyectos.stream()
+                .filter(proyecto -> idP == proyecto.getId())
+                .findAny()
+                .orElse(null);
     }
 }

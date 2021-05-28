@@ -1,0 +1,64 @@
+
+<p-card header="Observacion"  styleClass="p-card-shadow">
+
+  <div class="p-field-radiobutton"
+       *ngFor="let observacion of observaciones">
+      <p-radioButton name="observacion" [value]="observacion" 
+                     [(ngModel)]="observacionSelected" 
+                     [inputId]="'Observacion' + observacion.id">
+                    </p-radioButton>
+      <label [for]="'Observacion' + observacion.id">{{observacion.descripcion}}
+      </label>
+  </div>
+
+  <ng-template pTemplate="footer">
+      <p-button label="Activar" 
+                [disabled]="observacionSelected.parametro === 1"
+                (click)="updateSelected(observacionSelected)"
+                class="mr-3">
+      </p-button>
+      <button pButton pRipple label="Editar" 
+              icon="pi pi-pencil" 
+              class="p-button-warning p-mr-2" 
+              (click)="openNew(observacionSelected)"></button>
+      <button pButton pRipple 
+              icon="pi pi-plus" 
+              class="p-button-success p-mr-2" 
+              (click)="openNew()"></button>
+            </ng-template>    
+</p-card>
+
+
+<p-dialog [(visible)]="observacionDialog" [style]="{width: '450px'}" 
+          header="Acuerdo" [modal]="true" styleClass="p-fluid">
+  
+  <ng-template pTemplate="content">
+    <form [formGroup]="observacionForm" novalidate>
+      <div class="p-field">
+          <label for="descripcion">Descripcion:</label>
+          <textarea id="descripcion" pInputTextarea 
+          formControlName="descripcion" rows="3" cols="20">
+        </textarea>
+          <small class="p-invalid" 
+          *ngIf="submitted || 
+          observacionForm.get('descripcion').errors?.required">
+          Descripcion es obligatoria.
+        </small>
+      </div>
+    </form>
+    </ng-template>
+    
+    <ng-template pTemplate="footer">      
+      <button pButton pRipple label="Cancel" icon="pi pi-times" 
+      class="p-button-text" (click)="hideDialog()"></button>
+      <button pButton 
+      [disabled]="observacionForm.get('descripcion').invalid" 
+      pRipple label="Save" icon="pi pi-check" class="p-button-text" 
+      (click)="saveObservacion()"></button>
+      <button *ngIf="observacionForm.get('id').value != 0" pButton pRipple 
+      label="Delete" icon="pi pi-trash" class="p-button-text" 
+      (click)="deleteObservacion()"></button>
+    </ng-template>
+  
+</p-dialog>
+

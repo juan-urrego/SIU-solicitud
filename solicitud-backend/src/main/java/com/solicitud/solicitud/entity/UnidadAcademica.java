@@ -16,14 +16,14 @@ public class UnidadAcademica {
     private int id;
     @NotNull
     @Column(name = "uni_nombre")
-    private String nombre;
+    private String descripcion;
 
     @JsonIgnore
     @OneToMany(mappedBy = "unidadAcademica")
     private Set<Estudio> estudios;
 
-    public UnidadAcademica(@NotNull String nombre) {
-        this.nombre = nombre;
+    public UnidadAcademica(@NotNull String descripcion) {
+        this.descripcion = descripcion;
     }
 
     public UnidadAcademica() {
@@ -37,12 +37,12 @@ public class UnidadAcademica {
         this.id = id;
     }
 
-    public String getNombre() {
-        return nombre;
+    public String getDescripcion() {
+        return descripcion;
     }
 
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
+    public void setDescripcion(String descripcion) {
+        this.descripcion = descripcion;
     }
 
     public Set<Estudio> getEstudios() {

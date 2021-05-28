@@ -1,0 +1,106 @@
+
+<p-toast></p-toast>
+<p-card header="Lineas Generales" styleClass="p-card-shadow">
+
+    <p-table [value]="lineas">
+        <ng-template pTemplate="header">
+            <tr>                
+                <th>Nombre del proyecto</th>                
+                <th>Número de lineas especificas</th>                
+                <th>
+                    <button type="button" pButton pRipple icon="pi pi-plus" (click)="openNew()"></button>
+                </th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-linea>
+            <tr>                
+                <td>{{linea.nombre}}</td>
+                <td>{{linea.lineaEspecificas.length}}</td>                
+                <td>
+                    <button type="button" pButton pRipple class="p-button-warning p-mr-2" icon="pi pi-pencil" (click)="openNew(linea)"></button>
+                    <button type="button" pButton pRipple class="p-button-danger p-mr-2" icon="pi pi-trash" (click)="deleteLinea(linea)"></button>
+                </td>
+            </tr>
+        </ng-template>
+    </p-table>
+</p-card>
+
+<p-dialog [(visible)]="lineaDialog" [style]="{width: '600px'}"
+          header="Linea General" [modal]="true" styleClass="p-fluid">
+
+          <ng-template pTemplate="content">
+              <form [formGroup]="lineaForm" novalidate>
+                <div class="row">
+                    <div class="col-12 mb-3 form-group">
+
+                        <label for="nombre" class="col-form-label"><b>Nombre de la linea General:</b></label>            
+                        <input id="nombre" class="form-control mb-3"
+                        formControlName="nombre"  rows="5" type="text"
+                        [ngClass]="{'is-invalid': (lineaForm.get('nombre').touched || lineaForm.get('nombre').dirty) && !lineaForm.get('nombre').valid}">
+                        <span class="invalid-feedback">
+                        <span *ngIf="lineaForm.get('nombre').errors?.required">
+                            Por favor ingrese la necesidad.
+                        </span>
+                        </span>                      
+                    </div>
+                </div>
+
+                  <div class="p-d-flex p-jc-between mb-3">
+                      <div>
+                        <label for="nombre" class="col-form-label"><b>Lineas especificas</b></label>     
+                      </div>
+                      <div>                        
+                        <button class="btn-outline-success btn" type="button" (click)="addLineasEspecificas()">
+                            Agregar
+                        </button>                                                      
+                      </div>
+                  </div>
+                  <div formArrayName="lineaEspecificas"
+                  *ngFor="let especifica of lineasEspecificas.controls; let i=index">    
+                      <div class="mb-3" [formGroupName]="i">                                                      
+                        <div class="p-grid p-jc-center form-group row">
+
+                            <div class="p-col-4">
+                                <div class="box">
+
+                                    <input class="form-control"
+                                    [id]="i"
+                                    type="text"                                    
+                                    formControlName="nombre"/>
+                                </div>
+                            </div>
+                            <div class="p-col-2">
+                                <div class="box">
+
+                                    <button class="btn btn-outline-warning form-control"
+                                    type="button"
+                                    title="Delete this search linea"
+                                    (click)="deleteLineasEspecificas(i)">delete
+                                </button>
+                                </div>
+                            </div>
+                    </div>
+                              
+                          
+                      </div>
+                  </div>
+                  <pre>
+
+                      {{lineaForm.value | json}}     
+                  </pre>
+              </form>              
+          </ng-template>
+          <ng-template pTemplate="footer">      
+            <button pButton pRipple label="Cancel" icon="pi pi-times" 
+            class="p-button-text" (click)="hideDialog()"></button>
+            <button pButton 
+            [disabled]="lineaForm.get('nombre').invalid" 
+            pRipple label="Save" icon="pi pi-check" class="p-button-text" 
+            (click)="saveLinea()"></button>
+            <button *ngIf="lineaForm.get('id').value != 0" pButton pRipple 
+            label="Delete" icon="pi pi-trash" class="p-button-text" 
+            (click)="deleteLinea(lineaSelected)"></button>
+          </ng-template>
+
+</p-dialog>
+<p-confirmDialog [style]="{width: '450px'}"></p-confirmDialog>

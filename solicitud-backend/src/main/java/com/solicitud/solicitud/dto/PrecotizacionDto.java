@@ -14,7 +14,17 @@ public class PrecotizacionDto {
     @NotBlank
     private int valorIva;
     @NotBlank
-    private Proveedor proveedor;
+    private int proveedorId;
+    @NotBlank
+    private String nombreProveedor;
+    @NotBlank
+    private String nitProveedor;
+    @NotBlank
+    private String telefonoProveedor;
+    @NotBlank
+    private String ciudadProveedor;
+    @NotBlank
+    private String tipoIdentificacion;
     @NotBlank
     private Set<ArgumentoDto> argumentoDtos = new HashSet<>();
 
@@ -34,12 +44,52 @@ public class PrecotizacionDto {
         this.valorIva = valorIva;
     }
 
-    public Proveedor getProveedor() {
-        return proveedor;
+    public int getProveedorId() {
+        return proveedorId;
     }
 
-    public void setProveedor(Proveedor proveedor) {
-        this.proveedor = proveedor;
+    public void setProveedorId(int proveedorId) {
+        this.proveedorId = proveedorId;
+    }
+
+    public String getNombreProveedor() {
+        return nombreProveedor;
+    }
+
+    public void setNombreProveedor(String nombreProveedor) {
+        this.nombreProveedor = nombreProveedor;
+    }
+
+    public String getNitProveedor() {
+        return nitProveedor;
+    }
+
+    public void setNitProveedor(String nitProveedor) {
+        this.nitProveedor = nitProveedor;
+    }
+
+    public String getTelefonoProveedor() {
+        return telefonoProveedor;
+    }
+
+    public void setTelefonoProveedor(String telefonoProveedor) {
+        this.telefonoProveedor = telefonoProveedor;
+    }
+
+    public String getCiudadProveedor() {
+        return ciudadProveedor;
+    }
+
+    public void setCiudadProveedor(String ciudadProveedor) {
+        this.ciudadProveedor = ciudadProveedor;
+    }
+
+    public String getTipoIdentificacion() {
+        return tipoIdentificacion;
+    }
+
+    public void setTipoIdentificacion(String tipoIdentificacion) {
+        this.tipoIdentificacion = tipoIdentificacion;
     }
 
     public Set<ArgumentoDto> getArgumentoDtos() {

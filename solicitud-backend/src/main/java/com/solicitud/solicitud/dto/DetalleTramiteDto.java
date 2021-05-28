@@ -1,7 +1,6 @@
 package com.solicitud.solicitud.dto;
 
-import com.solicitud.solicitud.entity.LineaProducto;
-import net.bytebuddy.implementation.bind.annotation.Empty;
+import com.solicitud.solicitud.entity.LineaEspecifica;
 
 import javax.validation.constraints.NotBlank;
 
@@ -12,7 +11,9 @@ public class DetalleTramiteDto {
     @NotBlank
     private int cantidad;
     @NotBlank
-    private int lineaProducto;
+    private int lineaGeneral;
+    @NotBlank
+    private int lineaEspecifica;
 
     public String getDescripcion() {
         return descripcion;
@@ -30,11 +31,19 @@ public class DetalleTramiteDto {
         this.cantidad = cantidad;
     }
 
-    public int getLineaProducto() {
-        return lineaProducto;
+    public int getLineaGeneral() {
+        return lineaGeneral;
     }
 
-    public void setLineaProducto(int lineaProducto) {
-        this.lineaProducto = lineaProducto;
+    public void setLineaGeneral(int lineaGeneral) {
+        this.lineaGeneral = lineaGeneral;
+    }
+
+    public int getLineaEspecifica() {
+        return lineaEspecifica;
+    }
+
+    public void setLineaEspecifica(int lineaEspecifica) {
+        this.lineaEspecifica = lineaEspecifica;
     }
 }

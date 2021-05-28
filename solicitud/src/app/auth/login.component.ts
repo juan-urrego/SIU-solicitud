@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { AuthService } from '../services/login/auth.service';
-import { UserService } from '../services/login/user.service';
+import { AuthService } from './auth.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { LoginUsuario } from '../models/login/login-usuario';
+import { LoginUsuario } from '../shared/models/login/login-usuario';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { first } from 'rxjs/operators';
 
@@ -23,25 +22,31 @@ export class LoginComponent implements OnInit {
   returnUrl : string;
 
   constructor(
-    private userService: UserService,
     private authService: AuthService,
     private router: Router,
     private route : ActivatedRoute,
     private fb: FormBuilder
   ) { 
-
-    if (this.authService.currentUserValue){
-      this.router.navigate(['/']);
+    const user = this.authService.getToken();
+    if (user){
+      this.router.navigate(['/solicitud']);
+      console.log("deberia irmeeeeeee con token");
+      console.log("este es el token");
+      console.log(this.authService.getToken());
+      
+      
+      console.log(this.authService.currentUserValue);
+      
     }
   }
-
+  
   ngOnInit(): void {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       password : ['', [Validators.required]]
     });
 
-    this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
+    this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/solicitud';
   }
 
   onLogin(): void{

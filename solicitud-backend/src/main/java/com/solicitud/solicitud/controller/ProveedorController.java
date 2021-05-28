@@ -47,7 +47,7 @@ public class ProveedorController {
     public ResponseEntity<?> save(@RequestBody ProveedorDto proveedorDto, BindingResult bindingResult){
         if(bindingResult.hasErrors())
             return new ResponseEntity<Mensaje>(new Mensaje("Campos mal puestos"), HttpStatus.BAD_REQUEST);
-        Proveedor proveedor = new Proveedor(proveedorDto.getNombre(), proveedorDto.getNit(), proveedorDto.getTelefono(), proveedorDto.getCiudad());
+        Proveedor proveedor = new Proveedor(proveedorDto.getNombre(), proveedorDto.getIdentificacion(), proveedorDto.getTelefono(), proveedorDto.getCiudad(), proveedorDto.getTipo());
         proveedorService.save(proveedor);
         return new ResponseEntity<Mensaje>(new Mensaje("Proveedor guardado"), HttpStatus.OK);
     }
@@ -58,9 +58,10 @@ public class ProveedorController {
             return new ResponseEntity<Mensaje>(new Mensaje("No existe un proveedor con esa id"), HttpStatus.NOT_FOUND);
         Proveedor proveedor = proveedorService.getOne(id).get();
         proveedor.setNombre(proveedorDto.getNombre());
-        proveedor.setNit(proveedorDto.getNit());
+        proveedor.setIdentificacion(proveedorDto.getIdentificacion());
         proveedor.setTelefono(proveedorDto.getTelefono());
         proveedor.setCiudad(proveedorDto.getCiudad());
+        proveedor.setTipo(proveedorDto.getTipo());
         proveedorService.save(proveedor);
         return new ResponseEntity<Mensaje>(new Mensaje("Proveedor actualizado"), HttpStatus.OK);
     }

@@ -1,0 +1,79 @@
+
+<p-toast></p-toast>
+<p-card header="Grupos" styleClass="p-card-shadow">
+
+    <p-table [value]="grupos">
+        <ng-template pTemplate="header">
+            <tr>                
+                <th>Nombre del grupo</th>
+                <th>Código Colciencias</th>
+                <th>
+                    <button type="button" pButton pRipple icon="pi pi-plus" (click)="openNew()"></button>
+                </th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-grupo let-i="index">
+            <tr>                
+                <td>{{grupo.nombre}}</td>
+                <td>{{grupo.codColciencia}}</td>
+                <td>
+                    <button type="button" pButton pRipple class="p-button-warning p-mr-2" icon="pi pi-pencil" (click)="openNew(grupo)"></button>
+                    <button type="button" pButton pRipple class="p-button-danger p-mr-2" icon="pi pi-trash" (click)="deleteGrupo(grupo)"></button>
+                </td>
+            </tr>
+        </ng-template>
+    </p-table>
+</p-card>
+
+<p-dialog [(visible)]="grupoDialog" [style]="{width: '600px'}"
+          header="Grupo" [modal]="true" styleClass="p-fluid">
+
+          <ng-template pTemplate="content">
+              <form [formGroup]="grupoForm" novalidate>
+                <div class="row">
+                    <div class="col-12 mb-3 form-group">
+        
+                      <label for="nombre" class="col-form-label"><b>Nombre del grupo:</b></label>            
+                      <input id="nombre" class="form-control mb-3"
+                      formControlName="nombre"  rows="5" type="text"
+                      [ngClass]="{'is-invalid': (grupoForm.get('nombre').touched || grupoForm.get('nombre').dirty) && !grupoForm.get('nombre').valid}">
+                      <span class="invalid-feedback">
+                        <span *ngIf="grupoForm.get('nombre').errors?.required">
+                          Por favor ingrese la necesidad.
+                        </span>
+                      </span>
+                      
+                    </div>
+                  </div>
+                <div class="row">
+                    <div class="col-12 mb-3 form-group">
+        
+                      <label for="codColciencia" class="col-form-label"><b>Código colciencia:</b></label>            
+                      <input id="codColciencia" class="form-control mb-3"
+                      formControlName="codColciencia"  rows="5" type="text"
+                      [ngClass]="{'is-invalid': (grupoForm.get('codColciencia').touched || grupoForm.get('codColciencia').dirty) && !grupoForm.get('codColciencia').valid}">
+                      <span class="invalid-feedback">
+                        <span *ngIf="grupoForm.get('codColciencia').errors?.required">
+                          Por favor ingrese la necesidad.
+                        </span>
+                      </span>
+                      
+                    </div>
+                  </div>
+              </form>
+          </ng-template>
+
+          <ng-template pTemplate="footer">      
+            <button pButton pRipple label="Cancel" icon="pi pi-times" 
+            class="p-button-text" (click)="hideDialog()"></button>
+            <button pButton 
+            [disabled]="grupoForm.get('nombre').invalid" 
+            pRipple label="Save" icon="pi pi-check" class="p-button-text" 
+            (click)="saveGrupo()"></button>
+            <button *ngIf="grupoForm.get('id').value != 0" pButton pRipple 
+            label="Delete" icon="pi pi-trash" class="p-button-text" 
+            (click)="deleteGrupo(grupoSelected)"></button>
+          </ng-template>
+
+</p-dialog>
+<p-confirmDialog [style]="{width: '450px'}"></p-confirmDialog>

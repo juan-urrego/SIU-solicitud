@@ -1,9 +1,6 @@
 package com.solicitud.solicitud.dto;
 
-import com.solicitud.solicitud.entity.DetalleTramite;
-import com.solicitud.solicitud.entity.Grupo;
-import com.solicitud.solicitud.entity.Investigador;
-import com.solicitud.solicitud.entity.Precotizacion;
+import com.solicitud.solicitud.entity.*;
 
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotBlank;
@@ -16,6 +13,8 @@ public class SolicitudDto {
 
     @NotBlank
     private int grupo;
+    @NotBlank
+    private int proyecto;
     @NotBlank
     private int investigador;
     @NotBlank
@@ -44,6 +43,15 @@ public class SolicitudDto {
     private Set<DetalleTramiteDto> detalleTramiteDtos = new HashSet<>();
     @NotBlank
     private Set<ArgumentoDto> argumentoDtos = new HashSet<>();
+
+
+    public int getProyecto() {
+        return proyecto;
+    }
+
+    public void setProyecto(int proyecto) {
+        this.proyecto = proyecto;
+    }
 
     public Set<ArgumentoDto> getArgumentoDtos() {
         return argumentoDtos;

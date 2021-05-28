@@ -8,6 +8,7 @@ import com.solicitud.solicitud.service.InvestigadorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -38,7 +39,7 @@ public class InvestigadorController {
         return new ResponseEntity<Investigador>(investigador, HttpStatus.OK);
     }
 
-    @GetMapping("/image/{id}")
+    @GetMapping(value= "/image/{id}", produces = MediaType.IMAGE_JPEG_VALUE)
     public ResponseEntity<?> getImageById(@PathVariable("id") int id){
         if (!investigadorService.existsById(id))
             return new ResponseEntity<Mensaje>(new Mensaje("No existe un investigador con esa id"), HttpStatus.NOT_FOUND);

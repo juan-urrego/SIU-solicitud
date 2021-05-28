@@ -24,6 +24,10 @@ public class GrupoInvestigador {
     @Column(name = "gi_telefono_contacto")
     private String telefonoContacto;
 
+    @ManyToOne
+    @JoinColumn(name = "gi_proyecto_id")
+    private Proyecto proyecto;
+
     @NotNull
     @ManyToOne
     @JoinColumn(name = "gi_grupo_id")
@@ -38,12 +42,13 @@ public class GrupoInvestigador {
     @OneToOne(mappedBy = "grupoInvestigador")
     private Solicitud solicitud;
 
-    public GrupoInvestigador(@NotNull String cargo, @NotNull String nombreContacto, @NotNull String telefonoContacto, @NotNull Grupo grupo, @NotNull Investigador investigador) {
+    public GrupoInvestigador(@NotNull String cargo, @NotNull String nombreContacto, @NotNull String telefonoContacto, @NotNull Grupo grupo, @NotNull Investigador investigador, Proyecto proyecto) {
         this.cargo = cargo;
         this.nomreContacto = nombreContacto;
         this.telefonoContacto = telefonoContacto;
         this.grupo = grupo;
         this.investigador = investigador;
+        this.proyecto = proyecto;
     }
 
     public GrupoInvestigador() {
@@ -103,5 +108,13 @@ public class GrupoInvestigador {
 
     public void setTelefonoContacto(String telefonoContacto) {
         this.telefonoContacto = telefonoContacto;
+    }
+
+    public Proyecto getProyecto() {
+        return proyecto;
+    }
+
+    public void setProyecto(Proyecto proyecto) {
+        this.proyecto = proyecto;
     }
 }
