@@ -1,6 +1,7 @@
 package com.solicitud.solicitud.dto;
 
 import com.solicitud.solicitud.entity.LineaEspecifica;
+import com.solicitud.solicitud.entity.LineaGeneral;
 
 import javax.validation.constraints.NotBlank;
 
@@ -11,9 +12,9 @@ public class DetalleTramiteDto {
     @NotBlank
     private int cantidad;
     @NotBlank
-    private int lineaGeneral;
+    private LineaGeneral lineaGeneral;
     @NotBlank
-    private int lineaEspecifica;
+    private LineaEspecifica lineaEspecifica;
 
     public String getDescripcion() {
         return descripcion;
@@ -31,19 +32,19 @@ public class DetalleTramiteDto {
         this.cantidad = cantidad;
     }
 
-    public int getLineaGeneral() {
+    public LineaGeneral getLineaGeneral() {
         return lineaGeneral;
     }
 
-    public void setLineaGeneral(int lineaGeneral) {
+    public void setLineaGeneral(LineaGeneral lineaGeneral) {
         this.lineaGeneral = lineaGeneral;
     }
 
-    public int getLineaEspecifica() {
+    public LineaEspecifica getLineaEspecifica() {
         return lineaEspecifica;
     }
 
-    public void setLineaEspecifica(int lineaEspecifica) {
+    public void setLineaEspecifica(LineaEspecifica lineaEspecifica) {
         this.lineaEspecifica = lineaEspecifica;
     }
 }

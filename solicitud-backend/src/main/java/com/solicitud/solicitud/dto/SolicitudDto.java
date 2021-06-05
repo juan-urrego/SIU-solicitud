@@ -12,11 +12,11 @@ public class SolicitudDto {
 
 
     @NotBlank
-    private int grupo;
+    private Grupo grupo;
     @NotBlank
-    private int proyecto;
+    private Proyecto proyecto;
     @NotBlank
-    private int investigador;
+    private Investigador investigador;
     @NotBlank
     private String cargo;
     @NotBlank
@@ -36,44 +36,44 @@ public class SolicitudDto {
     @NotBlank
     private String observacion;
     @NotBlank
-    private Set<PrecotizacionDto> precotizacionDtos = new HashSet<>();
+    private Set<Precotizacion> precotizacionDtos = new HashSet<>();
     @NotBlank
-    private PrecotizacionDto precotizacionDto;
+    private Precotizacion precotizacionDto;
     @NotBlank
-    private Set<DetalleTramiteDto> detalleTramiteDtos = new HashSet<>();
+    private Set<DetalleTramite> detalleTramiteDtos = new HashSet<>();
     @NotBlank
-    private Set<ArgumentoDto> argumentoDtos = new HashSet<>();
+    private Set<Argumento> argumentoDtos = new HashSet<>();
 
 
-    public int getProyecto() {
+    public Proyecto getProyecto() {
         return proyecto;
     }
 
-    public void setProyecto(int proyecto) {
+    public void setProyecto(Proyecto proyecto) {
         this.proyecto = proyecto;
     }
 
-    public Set<ArgumentoDto> getArgumentoDtos() {
+    public Set<Argumento> getArgumentoDtos() {
         return argumentoDtos;
     }
 
-    public void setArgumentoDtos(Set<ArgumentoDto> argumentoDtos) {
+    public void setArgumentoDtos(Set<Argumento> argumentoDtos) {
         this.argumentoDtos = argumentoDtos;
     }
 
-    public int getGrupo() {
+    public Grupo getGrupo() {
         return grupo;
     }
 
-    public void setGrupo(int grupo) {
+    public void setGrupo(Grupo grupo) {
         this.grupo = grupo;
     }
 
-    public int getInvestigador() {
+    public Investigador getInvestigador() {
         return investigador;
     }
 
-    public void setInvestigador(int investigador) {
+    public void setInvestigador(Investigador investigador) {
         this.investigador = investigador;
     }
 
@@ -149,27 +149,27 @@ public class SolicitudDto {
         this.observacion = observacion;
     }
 
-    public Set<PrecotizacionDto> getPrecotizacionDtos() {
+    public Set<Precotizacion> getPrecotizacionDtos() {
         return precotizacionDtos;
     }
 
-    public void setPrecotizacionDtos(Set<PrecotizacionDto> precotizacionDtos) {
+    public void setPrecotizacionDtos(Set<Precotizacion> precotizacionDtos) {
         this.precotizacionDtos = precotizacionDtos;
     }
 
-    public PrecotizacionDto getPrecotizacionDto() {
+    public Precotizacion getPrecotizacionDto() {
         return precotizacionDto;
     }
 
-    public void setPrecotizacionDto(PrecotizacionDto precotizacionDto) {
+    public void setPrecotizacionDto(Precotizacion precotizacionDto) {
         this.precotizacionDto = precotizacionDto;
     }
 
-    public Set<DetalleTramiteDto> getDetalleTramiteDtos() {
+    public Set<DetalleTramite> getDetalleTramiteDtos() {
         return detalleTramiteDtos;
     }
 
-    public void setDetalleTramiteDtos(Set<DetalleTramiteDto> detalleTramiteDtos) {
+    public void setDetalleTramiteDtos(Set<DetalleTramite> detalleTramiteDtos) {
         this.detalleTramiteDtos = detalleTramiteDtos;
     }
 }

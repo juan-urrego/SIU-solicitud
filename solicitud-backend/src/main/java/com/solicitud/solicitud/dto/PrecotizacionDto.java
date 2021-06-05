@@ -13,17 +13,11 @@ public class PrecotizacionDto {
     private int valorTotal;
     @NotBlank
     private int valorIva;
-    @NotBlank
     private int proveedorId;
-    @NotBlank
     private String nombreProveedor;
-    @NotBlank
     private String nitProveedor;
-    @NotBlank
     private String telefonoProveedor;
-    @NotBlank
     private String ciudadProveedor;
-    @NotBlank
     private String tipoIdentificacion;
     @NotBlank
     private Set<ArgumentoDto> argumentoDtos = new HashSet<>();

@@ -39,11 +39,10 @@ public class Precotizacion {
     @OneToMany(mappedBy = "precotizacion", cascade = CascadeType.ALL)
     private Set<Argumento> argumentos;
 
-    public Precotizacion(@NotNull int valorTotal, @NotNull int valorIva, @NotNull Proveedor proveedor, Solicitud solicitud) {
+    public Precotizacion(@NotNull int valorTotal, @NotNull int valorIva, @NotNull Proveedor proveedor) {
         this.valorTotal = valorTotal;
         this.valorIva = valorIva;
         this.proveedor = proveedor;
-        this.solicitud = solicitud;
     }
 
     public Precotizacion() {

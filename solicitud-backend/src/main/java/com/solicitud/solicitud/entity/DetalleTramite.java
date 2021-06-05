@@ -30,7 +30,7 @@ public class DetalleTramite {
     private Solicitud solicitud;
 
     @ManyToOne
-    @JsonIgnoreProperties({"detalleTramites", "lineaEspecificas"})
+    @JsonIgnoreProperties({"detalleTramites"})
     @JoinColumn(name = "det_general_id")
     private LineaGeneral lineaGeneral;
 

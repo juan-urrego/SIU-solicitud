@@ -77,6 +77,7 @@ public class Solicitud {
         this.verificacion = verificacion;
         this.observacion = observacion;
         this.grupoInvestigador = grupoInvestigador;
+        this.precotizaciones = precotizaciones;
         this.estado = estado;
     }
 

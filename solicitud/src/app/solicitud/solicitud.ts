@@ -15,5 +15,5 @@ export interface Solicitud {
     estado : Estado,
     precotizaciones : Precotizacion[],
     precotizacionElegida : Precotizacion,
-    detalleTramites : DetalleTramite
+    detalleTramites : DetalleTramite[]
 }

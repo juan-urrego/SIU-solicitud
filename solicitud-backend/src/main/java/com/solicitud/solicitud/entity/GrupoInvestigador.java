@@ -19,12 +19,13 @@ public class GrupoInvestigador {
     private String cargo;
     @NotNull
     @Column(name = "gi_nombre_contacto")
-    private String nomreContacto;
+    private String nombreContacto;
     @NotNull
     @Column(name = "gi_telefono_contacto")
     private String telefonoContacto;
 
     @ManyToOne
+    @NotNull
     @JoinColumn(name = "gi_proyecto_id")
     private Proyecto proyecto;
 
@@ -44,7 +45,7 @@ public class GrupoInvestigador {
 
     public GrupoInvestigador(@NotNull String cargo, @NotNull String nombreContacto, @NotNull String telefonoContacto, @NotNull Grupo grupo, @NotNull Investigador investigador, Proyecto proyecto) {
         this.cargo = cargo;
-        this.nomreContacto = nombreContacto;
+        this.nombreContacto = nombreContacto;
         this.telefonoContacto = telefonoContacto;
         this.grupo = grupo;
         this.investigador = investigador;
@@ -94,12 +95,12 @@ public class GrupoInvestigador {
         this.solicitud = solicitud;
     }
 
-    public String getNomreContacto() {
-        return nomreContacto;
+    public String getNombreContacto() {
+        return nombreContacto;
     }
 
     public void setNomreContacto(String nomreContacto) {
-        this.nomreContacto = nomreContacto;
+        this.nombreContacto = nomreContacto;
     }
 
     public String getTelefonoContacto() {

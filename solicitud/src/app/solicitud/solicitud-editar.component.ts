@@ -17,6 +17,9 @@ import { Parametro } from '../configuracion/parametro/parametro';
 import { LineaGeneralService } from '../configuracion/linea-general/lineaGeneral.service';
 import { LineaGeneral } from '../configuracion/linea-general/lineaGeneral';
 import { lineaEspecifica } from '../configuracion/linea-general/lineaEspecifica';
+import { ParametroArgumentoService } from '../configuracion/parametro/argumento/parametroArgumento.service';
+import { ParametroObservacionService } from '../configuracion/parametro/observacion/parametroObservacion.service';
+import { DetalleTramite } from './detalleTramite';
 
 @Component({
     templateUrl: 'solicitud-editar.component.html',
@@ -38,6 +41,7 @@ export class SolicitudEditarComponent implements OnInit, OnDestroy {
     investigadores: Investigador[];
     proveedores: Proveedor[];
     proyectos: Proyecto[];
+    argumentos: Parametro[];
     lineasGenerales: LineaGeneral[];
     proveedor: Proveedor;
     grupoSelected: any = {};
@@ -49,6 +53,8 @@ export class SolicitudEditarComponent implements OnInit, OnDestroy {
     lineaSelected: any = {};
     investigadorSelected: any = {identificacion: ''};
     parametroNecesidad: any = {};
+    parametroObservacion: any = {};
+    isNew = false;
     
     tipoTramites = ['Nacional', 'Internacional'];
 
@@ -57,6 +63,9 @@ export class SolicitudEditarComponent implements OnInit, OnDestroy {
     }
     get precotizacionDtos(): FormArray {
         return this.solicitudForm.get('precotizacionDtos') as FormArray;
+    }
+    get argumentoDtos(): FormArray {
+        return this.solicitudForm.get('argumentoDtos') as FormArray;
     }
     
 
@@ -72,7 +81,9 @@ export class SolicitudEditarComponent implements OnInit, OnDestroy {
         private proveedorService: ProveedorService,
         private investigadorService: InvestigadorService,
         private parametroNecesidadService: ParametroNecesidadService,
-        private lineaGeneralService: LineaGeneralService) { }
+        private lineaGeneralService: LineaGeneralService,
+        private parametroArgumentoService: ParametroArgumentoService,
+        private parametroObservacionService: ParametroObservacionService) { }
 
     ngOnInit() {        
         this.getGrupos();
@@ -80,7 +91,9 @@ export class SolicitudEditarComponent implements OnInit, OnDestroy {
         this.getInvestigadores();
         this.getParametroNecesidad();
         this.getLineaGeneral();
-
+        this.getParametroArgumento();
+        this.getParametroObservacion();
+        
         this.sub = this.route.paramMap.subscribe(
             params => {
                 const id = +params.get('id');
@@ -97,27 +110,30 @@ export class SolicitudEditarComponent implements OnInit, OnDestroy {
             tipoTramite: '',
             grupo: '',
             investigador: '',
+            _identificacion_investigador: {value: '', disabled: true},
             nombreContacto: '',
             telefonoContacto: '',
             cargo: '',
             necesidad: '',
-            proyecto: '',
+            proyecto: {value: '', disabled: true},
+            _codigo_proyecto: {value: '', disabled: true},
+            _centro_costos_proyecto: {value: '', disabled: true},
             fecha: [new Date(), [Validators.required]],            
-            detalleTramiteDtos: this.fb.array([this.buildDetails()]),
-            valor: '',
-            verificacion: '',
-            precotizacionDtos: this.fb.array([this.buildPrecotizacion()]),
-
-            descripcion: ['', [Validators.required]],
+            detalleTramiteDtos: this.fb.array([]),
+            valor: null,
+            verificacion: 'si',
+            precotizacionDtos: this.fb.array([]),
+            precotizacionDto: '',
+            _valor_selected: {value: '', disabled: true},            
+            argumentoDtos: this.fb.array([]),            
             observacion: ['', [Validators.required]]
         });
 
-
-        if (this.agregarSolicitud) {
-            // this.addPrecotizacion();
-            // this.solicitudForm.patchValue({fecha:  (this.getDate())})
+        if (this.agregarSolicitud){
+            this.addDetails();
+            this.addPrecotizacion();
+            this.addArgumento();
         }
-
 
     }
 
@@ -128,7 +144,7 @@ export class SolicitudEditarComponent implements OnInit, OnDestroy {
     buildDetails() {
         return this.fb.group({
             lineaGeneral: '',
-            lineaEspecifica: '',
+            lineaEspecifica: {value: '', disabled: true},
             descripcion: '',
             cantidad: ''
         });
@@ -140,46 +156,115 @@ export class SolicitudEditarComponent implements OnInit, OnDestroy {
 
     deleteDetails(index: number) {
         this.detalleTramiteDtos.removeAt(index);
+        this.solicitudForm.markAsDirty();
     }
 
-
-    update(id) {
-        this.grupoService.getGrupo(id).subscribe({
-            next: grupo => {
-                this.grupo = grupo;
-                this.solicitudForm.controls['investigador'].get('idInvestigador').enable();
-            },
-            error: err => this.mensajeError = err
-        });
-        // console.log(this.solicitudForm.controls['investigador'].get('identificacion').value);
-    }
-
-    updateInvestigador(id) {
-        this.investigadorService.getInvestigador(id).subscribe({
-            next: investigador => {
-                this.investigador = investigador;
-                this.solicitudForm.controls['investigador'].get('identificacion').setValue(this.investigador.identificacion);
-                this.solicitudForm.controls['investigador'].get('telefono').setValue(this.investigador.telefono);
-            },
-            error: err => this.mensajeError = err
+    buildPrecotizacion(): FormGroup {
+        return this.fb.group({            
+            proveedor: '',
+            _identificacion_proveedor: {value: '', disabled: true},
+            _telefono_proveedor: {value: '', disabled: true},
+            _ciudad_proveedor: {value: '', disabled: true},
+            valorTotal: null,
+            valorIva: null            
         });
     }
 
-    updateProveedor(id, address) {
-        console.log(address);
+    addPrecotizacion(): void {        
+        this.precotizacionDtos.push(this.buildPrecotizacion());
+    }
 
+    deletePrecotizacion(index: number) {
+        this.precotizacionDtos.removeAt(index);
+        this.precotizacionDtos.markAsDirty();
+    }
 
-
-        this.proveedorService.getProveedor(id).subscribe({
-            next: proveedor => {
-                this.proveedor = proveedor;
-                address.get('proveedor').controls['telefono'].setValue(this.proveedor.telefono);
-                address.get('proveedor').controls['nit'].setValue(this.proveedor.identificacion);
-            },
-            error: err => this.mensajeError = err
+    buildArgumentos() {
+        return this.fb.group({
+            descripcion: ''
         });
     }
 
+    addArgumento() {
+        this.argumentoDtos.push(this.buildArgumentos());
+    }
+
+    deleteArgumento(index: number) {
+        this.argumentoDtos.removeAt(index);
+        this.solicitudForm.markAsDirty();
+    }
+
+    displaySolicitud(solicitud: Solicitud): void {
+        
+        this.solicitud = solicitud;
+        console.log(this.solicitud);                
+        this.title = `Editar solicitud: ${this.solicitud.id}`;
+        
+        
+        this.parametroNecesidad.descripcion = this.solicitud.necesidad;        
+            
+        if (this.solicitud.grupoInvestigador.proyecto) {            
+            this.displayProyectos();      
+        }
+        this.solicitud.detalleTramites.forEach(detalle => {
+            let newDetail = this.buildDetails();
+            newDetail.get('lineaGeneral').setValue(detalle.lineaGeneral)
+            this.displayLineasEspecificas(newDetail);
+            newDetail.patchValue({                
+                lineaEspecifica: detalle.lineaEspecifica,
+                descripcion: detalle.descripcion,
+                cantidad: detalle.cantidad
+            });
+            console.log(newDetail.get('lineaEspecifica').value);            
+            console.log(detalle.lineaEspecifica);            
+            this.detalleTramiteDtos.push(newDetail);
+        });
+
+        this.solicitud.precotizaciones.forEach(precotizacion => {
+            let newPrecotizacion = this.buildPrecotizacion();
+            newPrecotizacion.patchValue({
+                proveedor: precotizacion.proveedor,
+                _identificacion_proveedor: precotizacion.proveedor.identificacion,
+                _telefono_proveedor: precotizacion.proveedor.telefono,
+                _ciudad_proveedor: precotizacion.proveedor.ciudad,
+                valorTotal: precotizacion.valorTotal,
+                valorIva: precotizacion.valorIva  
+            });
+            this.precotizacionDtos.push(newPrecotizacion);
+        });
+
+        
+
+        this.solicitud.precotizacionElegida.argumentos.forEach(argumento => {
+            let newArgumento = this.buildArgumentos();
+            newArgumento.patchValue({
+                descripcion: argumento.descripcion
+            });
+            this.argumentoDtos.push(newArgumento);
+        });
+        
+        
+
+        this.solicitudForm.patchValue({
+            tipoTramite: this.solicitud.tipoTramite,
+            grupo: this.solicitud.grupoInvestigador.grupo,
+            investigador: this.solicitud.grupoInvestigador.investigador,
+            _identificacion_investigador: this.solicitud.grupoInvestigador.investigador.identificacion,
+            nombreContacto: this.solicitud.grupoInvestigador.nombreContacto,
+            telefonoContacto: this.solicitud.grupoInvestigador.telefonoContacto,
+            cargo: this.solicitud.grupoInvestigador.cargo,
+            necesidad: this.solicitud.necesidad,
+            proyecto: this.solicitud.grupoInvestigador.proyecto,
+            _codigo_proyecto: this.solicitud.grupoInvestigador.proyecto.codigoProyecto,
+            _centro_costos_proyecto: this.solicitud.grupoInvestigador.proyecto.centroCostos,            
+            valor: this.solicitud.valor,
+            verificacion: this.solicitud.verificacion,            
+            precotizacionDto: this.solicitud.precotizacionElegida,
+            _valor_selected: this.solicitud.precotizacionElegida.valorTotal,                        
+            observacion: this.solicitud.observacion
+        });
+                        
+    }
 
     getSolicitud(id: number) {
         this.solicitudService.getSolicitud(id).subscribe({
@@ -202,61 +287,9 @@ export class SolicitudEditarComponent implements OnInit, OnDestroy {
         }
     }
 
-    deletePrecotizacion(index: number) {
-        this.precotizacionDtos.removeAt(index);
-        this.precotizacionDtos.markAsDirty();
-    }
-
     onSaveComplete(): void {
         this.solicitudForm.reset();
         this.router.navigate(['/solicitud']);
-    }
-
-    displaySolicitud(solicitud: Solicitud): void {
-        if (this.solicitudForm) {
-            this.solicitudForm.reset();
-        }
-        this.solicitud = solicitud;
-
-        if (this.solicitud.id === 0) {
-            this.title = "Agregar solicitud";
-        } else {
-            this.title = `Editar solicitud: ${this.solicitud.id}`;
-            this.solicitudForm.controls['investigador'].get('idInvestigador').enable();
-            this.update(this.solicitud.grupoInvestigador.investigador.id)
-            this.updateInvestigador(this.solicitud.grupoInvestigador.investigador.id)
-        }
-        this.solicitudForm.patchValue({
-            grupo: { idGrupo: this.solicitud.grupoInvestigador.grupo.id },
-            investigador: { idInvestigador: this.solicitud.grupoInvestigador.investigador.id },
-            cargo: this.solicitud.grupoInvestigador.cargo,
-            nombreProyecto: this.solicitud.grupoInvestigador.nombreContacto,
-            // rubro: this.solicitud.rubro,
-            // subrubro: this.solicitud.subrubro,
-            // financiador: this.solicitud.financiador,
-            // centroCostos: this.solicitud.centroCostos,
-            fecha: this.solicitud.fecha,
-            necesidad: this.solicitud.necesidad,
-            descripcion: this.solicitud.observacion,
-            valor: this.solicitud.valor,
-            verificacion: this.solicitud.verificacion,
-            observacion: this.solicitud.observacion
-
-        });
-        let control = <FormArray>this.solicitudForm.controls['precotizaciones']
-        this.proveedorExisting = true;
-        console.log(this.solicitudForm.controls['precotizaciones']);
-        // for (let i = 0; i < this.solicitud.precotizaciones.length; i++) {
-        //     // control.push(this.fb.group(this.solicitud.precotizaciones[i]));
-        //     control.push(this.fb.group({
-        //         proveedor: this.fb.group({
-        //             idProveedor: this.solicitud.precotizaciones[i].proveedor.id,
-        //             telefono: this.solicitud.precotizaciones[i].proveedor.telefono,
-        //             nit: this.solicitud.precotizaciones[i].proveedor.identificacion
-        //         }),
-        //         valor: this.solicitud.precotizaciones[i].valorTotal
-        //     }));
-        // }
     }
 
     saveSolicitud(): void {
@@ -299,6 +332,74 @@ export class SolicitudEditarComponent implements OnInit, OnDestroy {
             this.mensajeError = 'Verificar los errores de validacion'
         }
     }
+    
+    displayProyectos() {
+        this.solicitudForm.get('proyecto').enable();
+    }
+
+    displayProyecto(proyectoSelected: Proyecto) {
+        this.solicitudForm.get('_codigo_proyecto').setValue(proyectoSelected.codigoProyecto);
+        this.solicitudForm.get('_centro_costos_proyecto').setValue(proyectoSelected.centroCostos);        
+    }
+
+    displayValorSelected() {
+        this.solicitudForm.get('_valor_selected').setValue(this.solicitudForm.get('precotizacionDto').value.valorTotal)
+    }
+
+    displayInvestigador(investigadorSelected: Investigador) {
+        this.solicitudForm.get('_identificacion_investigador').setValue(investigadorSelected.identificacion);
+    }
+
+    displayLineasEspecificas(detalleSeleted : FormGroup) {
+        if(detalleSeleted.controls['lineaGeneral'].value){
+            detalleSeleted.controls['lineaEspecifica'].enable();            
+        }
+    }
+
+    displayProveedor(precotizacionSelected: FormGroup){
+        if(precotizacionSelected.controls['proveedor'].value){
+            precotizacionSelected.controls['_identificacion_proveedor'].setValue(precotizacionSelected.controls['proveedor'].value.identificacion);
+            precotizacionSelected.controls['_telefono_proveedor'].setValue(precotizacionSelected.controls['proveedor'].value.telefono);
+            precotizacionSelected.controls['_ciudad_proveedor'].setValue(precotizacionSelected.controls['proveedor'].value.ciudad);
+        }
+    }
+
+
+    getParametroNecesidad(){
+        return this.parametroNecesidadService.getParametroNecesidadActivo().subscribe({
+            next: parametro => {
+                this.parametroNecesidad = parametro;
+                this.solicitudForm.get('necesidad').setValue(this.parametroNecesidad.descripcion);
+            },
+            error: error => this.mensajeError = error
+        });
+    }
+
+    getParametroObservacion(){
+        return this.parametroObservacionService.getParametroObservacionActivo().subscribe({
+            next: parametro => {
+                this.parametroObservacion = parametro;
+                this.solicitudForm.get('observacion').setValue(this.parametroObservacion.descripcion);
+            },
+            error: error => this.mensajeError = error
+        });
+    }
+
+    getParametroArgumento(){
+        return this.parametroArgumentoService.getParametroArgumentos().subscribe({
+            next: parametros => this.argumentos = parametros,
+            error: error => this.mensajeError = error
+        });
+    }
+
+    getProveedores() {
+        return this.proveedorService.getProveedores().subscribe({
+            next: proveedores => {
+                this.proveedores = proveedores;                
+            },
+            error: error => this.mensajeError = error
+        });
+    }
 
     getGrupos() {
         return this.grupoService.getGrupos().subscribe({
@@ -320,71 +421,4 @@ export class SolicitudEditarComponent implements OnInit, OnDestroy {
             error: error => this.mensajeError = error
         })
     }
-
-    getProyectos(id) {                
-        this.grupoSelected = this.grupos.find(t => t.id == id);                                
-        this.proyectos = this.grupoSelected.proyectos;        
-    }
-
-    getProyecto(id) {
-        this.proyectoSelected = this.grupoSelected.proyectos.find(t => t.id == id);        
-    }
-
-    geIdentificacion(id) {
-        this.investigadorSelected = this.investigadores.find(t => t.id == id);
-        console.log(this.investigadorSelected);
-        
-    }
-
-    getLineasEspecificas(id : number): lineaEspecifica[] {
-        if(id){         
-            return this.lineasGenerales.find(t => t.id == id).lineaEspecificas;
-        }
-    }
-
-    getLinea(str: number) {
-        return this.lineasEspecificas.filter(t => t.id === str)
-    }
-
-    getParametroNecesidad(){
-        return this.parametroNecesidadService.getParametroNecesidadActivo().subscribe({
-            next: parametro => {
-                this.parametroNecesidad = parametro;
-                this.solicitudForm.get('necesidad').setValue(this.parametroNecesidad.descripcion);
-            },
-            error: error => this.mensajeError = error
-        });
-    }
-
-    getProveedores() {
-        return this.proveedorService.getProveedores().subscribe({
-            next: proveedores => this.proveedores = proveedores,
-            error: error => this.mensajeError = error
-        });
-    }
-
-
-
-    addPrecotizacion(): void {
-        this.precotizacionDtos.push(this.buildPrecotizacion());
-
-    }
-
-    buildPrecotizacion(): FormGroup {
-        return this.fb.group({
-            proveedor: this.fb.group({
-                id: '',
-                nombre: '',
-                nit: '',
-                telefono: '',
-                ciudad: '',
-                tipo: '',
-                // telefono: {value: '', disabled:true} ,
-                // nit:{value: '', disabled:true}
-            }),
-            valorTotal: '',
-            valorIva: ''            
-        })
-    }
-
 }

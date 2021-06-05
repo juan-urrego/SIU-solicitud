@@ -57,6 +57,9 @@ public class SolicitudController {
     ConsultaService consultaService;
 
     @Autowired
+    ProyectoService proyectoService;
+
+    @Autowired
     GrupoInvestigadorService grupoInvestigadorService;
 
     @Autowired
@@ -98,10 +101,10 @@ public class SolicitudController {
     public ResponseEntity<?> save(@RequestBody SolicitudDto solicitudDto, BindingResult bindingResult){
         if(bindingResult.hasErrors())
             return new ResponseEntity<Mensaje>(new Mensaje("Campos mal puestos"), HttpStatus.BAD_REQUEST);
-        Grupo grupo = grupoService.getOne(solicitudDto.getGrupo()).get();
-        Investigador investigador = investigadorService.getOne(solicitudDto.getInvestigador()).get();
+        if(solicitudDto.getPrecotizacionDtos().contains(solicitudDto.getPrecotizacionDto()))
+            return new ResponseEntity<Mensaje>(new Mensaje("La precotizacion elegida no coincide con las precotizaciones diligenciada"), HttpStatus.BAD_REQUEST);
         Estado estado = estadoService.getByEstadoNombre(EstadoNombre.CREADA).get();
-        GrupoInvestigador grupoInvestigador = new GrupoInvestigador(solicitudDto.getCargo(), solicitudDto.getNombreContacto(), solicitudDto.getTelefonoContacto(), grupo, investigador, grupo.getProyectoById(solicitudDto.getProyecto()));
+        GrupoInvestigador grupoInvestigador = new GrupoInvestigador(solicitudDto.getCargo(), solicitudDto.getNombreContacto(), solicitudDto.getTelefonoContacto(), solicitudDto.getGrupo(), solicitudDto.getInvestigador(), solicitudDto.getProyecto());
 
         Solicitud solicitud = new Solicitud(solicitudDto.getTipoTramite(),
                 solicitudDto.getNecesidad(),
@@ -114,38 +117,60 @@ public class SolicitudController {
                 );
 
         Set<Precotizacion> precotizaciones = new HashSet<>();
-        solicitudDto.getPrecotizacionDtos().forEach((precotizacionx) ->{
-            Proveedor proveedor1 = proveedorService.getOne(precotizacionx.getProveedorId()).get();
-            Precotizacion precotizacion = new Precotizacion(precotizacionx.getValorTotal(), precotizacionx.getValorIva(), proveedor1, solicitud);
-            if (precotizacionx.getProveedorId() == 0){
-                Proveedor proveedor = new Proveedor(precotizacionx.getNombreProveedor(), precotizacionx.getNitProveedor(), precotizacionx.getTelefonoProveedor(), precotizacionx.getCiudadProveedor(), precotizacionx.getTipoIdentificacion());
-                proveedorService.save(proveedor);
-                precotizacion.setProveedor(proveedor);
+        solicitudDto.getPrecotizacionDtos().forEach(precotizacion -> {
+            precotizacion.setSolicitud(solicitud);
+            solicitudDto.getDetalleTramiteDtos().forEach(detalleTramite -> {
+                detalleTramite.setSolicitud(solicitud);
+            });
+            if((precotizacion.getValorTotal() == solicitudDto.getPrecotizacionDto().getValorTotal()) && (precotizacion.getValorIva() == solicitudDto.getPrecotizacionDto().getValorIva())){
+                precotizacion.setArgumentos(solicitudDto.getArgumentoDtos());
+                solicitud.setPrecotizacionElegida(precotizacion);
             }
-            if((precotizacionx.getValorTotal() == solicitudDto.getPrecotizacionDto().getValorTotal()) && (precotizacionx.getValorIva() == solicitudDto.getPrecotizacionDto().getValorIva())){
-                Set<Argumento> argumentos = new HashSet<>();
-                solicitudDto.getArgumentoDtos().forEach((argumentosx) ->{
-                    solicitud.setPrecotizacionElegida(precotizacion);
-                    Argumento argumento = new Argumento(argumentosx.getDescripcion(), precotizacion);
-                    argumentos.add(argumento);
-                });
-                precotizacion.setArgumentos(argumentos);
-            }
-            precotizaciones.add(precotizacion);
         });
+
+
+//        solicitudDto.getPrecotizacionDtos().forEach((precotizacionx) ->{
+//            Precotizacion precotizacion = new Precotizacion(precotizacionx.getValorTotal(), precotizacionx.getValorIva(), null, solicitud);
+//            Proveedor proveedor;
+//            if (precotizacionx.getProveedorId() == 0){
+//                proveedor = new Proveedor(precotizacionx.getNombreProveedor(), precotizacionx.getNitProveedor(), precotizacionx.getTelefonoProveedor(), precotizacionx.getCiudadProveedor(), precotizacionx.getTipoIdentificacion());
+//                proveedorService.save(proveedor);
+//            }else{
+//                proveedor = proveedorService.getOne(precotizacionx.getProveedorId()).get();
+//            }
+//            precotizacion.setProveedor(proveedor);
+//            if((precotizacionx.getValorTotal() == solicitudDto.getPrecotizacionDto().getValorTotal()) && (precotizacionx.getValorIva() == solicitudDto.getPrecotizacionDto().getValorIva())){
+//                Set<Argumento> argumentos = new HashSet<>();
+//                solicitudDto.getArgumentoDtos().forEach((argumentosx) ->{
+//                    solicitud.setPrecotizacionElegida(precotizacion);
+//                    Argumento argumento = new Argumento(argumentosx.getDescripcion(), precotizacion);
+//                    argumentos.add(argumento);
+//                });
+//                precotizacion.setArgumentos(argumentos);
+//            }
+//            precotizaciones.add(precotizacion);
+//        });
+
 
         Set<DetalleTramite> detalleTramites = new HashSet<>();
         Set<ProveedorDetalle> proveedorDetalles = new HashSet<>();
-        solicitudDto.getDetalleTramiteDtos().forEach((detalleTramitesx) ->{
-            LineaGeneral lineaGeneral = lineaGeneralService.getOne(detalleTramitesx.getLineaGeneral()).get();
-            DetalleTramite detalleTramite = new DetalleTramite(detalleTramitesx.getDescripcion(), detalleTramitesx.getCantidad(), lineaGeneral, solicitud, lineaGeneral.getLineaEspecificaById(detalleTramitesx.getLineaEspecifica()));
-            ProveedorDetalle proveedorDetalle = new ProveedorDetalle(detalleTramite, solicitud.getPrecotizacionElegida().getProveedor());
-            proveedorDetalles.add(proveedorDetalle);
+//        solicitudDto.getDetalleTramiteDtos().forEach((detalleTramitesx) ->{
+//            DetalleTramite detalleTramite = new DetalleTramite(detalleTramitesx.getDescripcion(), detalleTramitesx.getCantidad(), detalleTramitesx.getLineaGeneral(), solicitud, detalleTramitesx.getLineaEspecifica());
+//            ProveedorDetalle proveedorDetalle = new ProveedorDetalle(detalleTramite, solicitud.getPrecotizacionElegida().getProveedor());
+//            proveedorDetalles.add(proveedorDetalle);
+//            detalleTramite.setProveedorDetalles(proveedorDetalles);
+//            detalleTramites.add(detalleTramite);
+//        });
+        solicitudDto.getDetalleTramiteDtos().forEach(detalleTramite -> {
+            solicitudDto.getPrecotizacionDtos().forEach(precotizacion -> {
+                ProveedorDetalle proveedorDetalle = new ProveedorDetalle(detalleTramite, precotizacion.getProveedor());
+                proveedorDetalles.add(proveedorDetalle);
+            });
             detalleTramite.setProveedorDetalles(proveedorDetalles);
-            detalleTramites.add(detalleTramite);
+            detalleTramite.setSolicitud(solicitud);
         });
-        solicitud.setPrecotizaciones(precotizaciones);
-        solicitud.setDetalleTramites(detalleTramites);
+        solicitud.setPrecotizaciones(solicitudDto.getPrecotizacionDtos());
+        solicitud.setDetalleTramites(solicitudDto.getDetalleTramiteDtos());
         solicitudService.save(solicitud);
         return new ResponseEntity<Mensaje>(new Mensaje("Solicitud guardada"), HttpStatus.OK);
     }
@@ -158,10 +183,8 @@ public class SolicitudController {
             return new ResponseEntity<Mensaje>(new Mensaje("Debe poner por lo menos 1 precotizacion"), HttpStatus.BAD_REQUEST);
         if (solicitudDto.getArgumentoDtos().isEmpty())
             return new ResponseEntity<Mensaje>(new Mensaje("Debe poner por lo menos 1 argumento de la precotizacion elegida"), HttpStatus.BAD_REQUEST);
-        Grupo grupo = grupoService.getOne(solicitudDto.getGrupo()).get();
-        Investigador investigador = investigadorService.getOne(solicitudDto.getInvestigador()).get();
         Estado estado = estadoService.getByEstadoNombre(EstadoNombre.CREADA).get();
-        GrupoInvestigador grupoInvestigador = new GrupoInvestigador(solicitudDto.getCargo(), solicitudDto.getNombreContacto(), solicitudDto.getTelefonoContacto(), grupo, investigador, grupo.getProyectoById(solicitudDto.getProyecto()));
+        GrupoInvestigador grupoInvestigador = new GrupoInvestigador(solicitudDto.getCargo(), solicitudDto.getNombreContacto(), solicitudDto.getTelefonoContacto(), solicitudDto.getGrupo(), solicitudDto.getInvestigador(), solicitudDto.getProyecto());
 
         Solicitud solicitud = solicitudService.getOne(id).get();
         solicitud.setTipoTramite(solicitudDto.getTipoTramite());
@@ -176,30 +199,30 @@ public class SolicitudController {
 
         Set<Precotizacion> precotizaciones = new HashSet<>();
         Set<ProveedorDetalle> proveedorDetalles = new HashSet<>();
-        solicitudDto.getPrecotizacionDtos().forEach((precotizacionx) ->{
-            Proveedor proveedor1 = proveedorService.getOne(precotizacionx.getProveedorId()).get();
-            Precotizacion precotizacion = new Precotizacion(precotizacionx.getValorTotal(), precotizacionx.getValorIva(), proveedor1, solicitud);
-            if (precotizacionx.getProveedorId() == 0){
-                Proveedor proveedor = new Proveedor(precotizacionx.getNombreProveedor(), precotizacionx.getNitProveedor(), precotizacionx.getTelefonoProveedor(), precotizacionx.getCiudadProveedor(), precotizacionx.getTipoIdentificacion());
-                proveedorService.save(proveedor);
-                precotizacion.setProveedor(proveedor);
-            }
-            if((precotizacionx.getValorTotal() == solicitudDto.getPrecotizacionDto().getValorTotal()) && (precotizacionx.getValorIva() == solicitudDto.getPrecotizacionDto().getValorIva())){
-                Set<Argumento> argumentos = new HashSet<>();
-                solicitudDto.getArgumentoDtos().forEach((argumentosx) ->{
-                    solicitud.setPrecotizacionElegida(precotizacion);
-                    Argumento argumento = new Argumento(argumentosx.getDescripcion(), precotizacion);
-                    argumentos.add(argumento);
-                });
-                precotizacion.setArgumentos(argumentos);
-            }
-            precotizaciones.add(precotizacion);
-        });
+//        solicitudDto.getPrecotizacionDtos().forEach((precotizacionx) ->{
+//            Proveedor proveedor1 = proveedorService.getOne(precotizacionx.getProveedorId()).get();
+//            Precotizacion precotizacion = new Precotizacion(precotizacionx.getValorTotal(), precotizacionx.getValorIva(), proveedor1, solicitud);
+//            if (precotizacionx.getProveedorId() == 0){
+//                Proveedor proveedor = new Proveedor(precotizacionx.getNombreProveedor(), precotizacionx.getNitProveedor(), precotizacionx.getTelefonoProveedor(), precotizacionx.getCiudadProveedor(), precotizacionx.getTipoIdentificacion());
+//                proveedorService.save(proveedor);
+//                precotizacion.setProveedor(proveedor);
+//            }
+//            if((precotizacionx.getValorTotal() == solicitudDto.getPrecotizacionDto().getValorTotal()) && (precotizacionx.getValorIva() == solicitudDto.getPrecotizacionDto().getValorIva())){
+//                Set<Argumento> argumentos = new HashSet<>();
+//                solicitudDto.getArgumentoDtos().forEach((argumentosx) ->{
+//                    solicitud.setPrecotizacionElegida(precotizacion);
+//                    Argumento argumento = new Argumento(argumentosx.getDescripcion(), precotizacion);
+//                    argumentos.add(argumento);
+//                });
+//                precotizacion.setArgumentos(argumentos);
+//            }
+//            precotizaciones.add(precotizacion);
+//        });
 
         Set<DetalleTramite> detalleTramites = new HashSet<>();
         solicitudDto.getDetalleTramiteDtos().forEach((detalleTramitesx) ->{
-            LineaGeneral lineaGeneral = lineaGeneralService.getOne(detalleTramitesx.getLineaGeneral()).get();
-            DetalleTramite detalleTramite = new DetalleTramite(detalleTramitesx.getDescripcion(), detalleTramitesx.getCantidad(), lineaGeneral, solicitud, lineaGeneral.getLineaEspecificaById(detalleTramitesx.getLineaEspecifica()));
+//            LineaGeneral lineaGeneral = lineaGeneralService.getOne(detalleTramitesx.getLineaGeneral()).get();
+            DetalleTramite detalleTramite = new DetalleTramite(detalleTramitesx.getDescripcion(), detalleTramitesx.getCantidad(), detalleTramitesx.getLineaGeneral(), solicitud, detalleTramitesx.getLineaEspecifica());
             ProveedorDetalle proveedorDetalle = new ProveedorDetalle(detalleTramite, solicitud.getPrecotizacionElegida().getProveedor());
             proveedorDetalles.add(proveedorDetalle);
             solicitud.getPrecotizacionElegida().getProveedor().setProveedorDetalles(proveedorDetalles);

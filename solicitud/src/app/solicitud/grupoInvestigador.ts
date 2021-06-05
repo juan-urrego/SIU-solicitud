@@ -1,5 +1,6 @@
 import { Investigador } from "../configuracion/investigador/investigador";
 import { Grupo } from "../configuracion/grupo/grupo";
+import { Proyecto } from "../configuracion/proyecto/proyecto";
 
 export interface GrupoInvestigador {
     id ?: number,
@@ -7,5 +8,6 @@ export interface GrupoInvestigador {
     nombreContacto : string,
     telefonoContacto : string,
     grupo : Grupo,
-    investigador : Investigador
+    investigador : Investigador,
+    proyecto: Proyecto
 }
