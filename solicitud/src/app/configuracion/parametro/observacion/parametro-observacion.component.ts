@@ -18,6 +18,7 @@ export class ParametroObservacionComponent implements OnInit {
     submitted: boolean
     observacionSelected: any= {};
     delay = 3000;
+    display: boolean = false;
     
 
     constructor(
@@ -28,6 +29,14 @@ export class ParametroObservacionComponent implements OnInit {
 
     ngOnInit(): void { 
         this.refresh();
+    }
+
+    showDialog() {
+        this.display= true
+    }
+
+    onDialogClose(event) {
+        this.display = event;
     }
 
     updateSelected(observacionSelected: Parametro) {
