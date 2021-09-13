@@ -10,16 +10,18 @@ import java.util.stream.Collectors;
 
 public class UsuarioPrincipal implements UserDetails {
     private String nombre;
-    private String apellido;
     private String email;
+    private String cargo;
+    private boolean activo;
     private String password;
     private String firma;
     private Collection<? extends GrantedAuthority> authorities;
 
-    public UsuarioPrincipal(String nombre, String apellido, String email, String password, String firma, Collection<? extends GrantedAuthority> authorities) {
+    public UsuarioPrincipal(String nombre, String email, String cargo, boolean activo, String password, String firma, Collection<? extends GrantedAuthority> authorities) {
         this.nombre = nombre;
-        this.apellido = apellido;
         this.email = email;
+        this.cargo = cargo;
+        this.activo = activo;
         this.password = password;
         this.firma = firma;
         this.authorities = authorities;
@@ -29,7 +31,7 @@ public class UsuarioPrincipal implements UserDetails {
         List<GrantedAuthority> authorities =
                 usuario.getRoles().stream().map(rol -> new SimpleGrantedAuthority(rol
                 .getRolNombre().name())).collect(Collectors.toList());
-        return new UsuarioPrincipal(usuario.getNombre(), usuario.getApellido(), usuario.getEmail(), usuario.getPassword(), usuario.getFirma(), authorities);
+        return new UsuarioPrincipal(usuario.getNombre(), usuario.getEmail(), usuario.getCargo(), usuario.isActivo(), usuario.getPassword(), usuario.getFirma(), authorities);
     }
 
     @Override
@@ -71,8 +73,12 @@ public class UsuarioPrincipal implements UserDetails {
         return nombre;
     }
 
-    public String getApellido() {
-        return apellido;
+    public String getCargo() {
+        return cargo;
+    }
+
+    public boolean isActivo() {
+        return activo;
     }
 
     public String getFirma() {

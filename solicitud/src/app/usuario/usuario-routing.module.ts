@@ -3,22 +3,24 @@ import { RouterModule } from '@angular/router';
 import { SolGuardService as guard } from '../auth/auth.guard';
 import { UsuarioEditarComponent } from "./usuario-editar.component";
 import { UsuarioListarComponent } from "./usuario-listar.component";
+import { UsuarioResolver } from "./usuario-resolver.component";
 
 @NgModule({
     imports: [
 
         RouterModule.forChild([
             {
-                path: 'usuario' , 
-                component : UsuarioListarComponent,
+                path: '' , 
                 canActivate: [guard],
-                data: { expectedRol: ['user']}
+                data: { expectedRol : ['admin']},
+                component : UsuarioListarComponent
             },
             {
-                path: 'usuario/:id/editar', 
-                component: UsuarioEditarComponent, 
-                canActivate: [guard], 
-                data: { expectedRol: ['user']} 
+                path: ':id/editar', 
+                canActivate: [guard],
+                resolve: { resolvedData: UsuarioResolver},
+                data: { expectedRol : ['admin']},
+                component: UsuarioEditarComponent
             }
         ])
     ],

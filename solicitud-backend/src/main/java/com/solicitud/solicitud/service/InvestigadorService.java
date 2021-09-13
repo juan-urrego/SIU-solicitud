@@ -26,9 +26,6 @@ public class InvestigadorService {
         return investigadorRepository.findById(id);
     }
 
-    public Optional<Investigador> getByFirma(String firma){
-        return investigadorRepository.findByFirma(firma);
-    }
 
 
     public boolean existsById(final int id){
@@ -61,9 +58,9 @@ public class InvestigadorService {
     }
 
     //encontrar imagen por Id de investigador
-    public FileSystemResource findImageById(int id) {
-        Investigador investigador = investigadorRepository.findById(id).get();
-        return fileSystemRepository.findInFileSystem(investigador.getFirma());
-    }
+//    public FileSystemResource findImageById(int id) {
+//        Investigador investigador = investigadorRepository.findById(id).get();
+//        return fileSystemRepository.findInFileSystem(investigador.getFirma());
+//    }
 
 }

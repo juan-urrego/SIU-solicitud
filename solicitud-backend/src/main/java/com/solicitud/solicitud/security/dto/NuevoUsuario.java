@@ -8,14 +8,12 @@ import java.util.Set;
 public class NuevoUsuario {
     @NotBlank
     private String nombre;
-    @NotBlank
-    private String apellido;
     @Email
     private String email;
     @NotBlank
-    private String password;
+    private String cargo;
     @NotBlank
-    private String firma;
+    private String password;
     private Set<String> roles = new HashSet<>();
 
     public String getNombre() {
@@ -26,13 +24,6 @@ public class NuevoUsuario {
         this.nombre = nombre;
     }
 
-    public String getApellido() {
-        return this.apellido;
-    }
-
-    public void setApellido(String apellido) {
-        this.apellido = apellido;
-    }
 
     public String getEmail() {
         return this.email;
@@ -40,6 +31,14 @@ public class NuevoUsuario {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getCargo() {
+        return cargo;
+    }
+
+    public void setCargo(String cargo) {
+        this.cargo = cargo;
     }
 
     public String getPassword() {
@@ -58,11 +57,4 @@ public class NuevoUsuario {
         this.roles = roles;
     }
 
-    public String getFirma() {
-        return firma;
-    }
-
-    public void setFirma(String firma) {
-        this.firma = firma;
-    }
 }

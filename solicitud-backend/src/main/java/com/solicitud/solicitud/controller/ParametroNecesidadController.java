@@ -2,6 +2,7 @@ package com.solicitud.solicitud.controller;
 
 import com.solicitud.solicitud.dto.Mensaje;
 import com.solicitud.solicitud.dto.ParametroDto;
+import com.solicitud.solicitud.entity.ParametroConsulta;
 import com.solicitud.solicitud.entity.ParametroNecesidad;
 import com.solicitud.solicitud.service.ParametroNecesidadService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,12 +24,18 @@ public class ParametroNecesidadController {
     @GetMapping("/necesidades")
     public ResponseEntity<List<ParametroNecesidad>> list(){
         List<ParametroNecesidad> list = parametroNecesidadService.getNecesidad();
+        if (list.isEmpty())
+            return new ResponseEntity<>(null, HttpStatus.OK);
         return new ResponseEntity<List<ParametroNecesidad>>(list, HttpStatus.OK);
     }
 
     @GetMapping("/necesidades/selected")
     public ResponseEntity<ParametroNecesidad> getByParametro(){
-        ParametroNecesidad parametroNecesidad = parametroNecesidadService.getByParametro((byte) 1).get();
+        ParametroNecesidad parametroNecesidad = parametroNecesidadService.getByParametro((byte) 1).orElse(null);
+        if (parametroNecesidad == null){
+            parametroNecesidad = new ParametroNecesidad("",(byte) 0);
+            return  new ResponseEntity<ParametroNecesidad>(parametroNecesidad, HttpStatus.OK);
+        }
         return new ResponseEntity<ParametroNecesidad>(parametroNecesidad, HttpStatus.OK);
     }
 
@@ -73,12 +80,25 @@ public class ParametroNecesidadController {
     public ResponseEntity<Mensaje> updateSelected(@PathVariable("id") int id){
         if (!parametroNecesidadService.existsById(id))
             return new ResponseEntity<Mensaje>(new Mensaje("No existe un parametro-necesidad con esa id"), HttpStatus.NOT_FOUND);
-        ParametroNecesidad parametroNecesidadActivo = parametroNecesidadService.getByParametro((byte) 1).get();
-        parametroNecesidadActivo.setParametro((byte) 0);
-        parametroNecesidadService.save(parametroNecesidadActivo);
+        ParametroNecesidad parametroNecesidadActivo = parametroNecesidadService.getByParametro((byte) 1).orElse(null);
+        if (parametroNecesidadActivo != null){
+            parametroNecesidadActivo.setParametro((byte) 0);
+            parametroNecesidadService.save(parametroNecesidadActivo);
+        }
         ParametroNecesidad parametroNecesidad = parametroNecesidadService.getOne(id).get();
         parametroNecesidad.setParametro((byte) 1);
         parametroNecesidadService.save(parametroNecesidad);
+        return new ResponseEntity<Mensaje>(new Mensaje("Parametro-necesidad actualizado"), HttpStatus.OK);
+    }
+
+    @PutMapping("/delete/selected")
+    public ResponseEntity<Mensaje> deleteSelected() {
+        ParametroNecesidad parametroNecesidadActivo = parametroNecesidadService.getByParametro((byte) 1).orElse(null);
+        if  (parametroNecesidadActivo == null)
+            return new ResponseEntity<Mensaje>(new Mensaje("No hay ningun otro parametro activo"), HttpStatus.NOT_FOUND);
+        parametroNecesidadActivo.setParametro((byte) 0);
+        parametroNecesidadService.save(parametroNecesidadActivo);
+        ;
         return new ResponseEntity<Mensaje>(new Mensaje("Parametro-necesidad actualizado"), HttpStatus.OK);
     }
 }

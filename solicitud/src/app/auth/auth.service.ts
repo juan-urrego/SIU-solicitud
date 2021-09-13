@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { Router } from '@angular/router';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { JwtDto } from 'src/app/shared/models/login/jwt-dto';
@@ -7,79 +8,89 @@ import { LoginUsuario } from 'src/app/shared/models/login/login-usuario';
 
 
 const TOKEN_KEY = 'AuthToken';
-const EMAIL_KEY = 'AuthEmail';
-const AUTHORITIES_KEY = 'AuthAuthorities';
+
 
 @Injectable({
     providedIn: 'root'
 })
 export class AuthService {
-    private currentUserSubject: BehaviorSubject<JwtDto>;
-    public currentUser: Observable<JwtDto>;
     roles: Array<string> = [];
 
 
     constructor(
-        private httpClient : HttpClient
-    ) {
-        this.currentUserSubject = new BehaviorSubject<JwtDto>(JSON.parse(localStorage.getItem('currentUser')));
-        this.currentUser = this.currentUserSubject.asObservable();
-
+        private httpClient : HttpClient,
+        private router: Router) {
     }
 
     public setToken(token: string): void {
-        window.sessionStorage.removeItem(TOKEN_KEY);
-        window.sessionStorage.setItem(TOKEN_KEY, token);
+        window.localStorage.removeItem(TOKEN_KEY);
+        window.localStorage.setItem(TOKEN_KEY, token);
     }
 
 
     public getToken(): string {
-        return sessionStorage.getItem(TOKEN_KEY);
+        return localStorage.getItem(TOKEN_KEY);
     }
 
-    public setEmail(email: string): void {
-        window.sessionStorage.removeItem(EMAIL_KEY);
-        window.sessionStorage.setItem(EMAIL_KEY, email);
+    public isLogged(): boolean {
+        if(this.getToken()) {
+            return true;
+        }
+        return false;
     }
 
     public getEmail(): string {
-        return sessionStorage.getItem(EMAIL_KEY);
-    }
-    public setAuthorities(authorities: string[]): void {
-        window.sessionStorage.removeItem(AUTHORITIES_KEY);
-        window.sessionStorage.setItem(AUTHORITIES_KEY, JSON.stringify(authorities));
-    }
-
-    public getAuthorities(): string[] {
-        this.roles = [];
-        if (sessionStorage.getItem(AUTHORITIES_KEY)) {
-            JSON.parse(sessionStorage.getItem(AUTHORITIES_KEY)).forEach(authority => {
-                this.roles.push(authority.authority)
-            })
+        if(!this.isLogged()){
+            return null;
         }
-        return this.roles;
+        const token = this.getToken()
+        const payload = token.split('.')[1]
+        const payloadDecoded = atob(payload);
+        const values = JSON.parse(payloadDecoded);
+        const userName = values.sub;
+        return userName;
     }
 
-    public get currentUserValue(): JwtDto {
-        return this.currentUserSubject.value;
+    public isAdmin(): boolean {
+        if(!this.isLogged()){
+            return false;
+        }
+        const token = this.getToken()
+        const payload = token.split('.')[1]
+        const payloadDecoded = atob(payload);
+        const values = JSON.parse(payloadDecoded);
+        const roles = values.roles;
+        if(roles.indexOf('ROLE_ADMIN') < 0) {
+            return false;
+        }
+        return true;
     }
+
+    public getRole(): string {
+        if(!this.isLogged()){
+            return null;
+        }
+        const token = this.getToken()
+        const payload = token.split('.')[1]
+        const payloadDecoded = atob(payload);
+        const values = JSON.parse(payloadDecoded);
+        const roles = values.roles;
+        if(roles.length == 1){
+            return "usuario";
+        }
+        if(roles.indexOf('ROLE_ADMIN') < 0) {
+            return "director";
+        }
+        return "admin";
+    }
+
 
     public login(loginUsuario: LoginUsuario): Observable<JwtDto> {
-        return this.httpClient.post<JwtDto>('http://localhost:9191/auth/login', loginUsuario)
-            .pipe(map(user =>{
-                this.setToken(user.token);
-                this.setEmail(user.email);
-                this.setAuthorities(user.authorities);
-                this.currentUserSubject.next(user);
-                return user;
-            }));
+        return this.httpClient.post<JwtDto>('http://localhost:9191/auth/login', loginUsuario);
     }
 
     public logOut(): void {
-        window.sessionStorage.removeItem('currentUser');
-        window.sessionStorage.removeItem(AUTHORITIES_KEY);
-        window.sessionStorage.removeItem(TOKEN_KEY);
-        window.sessionStorage.removeItem(EMAIL_KEY);
-        this.currentUserSubject.next(null);
+        window.localStorage.clear();
+        this.router.navigate(['/login']);
     }
 }

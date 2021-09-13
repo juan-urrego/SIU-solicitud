@@ -3,6 +3,7 @@ package com.solicitud.solicitud.dto;
 import com.solicitud.solicitud.entity.*;
 
 import javax.persistence.ManyToOne;
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import java.util.Date;
 import java.util.HashSet;
@@ -43,6 +44,8 @@ public class SolicitudDto {
     private Set<DetalleTramite> detalleTramiteDtos = new HashSet<>();
     @NotBlank
     private Set<Argumento> argumentoDtos = new HashSet<>();
+    @Email
+    private String usuarioEmail;
 
 
     public Proyecto getProyecto() {
@@ -171,5 +174,13 @@ public class SolicitudDto {
 
     public void setDetalleTramiteDtos(Set<DetalleTramite> detalleTramiteDtos) {
         this.detalleTramiteDtos = detalleTramiteDtos;
+    }
+
+    public String getUsuarioEmail() {
+        return usuarioEmail;
+    }
+
+    public void setUsuarioEmail(String usuarioEmail) {
+        this.usuarioEmail = usuarioEmail;
     }
 }

@@ -1,8 +1,8 @@
 import { NgModule } from "@angular/core";
 import { RouterModule } from '@angular/router';
-import { SolGuardService as guard } from '../auth/auth.guard';
 import { EstudioEditarComponent } from "./estudio-editar.component";
 import { EstudioListarComponent } from "./estudio-listar.component";
+import { EstudioResolver } from "./estudio-resolver.service";
 
 @NgModule({
     imports: [
@@ -13,7 +13,8 @@ import { EstudioListarComponent } from "./estudio-listar.component";
                 component : EstudioListarComponent
             },
             {
-                path: ':id/editar', 
+                path: ':id/editar',
+                resolve: { resolvedData: EstudioResolver}, 
                 component: EstudioEditarComponent
             }
         ])

@@ -17,8 +17,7 @@ export class ParametroObservacionComponent implements OnInit {
     observacionForm: FormGroup;    
     submitted: boolean
     observacionSelected: any= {};
-    delay = 3000;
-    display: boolean = false;
+    delay = 3000;    
     
 
     constructor(
@@ -31,13 +30,6 @@ export class ParametroObservacionComponent implements OnInit {
         this.refresh();
     }
 
-    showDialog() {
-        this.display= true
-    }
-
-    onDialogClose(event) {
-        this.display = event;
-    }
 
     updateSelected(observacionSelected: Parametro) {
         this.parametroObservacionService.updateParametroObservacionActivo(observacionSelected.id)
@@ -63,11 +55,36 @@ export class ParametroObservacionComponent implements OnInit {
         });
     }
 
+    deleteSelected() {
+        this.parametroObservacionService.deleteParametroNecesidadActivo().subscribe({
+            next: () => {
+                this.refresh();
+                this.messageService.add({
+                    severity:'success',
+                    summary: 'Exito',
+                    detail: 'Parametro Activado',
+                    life: this.delay
+                });
+            },
+            error: error => {
+                this.mensajerError = error.message;
+                this.messageService.add({
+                    severity:'error',
+                    summary: 'Error',
+                    detail: this.mensajerError,
+                    life: this.delay
+                });
+            }
+        })
+    }
+
     refresh() {
         this.parametroObservacionService.getParametroObservaciones().subscribe({
             next: observaciones => {
                 this.observaciones = observaciones;
-                this.observacionSelected = this.observaciones.find(t => t.parametro == 1);
+                if (this.observaciones) {
+                    this.observacionSelected = this.observaciones.find(t => t.parametro == 1);
+                }
             },
             error: error => this.mensajerError = error
         });

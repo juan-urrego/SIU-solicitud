@@ -3,6 +3,7 @@ package com.solicitud.solicitud.controller;
 
 import com.solicitud.solicitud.dto.Mensaje;
 import com.solicitud.solicitud.dto.ParametroDto;
+import com.solicitud.solicitud.entity.ParametroNecesidad;
 import com.solicitud.solicitud.entity.ParametroObservacion;
 import com.solicitud.solicitud.service.ParametroObservacionService;
 import com.solicitud.solicitud.service.ParametroObservacionService;
@@ -25,12 +26,18 @@ public class ParametroObservacionController {
     @GetMapping("/observaciones")
     public ResponseEntity<List<ParametroObservacion>> list(){
         List<ParametroObservacion> list = parametroObservacionService.getObservacion();
+        if (list.isEmpty())
+            return new ResponseEntity<>(null, HttpStatus.OK);
         return new ResponseEntity<List<ParametroObservacion>>(list, HttpStatus.OK);
     }
 
     @GetMapping("/observaciones/selected")
     public ResponseEntity<ParametroObservacion> getByParametro(){
-        ParametroObservacion parametroObservacion = parametroObservacionService.getByParametro((byte) 1).get();
+        ParametroObservacion parametroObservacion = parametroObservacionService.getByParametro((byte) 1).orElse(null);
+        if (parametroObservacion == null){
+            parametroObservacion = new ParametroObservacion("",(byte) 0);
+            return  new ResponseEntity<ParametroObservacion>(parametroObservacion, HttpStatus.OK);
+        }
         return new ResponseEntity<ParametroObservacion>(parametroObservacion, HttpStatus.OK);
     }
 
@@ -75,12 +82,25 @@ public class ParametroObservacionController {
     public ResponseEntity<Mensaje> updateSelected(@PathVariable("id") int id){
         if (!parametroObservacionService.existsById(id))
             return new ResponseEntity<Mensaje>(new Mensaje("No existe un parametro-observacion con esa id"), HttpStatus.NOT_FOUND);
-        ParametroObservacion parametroObservacionActivo = parametroObservacionService.getByParametro((byte) 1).get();
-        parametroObservacionActivo.setParametro((byte) 0);
-        parametroObservacionService.save(parametroObservacionActivo);
+        ParametroObservacion parametroObservacionActivo = parametroObservacionService.getByParametro((byte) 1).orElse(null);
+        if (parametroObservacionActivo != null){
+            parametroObservacionActivo.setParametro((byte) 0);
+            parametroObservacionService.save(parametroObservacionActivo);
+        }
         ParametroObservacion parametroObservacion = parametroObservacionService.getOne(id).get();
         parametroObservacion.setParametro((byte) 1);
         parametroObservacionService.save(parametroObservacion);
         return new ResponseEntity<Mensaje>(new Mensaje("Parametro-necesidad actualizado"), HttpStatus.OK);
+    }
+
+    @PutMapping("/delete/selected")
+    public ResponseEntity<Mensaje> deleteSelected() {
+        ParametroObservacion parametroObservacionActivo = parametroObservacionService.getByParametro((byte) 1).orElse(null);
+        if  (parametroObservacionActivo == null)
+            return new ResponseEntity<Mensaje>(new Mensaje("No hay ningun otro parametro activo"), HttpStatus.NOT_FOUND);
+        parametroObservacionActivo.setParametro((byte) 0);
+        parametroObservacionService.save(parametroObservacionActivo);
+        ;
+        return new ResponseEntity<Mensaje>(new Mensaje("Parametro-observacion actualizado"), HttpStatus.OK);
     }
 }

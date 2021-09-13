@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { ConfirmationService, MessageService } from 'primeng/api';
+import { AuthService } from '../auth/auth.service';
 import { Estudio } from './estudio';
 import { EstudioService } from './estudio.service';
 
@@ -7,37 +9,52 @@ import { EstudioService } from './estudio.service';
 })
 
 export class EstudioListarComponent implements OnInit {
-    titulo: string = 'Lista de Estudios'
+    titulo: string = 'Lista de estudios'
     mensajeError: string;
-
-    _filtrar = '';
-    get filtrar(): string {
-        return this._filtrar;
-    }
-    set filtrar(value: string) {
-        this._filtrar = value;
-        this.filtrados = this.filtrar ? this.performFilter(this.filtrar) : this.estudios;
-    }
-
     estudios: Estudio[]
-    filtrados: Estudio[]
 
-    constructor(private estudioService: EstudioService) { }
+
+    constructor(private estudioService: EstudioService,
+        private messageService: MessageService,
+        private confirmationService: ConfirmationService) { }
 
     ngOnInit(): void {
+        this.refresh();
+    }
+
+    refresh() {
         this.estudioService.getEstudios().subscribe({
             next: estudios => {
                 this.estudios = estudios;;
-                this.filtrados = this.estudios;
             },
             error: err => this.mensajeError = err
         });
-
     }
 
-    performFilter(filterBy: string): Estudio[] {
-        filterBy = filterBy.toLocaleLowerCase();
-        return this.estudios.filter((estudio: Estudio) =>
-            estudio.estado.nombre.toLocaleLowerCase().indexOf(filterBy) !== -1);
+    verifyDocument(id:number): void {
+        this.confirmationService.confirm({
+            message: '¿Estás seguro de confirmar esta solicitud?',
+            header: 'Confirmacion',
+            icon: 'pi pi-exclamation-triangle',
+            accept: () => {
+                this.estudioService.confirmarEstudio(id).subscribe({
+                    next: () => {
+                        this.refresh();
+                        this.messageService.add({
+                            severity:'success',
+                            summary: 'Verificado'
+                        });
+                    },
+                    error: error => {
+                        this.mensajeError = error
+                        this.messageService.add({
+                            severity:'error',
+                            summary: 'Error',
+                            detail: this.mensajeError
+                        });
+                    }
+                });
+            }
+        });
     }
 }

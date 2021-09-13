@@ -13,6 +13,8 @@ import com.solicitud.solicitud.service.SolicitudService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
@@ -76,15 +78,17 @@ public class SolicitudController {
 
 
     @GetMapping("/solicitudes")
-    public ResponseEntity<List<Solicitud>> list(){
-        List<Solicitud> list = solicitudService.getSolicitud();
-        return new ResponseEntity<List<Solicitud>>(list, HttpStatus.OK);
+    public ResponseEntity<?> list(){
+        List<Solicitud> list = solicitudService.getSolicitudes();
+        return new ResponseEntity<>(list, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getById(@PathVariable("id") int id){
         if(!solicitudService.existsById(id))
             return new ResponseEntity<Mensaje>(new Mensaje("No existe una solicitud con esa id"), HttpStatus.NOT_FOUND);
+        if(!solicitudService.getOne(id).isPresent())
+            return new ResponseEntity<Mensaje>(new Mensaje("No tiene acceso a esta solicitud"), HttpStatus.FORBIDDEN);
         Solicitud solicitud = solicitudService.getOne(id).get();
         return new ResponseEntity<Solicitud>(solicitud, HttpStatus.OK);
     }
@@ -104,6 +108,7 @@ public class SolicitudController {
         if(solicitudDto.getPrecotizacionDtos().contains(solicitudDto.getPrecotizacionDto()))
             return new ResponseEntity<Mensaje>(new Mensaje("La precotizacion elegida no coincide con las precotizaciones diligenciada"), HttpStatus.BAD_REQUEST);
         Estado estado = estadoService.getByEstadoNombre(EstadoNombre.CREADA).get();
+        Usuario usuario = usuarioService.getByEmail(solicitudDto.getUsuarioEmail()).get();
         GrupoInvestigador grupoInvestigador = new GrupoInvestigador(solicitudDto.getCargo(), solicitudDto.getNombreContacto(), solicitudDto.getTelefonoContacto(), solicitudDto.getGrupo(), solicitudDto.getInvestigador(), solicitudDto.getProyecto());
 
         Solicitud solicitud = new Solicitud(solicitudDto.getTipoTramite(),
@@ -113,10 +118,10 @@ public class SolicitudController {
                 solicitudDto.getVerificacion(),
                 solicitudDto.getObservacion(),
                 grupoInvestigador,
-                estado
+                estado,
+                usuario
                 );
 
-        Set<Precotizacion> precotizaciones = new HashSet<>();
         solicitudDto.getPrecotizacionDtos().forEach(precotizacion -> {
             precotizacion.setSolicitud(solicitud);
             solicitudDto.getDetalleTramiteDtos().forEach(detalleTramite -> {
@@ -125,42 +130,14 @@ public class SolicitudController {
             if((precotizacion.getValorTotal() == solicitudDto.getPrecotizacionDto().getValorTotal()) && (precotizacion.getValorIva() == solicitudDto.getPrecotizacionDto().getValorIva())){
                 precotizacion.setArgumentos(solicitudDto.getArgumentoDtos());
                 solicitud.setPrecotizacionElegida(precotizacion);
+                solicitudDto.getArgumentoDtos().forEach(argumento -> {
+                    argumento.setPrecotizacion(precotizacion);
+                });
             }
         });
 
-
-//        solicitudDto.getPrecotizacionDtos().forEach((precotizacionx) ->{
-//            Precotizacion precotizacion = new Precotizacion(precotizacionx.getValorTotal(), precotizacionx.getValorIva(), null, solicitud);
-//            Proveedor proveedor;
-//            if (precotizacionx.getProveedorId() == 0){
-//                proveedor = new Proveedor(precotizacionx.getNombreProveedor(), precotizacionx.getNitProveedor(), precotizacionx.getTelefonoProveedor(), precotizacionx.getCiudadProveedor(), precotizacionx.getTipoIdentificacion());
-//                proveedorService.save(proveedor);
-//            }else{
-//                proveedor = proveedorService.getOne(precotizacionx.getProveedorId()).get();
-//            }
-//            precotizacion.setProveedor(proveedor);
-//            if((precotizacionx.getValorTotal() == solicitudDto.getPrecotizacionDto().getValorTotal()) && (precotizacionx.getValorIva() == solicitudDto.getPrecotizacionDto().getValorIva())){
-//                Set<Argumento> argumentos = new HashSet<>();
-//                solicitudDto.getArgumentoDtos().forEach((argumentosx) ->{
-//                    solicitud.setPrecotizacionElegida(precotizacion);
-//                    Argumento argumento = new Argumento(argumentosx.getDescripcion(), precotizacion);
-//                    argumentos.add(argumento);
-//                });
-//                precotizacion.setArgumentos(argumentos);
-//            }
-//            precotizaciones.add(precotizacion);
-//        });
-
-
-        Set<DetalleTramite> detalleTramites = new HashSet<>();
         Set<ProveedorDetalle> proveedorDetalles = new HashSet<>();
-//        solicitudDto.getDetalleTramiteDtos().forEach((detalleTramitesx) ->{
-//            DetalleTramite detalleTramite = new DetalleTramite(detalleTramitesx.getDescripcion(), detalleTramitesx.getCantidad(), detalleTramitesx.getLineaGeneral(), solicitud, detalleTramitesx.getLineaEspecifica());
-//            ProveedorDetalle proveedorDetalle = new ProveedorDetalle(detalleTramite, solicitud.getPrecotizacionElegida().getProveedor());
-//            proveedorDetalles.add(proveedorDetalle);
-//            detalleTramite.setProveedorDetalles(proveedorDetalles);
-//            detalleTramites.add(detalleTramite);
-//        });
+
         solicitudDto.getDetalleTramiteDtos().forEach(detalleTramite -> {
             solicitudDto.getPrecotizacionDtos().forEach(precotizacion -> {
                 ProveedorDetalle proveedorDetalle = new ProveedorDetalle(detalleTramite, precotizacion.getProveedor());
@@ -184,6 +161,7 @@ public class SolicitudController {
         if (solicitudDto.getArgumentoDtos().isEmpty())
             return new ResponseEntity<Mensaje>(new Mensaje("Debe poner por lo menos 1 argumento de la precotizacion elegida"), HttpStatus.BAD_REQUEST);
         Estado estado = estadoService.getByEstadoNombre(EstadoNombre.CREADA).get();
+        Usuario usuario = usuarioService.getByEmail(solicitudDto.getUsuarioEmail()).get();
         GrupoInvestigador grupoInvestigador = new GrupoInvestigador(solicitudDto.getCargo(), solicitudDto.getNombreContacto(), solicitudDto.getTelefonoContacto(), solicitudDto.getGrupo(), solicitudDto.getInvestigador(), solicitudDto.getProyecto());
 
         Solicitud solicitud = solicitudService.getOne(id).get();
@@ -195,41 +173,35 @@ public class SolicitudController {
         solicitud.setObservacion(solicitudDto.getObservacion());
         solicitud.setGrupoInvestigador(grupoInvestigador);
         solicitud.setEstado(estado);
+        solicitud.setUsuario(usuario);
 
 
-        Set<Precotizacion> precotizaciones = new HashSet<>();
-        Set<ProveedorDetalle> proveedorDetalles = new HashSet<>();
-//        solicitudDto.getPrecotizacionDtos().forEach((precotizacionx) ->{
-//            Proveedor proveedor1 = proveedorService.getOne(precotizacionx.getProveedorId()).get();
-//            Precotizacion precotizacion = new Precotizacion(precotizacionx.getValorTotal(), precotizacionx.getValorIva(), proveedor1, solicitud);
-//            if (precotizacionx.getProveedorId() == 0){
-//                Proveedor proveedor = new Proveedor(precotizacionx.getNombreProveedor(), precotizacionx.getNitProveedor(), precotizacionx.getTelefonoProveedor(), precotizacionx.getCiudadProveedor(), precotizacionx.getTipoIdentificacion());
-//                proveedorService.save(proveedor);
-//                precotizacion.setProveedor(proveedor);
-//            }
-//            if((precotizacionx.getValorTotal() == solicitudDto.getPrecotizacionDto().getValorTotal()) && (precotizacionx.getValorIva() == solicitudDto.getPrecotizacionDto().getValorIva())){
-//                Set<Argumento> argumentos = new HashSet<>();
-//                solicitudDto.getArgumentoDtos().forEach((argumentosx) ->{
-//                    solicitud.setPrecotizacionElegida(precotizacion);
-//                    Argumento argumento = new Argumento(argumentosx.getDescripcion(), precotizacion);
-//                    argumentos.add(argumento);
-//                });
-//                precotizacion.setArgumentos(argumentos);
-//            }
-//            precotizaciones.add(precotizacion);
-//        });
-
-        Set<DetalleTramite> detalleTramites = new HashSet<>();
-        solicitudDto.getDetalleTramiteDtos().forEach((detalleTramitesx) ->{
-//            LineaGeneral lineaGeneral = lineaGeneralService.getOne(detalleTramitesx.getLineaGeneral()).get();
-            DetalleTramite detalleTramite = new DetalleTramite(detalleTramitesx.getDescripcion(), detalleTramitesx.getCantidad(), detalleTramitesx.getLineaGeneral(), solicitud, detalleTramitesx.getLineaEspecifica());
-            ProveedorDetalle proveedorDetalle = new ProveedorDetalle(detalleTramite, solicitud.getPrecotizacionElegida().getProveedor());
-            proveedorDetalles.add(proveedorDetalle);
-            solicitud.getPrecotizacionElegida().getProveedor().setProveedorDetalles(proveedorDetalles);
-            detalleTramites.add(detalleTramite);
+        solicitudDto.getPrecotizacionDtos().forEach(precotizacion -> {
+            precotizacion.setSolicitud(solicitud);
+            solicitudDto.getDetalleTramiteDtos().forEach(detalleTramite -> {
+                detalleTramite.setSolicitud(solicitud);
+            });
+            if((precotizacion.getValorTotal() == solicitudDto.getPrecotizacionDto().getValorTotal()) && (precotizacion.getValorIva() == solicitudDto.getPrecotizacionDto().getValorIva())){
+                precotizacion.setArgumentos(solicitudDto.getArgumentoDtos());
+                solicitud.setPrecotizacionElegida(precotizacion);
+                solicitudDto.getArgumentoDtos().forEach(argumento -> {
+                    argumento.setPrecotizacion(precotizacion);
+                });
+            }
         });
-        solicitud.setPrecotizaciones(precotizaciones);
-        solicitud.setDetalleTramites(detalleTramites);
+
+        Set<ProveedorDetalle> proveedorDetalles = new HashSet<>();
+
+        solicitudDto.getDetalleTramiteDtos().forEach(detalleTramite -> {
+            solicitudDto.getPrecotizacionDtos().forEach(precotizacion -> {
+                ProveedorDetalle proveedorDetalle = new ProveedorDetalle(detalleTramite, precotizacion.getProveedor());
+                proveedorDetalles.add(proveedorDetalle);
+            });
+            detalleTramite.setProveedorDetalles(proveedorDetalles);
+            detalleTramite.setSolicitud(solicitud);
+        });
+        solicitud.setPrecotizaciones(solicitudDto.getPrecotizacionDtos());
+        solicitud.setDetalleTramites(solicitudDto.getDetalleTramiteDtos());
         solicitudService.save(solicitud);
         return new ResponseEntity<Mensaje>(new Mensaje("Solicitud actualizada"), HttpStatus.OK);
     }
@@ -245,21 +217,19 @@ public class SolicitudController {
         return new ResponseEntity<Mensaje>(new Mensaje("Solicitud verificada correctamente"), HttpStatus.OK);
     }
 
-    @PostMapping("/crear/{id}/{idUser}")
-    public ResponseEntity<Mensaje> createDocuments(@PathVariable int id, @PathVariable int idUser){
+    @PostMapping("/crear/{id}")
+    public ResponseEntity<Mensaje> createDocuments(@PathVariable int id){
         if (!solicitudService.existsById(id))
             return new ResponseEntity<Mensaje>(new Mensaje("No existe una solicitud con esa id"), HttpStatus.NOT_FOUND);
-        if (!usuarioService.existsById(idUser))
-            return new ResponseEntity<Mensaje>(new Mensaje("No existe un usuario con esa id"), HttpStatus.NOT_FOUND);
         Solicitud solicitud = solicitudService.getOne(id).get();
         if (solicitud.getEstado().getEstadoNombre() == EstadoNombre.CREADA)
-            new ResponseEntity<Mensaje>(new Mensaje("El documento aún no está verificado para la creación de documentos"), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<Mensaje>(new Mensaje("El documento aún no está verificado para la creación de documentos"), HttpStatus.BAD_REQUEST);
         Estado estado = estadoService.getByEstadoNombre(EstadoNombre.CREADA).get();
         ParametroConsulta parametroConsulta = parametroConsultaService.getByParametro((byte) 1).get();
         ParametroAcuerdo parametroAcuerdo = parametroAcuerdoService.getByParametro((byte) 1).get();
-        Usuario usuario = usuarioService.getOne(idUser).get();
+        Usuario usuario = usuarioService.getOne(id).get();
         Consulta consulta = new Consulta(parametroConsulta.getDescripcion(), solicitud, estado);
-        Estudio estudio = new Estudio(parametroAcuerdo.getDescripcion(), (byte) 0, (byte) 0, solicitud, null, estado , usuario);
+        Estudio estudio = new Estudio(parametroAcuerdo.getDescripcion(), null, null, solicitud, null, estado);
         estudioService.save(estudio);
         consultaService.save(consulta);
         return new ResponseEntity<Mensaje>(new Mensaje("Documentos creados correctamente"), HttpStatus.OK);

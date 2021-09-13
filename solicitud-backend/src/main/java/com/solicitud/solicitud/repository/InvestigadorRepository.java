@@ -7,5 +7,4 @@ import java.util.Optional;
 
 public interface InvestigadorRepository extends JpaRepository<Investigador, Integer> {
     boolean existsInvestigadorByIdentificacion (String identificacion);
-    Optional<Investigador> findByFirma(String firma);
 }

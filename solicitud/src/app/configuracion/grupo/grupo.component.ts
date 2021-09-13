@@ -38,12 +38,14 @@ export class GrupoComponent implements OnInit {
     openNew(grupo ?: Grupo) {
         this.grupoForm = this.fb.group({
             id: 0,
+            codigoGrupo: ['', Validators.required],
             nombre: ['', Validators.required],
             codColciencia: ['', Validators.required]
         });
         if(grupo) {
             this.grupoForm.patchValue({
                 id: grupo.id,
+                codigoGrupo: grupo.codigoGrupo,
                 nombre: grupo.nombre,
                 codColciencia: grupo.codColciencia
             });

@@ -15,10 +15,7 @@ export class InvestigadorComponent implements OnInit {
     investigadorSelected: Investigador;
     investigadorDialog: boolean;
     investigadorForm: FormGroup;
-    loadImage : boolean;
     submitted: boolean;
-    file: any = [];
-    url : any;    
     delayToast = 3000;
 
     constructor(
@@ -53,54 +50,26 @@ export class InvestigadorComponent implements OnInit {
                 email: investigador.email
             });         
             this.investigadorSelected = investigador;
-            this.loadImage = false;
-            this.loadFirma();
         }
         this.submitted = false;
         this.investigadorDialog = true;
     }
 
-    loadFirma() {                
-        this.investigadorService.getInvestigadorFirma(this.investigadorSelected.id).subscribe({
-            next: image => this.createImageFromBlob(image),
-            error: error => this.mensajeError= error
-        });
-    }
     
-    createImageFromBlob(image: Blob) {
-        let reader = new FileReader();
-        reader.addEventListener("load", () => {
-           this.url = reader.result;
-        }, false);     
-        if (image) {
-           reader.readAsDataURL(image);
-        }
-     }
-     
-
     hideDialog() {
         this.investigadorForm.reset();
-        this.url = '';
         this.investigadorDialog = false;
         this.submitted = false;                
     }
 
-    toggleImage(): void {
-        this.loadImage = !this.loadImage;
-    }
-
     
-    onFileSelected(event) {
-        this.file = <File>event.target.files[0];
-        console.log(this.file);            
-    }
 
     saveInvestigador(){
         if(this.investigadorForm.valid){
             if(this.investigadorForm.dirty){                
                 
                 if(this.investigadorSelected) {
-                    this.investigadorService.createInvestigador(JSON.stringify(this.investigadorForm.value),this.file).subscribe({
+                    this.investigadorService.createInvestigador(JSON.stringify(this.investigadorForm.value),null).subscribe({
                         next: () => {
                             this.refresh();
                             this.hideDialog();

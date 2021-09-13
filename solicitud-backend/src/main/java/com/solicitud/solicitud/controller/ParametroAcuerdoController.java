@@ -27,12 +27,18 @@ public class ParametroAcuerdoController {
     @GetMapping("/acuerdos")
     public ResponseEntity<List<ParametroAcuerdo>> list(){
         List<ParametroAcuerdo> list = parametroAcuerdoService.getAcuerdo();
+        if (list.isEmpty())
+            return new ResponseEntity<>(null, HttpStatus.OK);
         return new ResponseEntity<List<ParametroAcuerdo>>(list, HttpStatus.OK);
     }
 
     @GetMapping("/acuerdos/selected")
     public ResponseEntity<ParametroAcuerdo> getByParametro(){
-        ParametroAcuerdo parametroAcuerdo = parametroAcuerdoService.getByParametro((byte) 1).get();
+        ParametroAcuerdo parametroAcuerdo = parametroAcuerdoService.getByParametro((byte) 1).orElse(null);
+        if (parametroAcuerdo == null){
+            parametroAcuerdo = new ParametroAcuerdo("",(byte) 0);
+            return  new ResponseEntity<ParametroAcuerdo>(parametroAcuerdo, HttpStatus.OK);
+        }
         return new ResponseEntity<ParametroAcuerdo>(parametroAcuerdo, HttpStatus.OK);
     }
 
@@ -40,7 +46,7 @@ public class ParametroAcuerdoController {
     public ResponseEntity<?> getById(@PathVariable("id") int id){
         if(!parametroAcuerdoService.existsById(id))
             return new ResponseEntity<Mensaje>(new Mensaje("No existe un parametro-acuerdo con esa id"), HttpStatus.NOT_FOUND);
-        ParametroAcuerdo parametroAcuerdo = parametroAcuerdoService.getOne(id).get();
+        ParametroAcuerdo parametroAcuerdo = parametroAcuerdoService.getOne(id).orElse(null);
         return new ResponseEntity<ParametroAcuerdo>(parametroAcuerdo, HttpStatus.OK);
     }
 
@@ -77,12 +83,25 @@ public class ParametroAcuerdoController {
     public ResponseEntity<Mensaje> updateSelected(@PathVariable("id") int id){
         if (!parametroAcuerdoService.existsById(id))
             return new ResponseEntity<Mensaje>(new Mensaje("No existe un parametro-acuerdo con esa id"), HttpStatus.NOT_FOUND);
-        ParametroAcuerdo parametroAcuerdoActivo = parametroAcuerdoService.getByParametro((byte) 1).get();
-        parametroAcuerdoActivo.setParametro((byte) 0);
-        parametroAcuerdoService.save(parametroAcuerdoActivo);
+        ParametroAcuerdo parametroAcuerdoActivo = parametroAcuerdoService.getByParametro((byte) 1).orElse(null);
+        if (parametroAcuerdoActivo != null) {
+            parametroAcuerdoActivo.setParametro((byte) 0);
+            parametroAcuerdoService.save(parametroAcuerdoActivo);
+        }
         ParametroAcuerdo parametroAcuerdo = parametroAcuerdoService.getOne(id).get();
         parametroAcuerdo.setParametro((byte) 1);
         parametroAcuerdoService.save(parametroAcuerdo);
+        return new ResponseEntity<Mensaje>(new Mensaje("Parametro-acuerdo actualizado"), HttpStatus.OK);
+    }
+
+    @PutMapping("/delete/selected")
+    public ResponseEntity<Mensaje> deleteSelected() {
+        ParametroAcuerdo parametroAcuerdoActivo = parametroAcuerdoService.getByParametro((byte) 1).orElse(null);
+        if  (parametroAcuerdoActivo == null)
+            return new ResponseEntity<Mensaje>(new Mensaje("No hay ningun otro parametro activo"), HttpStatus.NOT_FOUND);
+        parametroAcuerdoActivo.setParametro((byte) 0);
+        parametroAcuerdoService.save(parametroAcuerdoActivo);
+        ;
         return new ResponseEntity<Mensaje>(new Mensaje("Parametro-acuerdo actualizado"), HttpStatus.OK);
     }
 }

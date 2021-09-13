@@ -1,0 +1,44 @@
+
+      <div class="p-grid">
+        <div class="p-col-12 p-lg-5">
+          <img class="center-block img-responsive" src="../../assets/siu-02.png" [style.height.px]="120"
+            [style.margin.px]="2" width="100%" alt="Logo imagen">
+        </div>
+        <div class="p-col-12 p-lg-7">
+    
+          <h4 class="card-title text-center">SOLICITUD DE TRÁMITE PARA COMPRAS INFERIORES A 30 SMMLV</h4>
+          <p class="text-center card-text">COORDINACIÓN DE PROCESO ADMINISTRACIÓN DE PROYECTOS</p>
+          <p class="text-center card-text">Administración de Proyectos de Investigación y Extensión</p>
+          <p class="text-center card-text">Administración SIU</p>
+        </div>
+      </div>
+ 
+    <br>
+    
+      <p-steps [model]="items"  [readonly]="false"></p-steps>
+    
+  <br>
+  
+   <router-outlet></router-outlet>
+
+
+    <div class="form-group row">
+      <div class="offset-md-1 mb-5">
+        <button class="btn btn-success mr-3" style="width:200px;" type="button" (click)="saveSolicitud()"
+          [title]="solicitudForm.valid ? 'Save your entered data' : 'Disabled until the form data is valid'"
+          [disabled]="!solicitudForm.valid">
+          Enviar
+        </button>
+        <button class="btn btn-outline-secondary mr-3" style="width:100px;" type="button" title="Cancelar"
+          routerLink="/solicitud">
+          Cancelar
+        </button>
+        <button class="btn btn-outline-warning" style="width:90px" type="button"
+          title="Borrar solicitud" (click)="deleteSolicitud()">
+          Borrar
+        </button>
+      </div>
+    </div>
+
+
+<p-confirmDialog [style]="{width: '450px'}"></p-confirmDialog>

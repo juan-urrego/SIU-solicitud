@@ -18,13 +18,12 @@ public class Estudio {
     @Column(name = "est_acuerdo")
     private String acuerdo;
 
-    @NotNull
-    @Column(name = "est_firma_usuario")
-    private byte firmaUsuario;
 
-    @NotNull
-    @Column(name = "est_firma_investigador")
-    private byte firmaInvestigador;
+    @Column(name = "est_firma_usuario")
+    private String firmaUsuario;
+
+    @Column(name = "est_firma_director")
+    private String firmaDirector;
 
     @OneToOne
     @MapsId
@@ -39,23 +38,17 @@ public class Estudio {
     @ManyToOne
     @JoinColumn(name = "est_estado_id")
     private Estado estado;
-
-    @ManyToOne
-    @JsonIgnoreProperties({"password","roles"})
-    @JoinColumn(name = "est_usuario_id")
-    private Usuario usuario;
-
+    
     public Estudio() {
     }
 
-    public Estudio(@NotNull String acuerdo, @NotNull byte firmaUsuario, @NotNull byte firmaInvestigador, Solicitud solicitud, UnidadAcademica unidadAcademica, @NotNull Estado estado, Usuario usuario) {
+    public Estudio(@NotNull String acuerdo, @NotNull String firmaUsuario, @NotNull String firmaDirector, Solicitud solicitud, UnidadAcademica unidadAcademica, @NotNull Estado estado) {
         this.acuerdo = acuerdo;
         this.firmaUsuario = firmaUsuario;
-        this.firmaInvestigador = firmaInvestigador;
+        this.firmaDirector = firmaDirector;
         this.solicitud = solicitud;
         this.unidadAcademica = unidadAcademica;
         this.estado = estado;
-        this.usuario = usuario;
     }
 
     public int getId() {
@@ -74,20 +67,20 @@ public class Estudio {
         this.acuerdo = acuerdo;
     }
 
-    public byte getFirmaUsuario() {
+    public String getFirmaUsuario() {
         return firmaUsuario;
     }
 
-    public void setFirmaUsuario(byte firmaUsuario) {
+    public void setFirmaUsuario(String firmaUsuario) {
         this.firmaUsuario = firmaUsuario;
     }
 
-    public byte getFirmaInvestigador() {
-        return firmaInvestigador;
+    public String getFirmaDirector() {
+        return firmaDirector;
     }
 
-    public void setFirmaInvestigador(byte firmaInvestigador) {
-        this.firmaInvestigador = firmaInvestigador;
+    public void setFirmaDirector(String firmaDirector) {
+        this.firmaDirector = firmaDirector;
     }
 
     public Solicitud getSolicitud() {
@@ -113,12 +106,5 @@ public class Estudio {
     public void setEstado(Estado estado) {
         this.estado = estado;
     }
-
-    public Usuario getUsuario() {
-        return usuario;
-    }
-
-    public void setUsuario(Usuario usuario) {
-        this.usuario = usuario;
-    }
+    
 }

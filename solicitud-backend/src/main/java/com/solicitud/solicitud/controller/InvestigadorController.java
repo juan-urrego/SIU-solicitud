@@ -39,14 +39,6 @@ public class InvestigadorController {
         return new ResponseEntity<Investigador>(investigador, HttpStatus.OK);
     }
 
-    @GetMapping(value= "/image/{id}", produces = MediaType.IMAGE_JPEG_VALUE)
-    public ResponseEntity<?> getImageById(@PathVariable("id") int id){
-        if (!investigadorService.existsById(id))
-            return new ResponseEntity<Mensaje>(new Mensaje("No existe un investigador con esa id"), HttpStatus.NOT_FOUND);
-        FileSystemResource file = investigadorService.findImageById(id);
-        return new ResponseEntity<FileSystemResource>(file, HttpStatus.OK);
-    }
-
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<Mensaje> delete (@PathVariable("id") int id){
         if(!investigadorService.existsById(id))
@@ -76,7 +68,7 @@ public class InvestigadorController {
         investigador.setNombre(investigadorDto.getNombre());
         investigador.setTelefono(investigadorDto.getTelefono());
         investigador.setEmail(investigadorDto.getEmail());
-        investigador.setFirma(investigadorService.saveImage(file.getBytes(), file.getOriginalFilename()));
+//        investigador.setFirma(investigadorService.saveImage(file.getBytes(), file.getOriginalFilename()));
         investigadorService.save(investigador);
         return new ResponseEntity<Mensaje>(new Mensaje("Investigador actualizado"), HttpStatus.OK);
     }

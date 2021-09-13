@@ -19,10 +19,6 @@ export class ConsultaService {
     }
 
 
-    updateConsulta(consulta: Consulta): Observable<Consulta> {
-        return this.http.put<Consulta>(`${this.consultaUrl}/update/${consulta.id}`, consulta);
-    }
-
     confirmarConsulta(id: number): Observable<Consulta> {
         return this.http.post<Consulta>(`${this.consultaUrl}/confirmar/${id}`, null);
     }

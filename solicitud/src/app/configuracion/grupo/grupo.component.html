@@ -5,15 +5,19 @@
     <p-table [value]="grupos">
         <ng-template pTemplate="header">
             <tr>                
+                <th>Codigo del grupo</th>
                 <th>Nombre del grupo</th>
                 <th>Código Colciencias</th>
                 <th>
-                    <button type="button" pButton pRipple icon="pi pi-plus" (click)="openNew()"></button>
+                    <button type="button" class="p-button-success"
+                    pButton pRipple icon="pi pi-plus" 
+                    (click)="openNew()"></button>
                 </th>
             </tr>
         </ng-template>
         <ng-template pTemplate="body" let-grupo let-i="index">
             <tr>                
+                <td>{{grupo.codigoGrupo}}</td>
                 <td>{{grupo.nombre}}</td>
                 <td>{{grupo.codColciencia}}</td>
                 <td>
@@ -30,6 +34,22 @@
 
           <ng-template pTemplate="content">
               <form [formGroup]="grupoForm" novalidate>
+
+                 <div class="row">
+                    <div class="col-12 mb-3 form-group">
+        
+                      <label for="codigoGrupo" class="col-form-label"><b>Codigo del grupo:</b></label>            
+                      <input id="codigoGrupo" class="form-control mb-3"
+                      formControlName="codigoGrupo"  rows="5" type="text"
+                      [ngClass]="{'is-invalid': (grupoForm.get('codigoGrupo').touched || grupoForm.get('codigoGrupo').dirty) && !grupoForm.get('codigoGrupo').valid}">
+                      <span class="invalid-feedback">
+                        <span *ngIf="grupoForm.get('codigoGrupo').errors?.required">
+                          Por favor ingrese el codigo del grupo.
+                        </span>
+                      </span>
+                      
+                    </div>
+                  </div>
                 <div class="row">
                     <div class="col-12 mb-3 form-group">
         
@@ -60,6 +80,7 @@
                       
                     </div>
                   </div>
+               
               </form>
           </ng-template>
 

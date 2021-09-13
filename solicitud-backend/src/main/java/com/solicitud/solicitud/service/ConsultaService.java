@@ -2,7 +2,9 @@ package com.solicitud.solicitud.service;
 
 import com.solicitud.solicitud.entity.Consulta;
 import com.solicitud.solicitud.repository.ConsultaRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.solicitud.solicitud.security.entity.Usuario;
+import com.solicitud.solicitud.security.service.UsuarioService;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,22 +15,39 @@ import java.util.Optional;
 @Transactional
 public class ConsultaService {
 
-    @Autowired
+    final
     ConsultaRepository consultaRepository;
 
-    public Optional<Consulta> getOne(int id){
-        return consultaRepository.findById(id);
+    final
+    UsuarioService usuarioService;
+
+    public ConsultaService(ConsultaRepository consultaRepository, UsuarioService usuarioService) {
+        this.consultaRepository = consultaRepository;
+        this.usuarioService = usuarioService;
     }
 
     public boolean existsById(final int id){
         return consultaRepository.existsById(id);
     }
 
+    public Optional<Consulta> getOne(int id){
+        if (SecurityContextHolder.getContext().getAuthentication().getAuthorities().size() == 1) {
+            if (usuarioService.getByEmail(SecurityContextHolder.getContext().getAuthentication().getName()).isPresent()) {
+                Usuario usuario = usuarioService.getByEmail(SecurityContextHolder.getContext().getAuthentication().getName()).get();
+                return consultaRepository.findByIdAndSolicitud_Usuario(id, usuario);
+            }
+        }
+        return consultaRepository.findById(id);
+    }
 
-    public List<Consulta> getConsulta(){
-        final List<Consulta> consultas;
-        consultas = consultaRepository.findAll();
-        return consultas;
+    public List<Consulta> getConsultas(){
+        if (SecurityContextHolder.getContext().getAuthentication().getAuthorities().size() != 1)
+            return consultaRepository.findAll();
+        if (usuarioService.getByEmail(SecurityContextHolder.getContext().getAuthentication().getName()).isPresent()){
+            Usuario usuario = usuarioService.getByEmail(SecurityContextHolder.getContext().getAuthentication().getName()).get();
+            return consultaRepository.findAllBySolicitud_Usuario(usuario);
+        }
+        return null;
     }
 
     public void save(final Consulta consulta){
@@ -38,5 +57,6 @@ public class ConsultaService {
     public void delete(int id){
         consultaRepository.deleteById(id);
     }
+
 
 }

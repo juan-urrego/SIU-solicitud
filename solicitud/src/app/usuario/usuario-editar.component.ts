@@ -1,128 +1,159 @@
 import { Component, OnInit } from '@angular/core';
-import { NuevoUsuario } from 'src/app/shared/models/login/nuevo-usuario';
-import { FormGroup, FormBuilder, Validators, EmailValidator } from '@angular/forms';
-import { Subscription } from 'rxjs';
-import { AuthService } from 'src/app/auth/auth.service';
+import { FormGroup, FormBuilder, FormArray, FormControl } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
+import { Usuario, UsuarioResolved } from './usuario';
+import { ConfirmationService, MessageService } from 'primeng/api';
+import { UserService } from './usuario.service';
 
 @Component({
-  templateUrl: './usuario-editar.component.html'
+    templateUrl: './usuario-editar.component.html'
 })
 export class UsuarioEditarComponent implements OnInit {
 
-  title: string;
-  mensajeError: string;
-  auxiliarForm: FormGroup;
-  auxiliar: NuevoUsuario;
-  id: number;
-  private sub: Subscription;
+    title: string;
+    mensajeError: string;
+    usuarioForm: FormGroup;
+    usuario: Usuario;
+    delayToast = 3000;
+    loadImage: boolean;
+    submitted: boolean;
+    file: any = null;
+    url: any;
+    rolOptions: string[] = ['usuario','admin','director']
 
 
-  constructor(private fb: FormBuilder,
-      private auxiliarService: AuthService,
-      private router: Router,
-      private route: ActivatedRoute) { }
-
-  ngOnInit() {
-      this.auxiliarForm = this.fb.group({
-          nombre: ['', [Validators.required, Validators.minLength(3)]],
-          apellido: ['', [Validators.required]],
-          email: ['', [Validators.required, Validators.email]],
-          password: ['', [Validators.required]]
-      });
-
-      this.sub = this.route.paramMap.subscribe(
-          params => {
-              const id = +params.get('id');
-              this.id = id;
-              if (id != 0){
-
-                // this.getAuxiliar(id);
-              }
-          }
-      );
-  }
-
-  ngOnDestroy(): void {
-      this.sub.unsubscribe();
-  }
-
-
-//   getAuxiliar(id: number) {
-//       this.auxiliarService.getAuxiliar(id)
-//           .subscribe({
-//               next: (auxiliar: NuevoUsuario) => this.displayAuxiliar(auxiliar),
-//               error: err => this.mensajeError = err
-//           });
-//   }
-  
-  displayAuxiliar(auxiliar: NuevoUsuario): void {
-      if (this.auxiliarForm) {
-          this.auxiliarForm.reset();
-      }
-      this.auxiliar = auxiliar;
-
-      if (this.id === 0) {
-          this.title = "Agregar Auxiliar";
-      } else {
-          this.title = `Editar Auxiliar: ${this.auxiliar.nombre} ${this.auxiliar.apellido}`;
+    get roles(): FormArray {
+        return this.usuarioForm.get('roles') as FormArray;
       }
 
-      this.auxiliarForm.patchValue({
-          nombre: this.auxiliar.nombre,
-          apellido: this.auxiliar.apellido,
-          email: this.auxiliar.email
-      });
-      
-  }
 
+    constructor(private fb: FormBuilder,
+        private usuarioService: UserService,
+        private router: Router,
+        private route: ActivatedRoute,
+        private messageService: MessageService,
+        private confirmationService: ConfirmationService) { }
 
-//   deleteAuxiliar(): void {
-//       if (this.auxiliar.id === 0) {
-//           this.onSaveComplete();
-//       } else {
-//           if (confirm(`Realmente desea eliminar el proveedor: ${this.auxiliar.nombre}  ${this,this.auxiliar.apellido}?`)) {
-//               this.auxiliarService.delete(this.auxiliar.id)
-//                   .subscribe({
-//                       next: () => this.onSaveComplete(),
-//                       error: err => this.mensajeError = err
-//                   });
-//           }
-//       }
-//   }
+    ngOnInit() {
+        this.route.data.subscribe(data => {
+            const resolvedData: UsuarioResolved = data['resolvedData'];
+            this.mensajeError = resolvedData.error;
+            this.usuario = resolvedData.usuario;
+            this.usuarioForm = resolvedData.form;
+        });
+        this.loadFirma();
+    }
 
-  onSaveComplete(): void {
-      this.auxiliarForm.reset();
-      this.router.navigate(['/auxiliar']);
-  }
-
-  saveAuxiliar(): void {
-      console.log("en el boton");
-      
-      if (this.auxiliarForm.valid) {
-          if (this.auxiliarForm.dirty) {
-              const p = { ...this.auxiliar, ...this.auxiliarForm.value };
-              console.log(p);
-              
-            //   if (p.id === 0) {
-            //       this.auxiliarService.nuevo(p)
-            //           .subscribe({
-            //               next: () => this.onSaveComplete(),
-            //               error: err => this.mensajeError = err
-            //           });
-            //   } else {
-            //       this.auxiliarService.update(p.id,p)
-            //           .subscribe({
-            //               next: () => this.onSaveComplete(),
-            //               error: err => this.mensajeError = err
-            //           });
-            //   }
-          } else {
-              this.onSaveComplete();
-          }
-      } else {
-          this.mensajeError = 'Verificar los errores de validacion'
+    addTag(): void {
+        this.roles.push(new FormControl());
       }
-  }
+    
+    deleteTag(index: number): void {
+    this.roles.removeAt(index);
+    this.roles.markAsDirty();
+    }
+
+    loadFirma() {
+        if (this.usuario) {
+            this.usuarioService.getUsuarioFirma(this.usuario.id).subscribe({
+                next: image => this.createImageFromBlob(image),
+                error: error => this.mensajeError = error
+            });
+        }
+    }
+
+    createImageFromBlob(image: Blob) {
+        let reader = new FileReader();
+        reader.addEventListener("load", () => {
+            this.url = reader.result;
+        }, false);
+        if (image) {
+            reader.readAsDataURL(image);
+        }
+    }
+
+    toggleImage(): void {
+        this.loadImage = !this.loadImage;
+    }
+
+    onFileSelected(event) {
+        this.file = event.currentFiles[0]
+    }
+
+
+    onSaveComplete(): void {
+        this.usuarioForm.reset();
+        this.router.navigate(['/usuario']);
+    }
+
+    deleteUser(): void {
+        if (this.usuario) {
+            this.confirmationService.confirm({
+                message: '¿Estás seguro de eliminar este usuario?',
+                header: 'Confirmacion',
+                icon: 'pi pi-exclamation-triangle',
+                accept: () => {
+                    this.usuarioService.deleteUser(this.usuario.id).subscribe({
+                        next: () => {
+                            this.onSaveComplete();
+                        },
+                        error: error => {
+                            this.mensajeError = error
+                            this.messageService.add({
+                                severity: 'error',
+                                summary: 'Error',
+                                detail: this.mensajeError,
+                                life: this.delayToast
+                            });
+                        }
+                    });
+                }
+            });
+        }
+    }
+
+    saveUser(): void {
+        if (this.usuarioForm.valid) {
+            if (this.usuarioForm.dirty) {
+                if (!this.usuario) {
+                    this.usuarioService.createUser(JSON.stringify(this.usuarioForm.value), this.file)
+                        .subscribe({
+                            next: () => {
+                                this.onSaveComplete();
+                            },
+                            error: error => {
+                                this.mensajeError = error.message;
+                                this.messageService.add({
+                                    severity: 'error',
+                                    summary: 'Error',
+                                    detail: this.mensajeError,
+                                    life: this.delayToast
+                                });
+                            }
+                        });
+                } else {
+                    this.usuarioService.updateUser(JSON.stringify(this.usuarioForm.value), this.file, this.usuario.id)
+                        .subscribe({
+                            next: () => {
+                                this.onSaveComplete();
+                            },
+                            error: error => {
+                                this.mensajeError = error;
+                                this.messageService.add({
+                                    severity: 'error',
+                                    summary: 'Error',
+                                    detail: this.mensajeError,
+                                    life: this.delayToast
+                                });
+                            }
+                        });
+                }
+            } else {
+                this.onSaveComplete();
+            }
+        } else {
+            this.mensajeError = 'Verificar los errores de validacion'
+        }
+    }
 
 }

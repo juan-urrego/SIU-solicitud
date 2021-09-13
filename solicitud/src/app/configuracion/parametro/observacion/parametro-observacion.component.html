@@ -13,26 +13,26 @@
 
   <ng-template pTemplate="footer">
       <p-button label="Activar" 
-                [disabled]="observacionSelected.parametro === 1"
+                [disabled]="!observacionSelected || observacionSelected.parametro === 1"
+                *ngIf="observaciones"
                 (click)="updateSelected(observacionSelected)"
                 class="mr-3">
       </p-button>
-      <button pButton pRipple label="Editar" 
-              icon="pi pi-pencil" 
+      <button pButton pRipple
+              icon="pi pi-pencil"
+              *ngIf="observaciones"
               class="p-button-warning p-mr-2" 
               (click)="openNew(observacionSelected)"></button>
+      <button pButton pRipple 
+              icon="pi pi-times" 
+              class="p-button-warning p-mr-2" 
+              (click)="deleteSelected()"></button>
       <button pButton pRipple 
               icon="pi pi-plus" 
               class="p-button-success p-mr-2" 
               (click)="openNew()"></button>
-      <button pButton pRipple 
-              icon="pi pi-plus" 
-              class="p-button-success p-mr-2" 
-              (click)="showDialog()"></button>
             </ng-template>    
 </p-card>
-
-<app-details [display]="display" (displayChange)="onDialogClose($event)"></app-details>
 
 
 <p-dialog [(visible)]="observacionDialog" [style]="{width: '450px'}" 

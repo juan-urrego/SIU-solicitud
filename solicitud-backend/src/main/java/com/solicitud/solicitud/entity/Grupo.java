@@ -18,6 +18,9 @@ public class Grupo {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     @NotNull
+    @Column(name = "gr_codigo")
+    private String codigoGrupo;
+    @NotNull
     @Column(name = "gr_nombre")
     private String nombre;
     @NotNull
@@ -33,7 +36,8 @@ public class Grupo {
     Set<GrupoInvestigador> grupoInvestigadores;
 
 
-    public Grupo(@NotNull String nombre, @NotNull String codColciencia) {
+    public Grupo(@NotNull String codigoGrupo, @NotNull String nombre, @NotNull String codColciencia) {
+        this.codigoGrupo = codigoGrupo;
         this.nombre = nombre;
         this.codColciencia = codColciencia;
     }
@@ -47,6 +51,14 @@ public class Grupo {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public String getCodigoGrupo() {
+        return codigoGrupo;
+    }
+
+    public void setCodigoGrupo(String codigoGrupo) {
+        this.codigoGrupo = codigoGrupo;
     }
 
     public String getNombre() {

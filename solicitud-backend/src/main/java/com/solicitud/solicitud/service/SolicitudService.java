@@ -2,7 +2,9 @@ package com.solicitud.solicitud.service;
 
 import com.solicitud.solicitud.entity.Solicitud;
 import com.solicitud.solicitud.repository.SolicitudRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.solicitud.solicitud.security.entity.Usuario;
+import com.solicitud.solicitud.security.service.UsuarioService;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,10 +15,24 @@ import java.util.Optional;
 @Transactional
 public class SolicitudService {
 
-    @Autowired
+    final
     SolicitudRepository solicitudRepository;
 
+    final
+    UsuarioService usuarioService;
+
+    public SolicitudService(SolicitudRepository solicitudRepository, UsuarioService usuarioService) {
+        this.solicitudRepository = solicitudRepository;
+        this.usuarioService = usuarioService;
+    }
+
     public Optional<Solicitud> getOne(int id){
+        if (SecurityContextHolder.getContext().getAuthentication().getAuthorities().size() == 1) {
+            if (usuarioService.getByEmail(SecurityContextHolder.getContext().getAuthentication().getName()).isPresent()) {
+                Usuario usuario = usuarioService.getByEmail(SecurityContextHolder.getContext().getAuthentication().getName()).get();
+                return solicitudRepository.findByIdAndUsuario(id, usuario);
+            }
+        }
         return solicitudRepository.findById(id);
     }
 
@@ -24,10 +40,15 @@ public class SolicitudService {
         return solicitudRepository.existsById(id);
     }
 
-    public List<Solicitud> getSolicitud(){
-        final List<Solicitud> solicituds;
-        solicituds = solicitudRepository.findAll();
-        return solicituds;
+
+    public List<Solicitud> getSolicitudes(){
+        if (SecurityContextHolder.getContext().getAuthentication().getAuthorities().size() != 1)
+            return solicitudRepository.findAll();
+        if (usuarioService.getByEmail(SecurityContextHolder.getContext().getAuthentication().getName()).isPresent()){
+            Usuario usuario = usuarioService.getByEmail(SecurityContextHolder.getContext().getAuthentication().getName()).get();
+            return solicitudRepository.findAllByUsuario(usuario);
+        }
+        return null;
     }
 
     public Solicitud save(final Solicitud solicitud){

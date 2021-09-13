@@ -7,7 +7,6 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap'
 import { AppRoutingModule } from './app-routing.module';
 
 import { AppComponent } from './app.component';
-import { UsuarioModule } from './usuario/usuario.module';
 import { SharedModule } from './shared/shared.module';
 
 import { CurrencyPipe } from '@angular/common';
@@ -28,7 +27,6 @@ import { UserModule } from './auth/user.module';
     SidebarModule.forRoot(),
     NgbModule,
     HomeModule,
-    UsuarioModule,
     SharedModule,
     UserModule,
     AppRoutingModule

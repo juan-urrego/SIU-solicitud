@@ -69,7 +69,12 @@ public class Solicitud {
     @OneToMany(mappedBy = "solicitud", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<DetalleTramite> detalleTramites;
 
-    public Solicitud(@NotNull String tipoTramite, @NotNull String necesidad, @NotNull String fecha, @NotNull double valor, @NotNull @NotNull String verificacion, @NotNull String observacion, @NotNull GrupoInvestigador grupoInvestigador, @NotNull Estado estado) {
+    @ManyToOne
+    @JsonIgnoreProperties({"password","roles"})
+    @JoinColumn(name = "est_usuario_id")
+    private Usuario usuario;
+
+    public Solicitud(@NotNull String tipoTramite, @NotNull String necesidad, @NotNull String fecha, @NotNull double valor, @NotNull @NotNull String verificacion, @NotNull String observacion, @NotNull GrupoInvestigador grupoInvestigador, @NotNull Estado estado, @NotNull Usuario usuario) {
         this.tipoTramite = tipoTramite;
         this.necesidad = necesidad;
         this.fecha = fecha;
@@ -77,8 +82,8 @@ public class Solicitud {
         this.verificacion = verificacion;
         this.observacion = observacion;
         this.grupoInvestigador = grupoInvestigador;
-        this.precotizaciones = precotizaciones;
         this.estado = estado;
+        this.usuario = usuario;
     }
 
     public Solicitud() {
@@ -204,5 +209,13 @@ public class Solicitud {
 
     public void setPrecotizacionElegida(Precotizacion precotizacionElegida) {
         this.precotizacionElegida = precotizacionElegida;
+    }
+
+    public Usuario getUsuario() {
+        return usuario;
+    }
+
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
     }
 }

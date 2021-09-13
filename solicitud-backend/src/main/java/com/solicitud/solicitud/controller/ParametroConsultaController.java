@@ -25,12 +25,18 @@ public class ParametroConsultaController {
     @GetMapping("/consultas")
     public ResponseEntity<List<ParametroConsulta>> list(){
         List<ParametroConsulta> list = parametroConsultaService.getConsulta();
+        if (list.isEmpty())
+            return new ResponseEntity<>(null, HttpStatus.OK);
         return new ResponseEntity<List<ParametroConsulta>>(list, HttpStatus.OK);
     }
 
     @GetMapping("/consultas/selected")
     public ResponseEntity<ParametroConsulta> getByParametro(){
-        ParametroConsulta parametroConsulta = parametroConsultaService.getByParametro((byte) 1).get();
+        ParametroConsulta parametroConsulta = parametroConsultaService.getByParametro((byte) 1).orElse(null);
+        if (parametroConsulta == null){
+            parametroConsulta = new ParametroConsulta("",(byte) 0);
+            return  new ResponseEntity<ParametroConsulta>(parametroConsulta, HttpStatus.OK);
+        }
         return new ResponseEntity<ParametroConsulta>(parametroConsulta, HttpStatus.OK);
     }
 
@@ -75,12 +81,25 @@ public class ParametroConsultaController {
     public ResponseEntity<Mensaje> updateSelected(@PathVariable("id") int id){
         if (!parametroConsultaService.existsById(id))
             return new ResponseEntity<Mensaje>(new Mensaje("No existe un parametro-consulta con esa id"), HttpStatus.NOT_FOUND);
-        ParametroConsulta parametroConsultaActivo = parametroConsultaService.getByParametro((byte) 1).get();
-        parametroConsultaActivo.setParametro((byte) 0);
-        parametroConsultaService.save(parametroConsultaActivo);
+        ParametroConsulta parametroConsultaActivo = parametroConsultaService.getByParametro((byte) 1).orElse(null);
+        if (parametroConsultaActivo != null) {
+            parametroConsultaActivo.setParametro((byte) 0);
+            parametroConsultaService.save(parametroConsultaActivo);
+        }
         ParametroConsulta parametroConsulta = parametroConsultaService.getOne(id).get();
         parametroConsulta.setParametro((byte) 1);
         parametroConsultaService.save(parametroConsulta);
+        return new ResponseEntity<Mensaje>(new Mensaje("Parametro-consulta actualizado"), HttpStatus.OK);
+    }
+
+    @PutMapping("/delete/selected")
+    public ResponseEntity<Mensaje> deleteSelected() {
+        ParametroConsulta parametroConsultaActivo = parametroConsultaService.getByParametro((byte) 1).orElse(null);
+        if  (parametroConsultaActivo == null)
+            return new ResponseEntity<Mensaje>(new Mensaje("No hay ningun otro parametro activo"), HttpStatus.NOT_FOUND);
+        parametroConsultaActivo.setParametro((byte) 0);
+        parametroConsultaService.save(parametroConsultaActivo);
+        ;
         return new ResponseEntity<Mensaje>(new Mensaje("Parametro-consulta actualizado"), HttpStatus.OK);
     }
 }

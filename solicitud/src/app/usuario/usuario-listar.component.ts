@@ -1,43 +1,28 @@
 import { Component, OnInit } from '@angular/core';
-import { NuevoUsuario } from 'src/app/shared/models/login/nuevo-usuario';
-import { AuthService } from 'src/app/auth/auth.service';
+import { Usuario } from './usuario';
+import { UserService } from './usuario.service';
+
 
 @Component({
   templateUrl: './usuario-listar.component.html'
 })
 export class UsuarioListarComponent implements OnInit {
-  titulo: string = 'Lista de Auxiliares'
+  titulo: string = 'Lista de usuarios'
   mensajeError: string;
+  users: Usuario[]
 
-  _filtrar = '';
-  get filtrar(): string {
-      return this._filtrar;
-  }
-  set filtrar(value: string) {
-      this._filtrar = value;
-      this.filtrados = this.filtrar ? this.performFilter(this.filtrar) : this.auxiliares;
-  }
-
-  auxiliares: NuevoUsuario[]
-  filtrados: NuevoUsuario[]
-
-  constructor(private auxiliarService: AuthService) { }
+  constructor(private usuarioService: UserService) { }
 
   ngOnInit(): void {
-    //   this.auxiliarService.getAuxiliares().subscribe({
-    //       next: auxiliares => {
-    //           this.auxiliares = auxiliares;;
-    //           this.filtrados = this.auxiliares;
-              
-    //       },
-    //       error: err => this.mensajeError = err
-    //   });
-
+      this.refresh();
   }
 
-  performFilter(filterBy: string): NuevoUsuario[] {
-      filterBy = filterBy.toLocaleLowerCase();
-      return this.auxiliares.filter((auxiliares: NuevoUsuario) =>
-          auxiliares.nombre.toLocaleLowerCase().indexOf(filterBy) !== -1);
+  refresh() {
+    this.usuarioService.getUsers().subscribe({
+        next: users => {
+            this.users = users;
+        },
+        error: err => this.mensajeError = err
+    });
   }
 }

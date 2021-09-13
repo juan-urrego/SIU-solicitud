@@ -1,11 +1,14 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import domtoimage from 'dom-to-image';
-import * as jsPDF from 'jspdf';
-import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { Component, OnInit } from '@angular/core';
+import { FormArray, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Subscription } from 'rxjs';
 import { Estudio } from 'src/app/estudio/estudio';
 import { EstudioService } from 'src/app/estudio/estudio.service';
+import { AuthService } from '../auth/auth.service';
+import { ParametroAcuerdoService } from '../configuracion/parametro/acuerdo/parametroAcuerdo.service';
+import { Parametro } from '../configuracion/parametro/parametro';
+import { UnidadAcademicaService } from '../configuracion/parametro/unidad-academica/unidadAcademica.service';
+import { Usuario } from '../usuario/usuario';
+import { UserService } from '../usuario/usuario.service';
 
 @Component({
     templateUrl: 'estudio-editar.component.html'
@@ -14,78 +17,131 @@ import { EstudioService } from 'src/app/estudio/estudio.service';
 export class EstudioEditarComponent implements OnInit {
     mensajeError: string;
     title: string;
-
+    rol: string;
+    urlUser: any;
+    urlDirector: any;
     estudioForm: FormGroup;
     estudio: Estudio;
+    directorActivo: Usuario;
+    unidadesAcademicas: Parametro[];
 
-    fecha = new FormControl();
-    centroCostos = new FormControl();
-    necesidad = new FormControl();
-    descripcion = new FormControl();
-    valor = new FormControl();
-    verificacion = new FormControl();
+    get detalleTramiteDtos(): FormArray {
+        return this.estudioForm.get('_detalleTramiteDtos') as FormArray;
+    }
 
-    private sub: Subscription;
-    @ViewChild('content') content: ElementRef;
-
-    
     constructor(private estudioService: EstudioService,
         private router: Router,
         private route: ActivatedRoute,
-        private fb: FormBuilder) { }
+        private parametroAcuerdoService: ParametroAcuerdoService,
+        private authService: AuthService,
+        private usuarioService: UserService,
+        private unidadAcademicaService: UnidadAcademicaService) { 
+            this.rol = this.authService.getRole();
+        }
 
     ngOnInit() { 
-        this.sub = this.route.paramMap.subscribe(
-            params => {
-                const id = +params.get('id');
-                this.getEstudio(id);
+        this.route.data.subscribe(data => {            
+            this.estudio = data['resolvedData'].estudio;
+            this.estudioForm = data['resolvedData'].form;
+        });
+        console.log(this.estudio.unidadAcademica);
+        this.getUnidadesAcademicas();
+        this.getDirectorActivo();
+        //Get director activo
+
+        if (this.estudio.firmaDirector){
+            //Get director(firma)
+            this.getDirectorByFirma(this.estudio.firmaDirector);
+            // Get firma para director  (imagen)
+            this.getFirma(this.directorActivo.id, this.rol);
+        }
+        if (this.estudio.firmaUsuario){
+            this.getFirma(this.estudio.solicitud.usuario.id, this.rol);
+            //Get firma para usuario (imagen)
+        }
+        if (this.estudio.estado.estadoNombre == "CREADA") {
+            this.getParametroAcuerdo();
+        }
+
+    }
+
+    getParametroAcuerdo() {
+        return this.parametroAcuerdoService.getParametroAcuerdoActivo().subscribe({
+            next: parametro => this.estudioForm.get("acuerdo").setValue(parametro.descripcion),
+            error: error => this.mensajeError = error
+        });
+    }
+
+    getUnidadesAcademicas() {
+        return this.unidadAcademicaService.getUnidadAcademicas().subscribe({
+            next: parametros => this.unidadesAcademicas = parametros,
+            error: error => this.mensajeError = error
+        })
+    }
+
+    getDirectorActivo() {
+        return this.usuarioService.getDirectorActivo().subscribe({
+            next: directorActivo => this.directorActivo = directorActivo,
+            error: error => this.mensajeError = error
+        });
+    }
+
+    getFirma(id: number, rol: string) {
+        this.usuarioService.getUsuarioFirma(id).subscribe({
+            next: image => this.createImageFromBlob(image, rol),
+            error: error => this.mensajeError = error
+        });
+    }
+
+    createImageFromBlob(image: Blob, rol: string) {
+        let reader = new FileReader();
+        reader.addEventListener("load", () => {
+            if(rol == 'director'){
+                this.urlUser = reader.result;
+            }else{
+                this.urlDirector = reader.result
             }
-        );
-        this.estudioForm = this.fb.group({
-            acuerdo: '',
-            unidad: '',
-            firma: '',
-            solicitud: this.fb.group({
-                idSolicitud: ''
-            })
+        }, false);
+        if (image) {
+            reader.readAsDataURL(image);
+        }
+    }
 
+    getDirectorByFirma(firma: string) {
+        return this.usuarioService.getUserByFirma(firma).subscribe({
+            next: directorActivo => {
+                this.directorActivo = directorActivo;
+            },
+            error: error => this.mensajeError = error
         });
     }
 
-    getEstudio(id: number) {
-        this.estudioService.getEstudio(id).subscribe({
-            next: (estudio: Estudio) => this.displayEstudio(estudio),
-            error: err => this.mensajeError = err
-        });
+    signDirector(): void {
+        if(!this.estudio.firmaDirector){
+            this.estudioForm.get('firmaDirector').setValue(this.directorActivo.firma)
+            const p = {...this.estudio, ...this.estudioForm.value}
+            this.estudioService.updateEstudio(p).subscribe({
+                next: () => this.getFirma(this.directorActivo.id, this.rol),
+                error: error => this.mensajeError = error
+            });
+        }
+        //save con string de director activo
+        //Get firma
     }
+
+    signUser(): void{
+        //save con string de usuario que está en solicitud
+        //Get firma
+    }
+
+
 
     onSaveComplete(): void{
         this.estudioForm.reset();
         this.router.navigate(['/estudio']);
     }
 
-    displayEstudio(estudio: Estudio): void {
-        if(this.estudioForm){
-            this.estudioForm.reset();
-        }
-        this.estudio = estudio;
-        // this.title  = `Editar estudio: ${this.estudio.solicitud.nombreProyecto}`;
-        // this.fecha.setValue(this.estudio.solicitud.fecha);
-        // this.centroCostos .setValue(this.estudio.solicitud.centroCostos);
-        // this.necesidad.setValue(this.estudio.solicitud.necesidad);
-        // this.descripcion.setValue(this.estudio.solicitud.descripcion);
-        // this.valor.setValue(this.estudio.solicitud.valor);
-        // this.verificacion.setValue(this.estudio.solicitud.verificacion);
-        // this.estudioForm.patchValue({
-        //     acuerdo: estudio.acuerdo,
-        //     unidad: estudio.unidad,
-        //     firma: estudio.unidad,
-        //     director: estudio.director,
-        //     solicitud: {
-        //         idSolicitud: estudio.solicitud.idSolicitud
-        //     }
-        // });
-    }
+    
 
     save(): void {
         

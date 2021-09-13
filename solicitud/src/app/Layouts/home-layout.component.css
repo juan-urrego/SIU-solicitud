@@ -2,11 +2,11 @@ body{
     overflow: hidden;
     font-family: 'Muli', sans-serif;
     font-weight: 300;
-    color: #111B54;
+    color: #0a351c;
 }
 
 .bg-primary {
-    background-color: #111B54 !important;
+    background-color: #0a351c !important;
 }
 
 a:hover {

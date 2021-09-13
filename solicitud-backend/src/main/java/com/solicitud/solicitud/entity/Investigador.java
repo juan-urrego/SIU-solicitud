@@ -31,9 +31,7 @@ public class Investigador {
     @NotNull
     @Column(name = "inv_email")
     private String email;
-    @NotNull
-    @Column(name = "inv_firma")
-    private String firma;
+
 
     @OneToMany(mappedBy = "investigador")
     @JsonIgnore
@@ -44,7 +42,6 @@ public class Investigador {
         this.nombre = nombre;
         this.telefono = telefono;
         this.email = email;
-        this.firma = firma;
     }
 
     public Investigador() {
@@ -76,14 +73,6 @@ public class Investigador {
 
     public String getTelefono() {
         return telefono;
-    }
-
-    public String getFirma() {
-        return firma;
-    }
-
-    public void setFirma(String firma) {
-        this.firma = firma;
     }
 
     public void setTelefono(String telefono) {

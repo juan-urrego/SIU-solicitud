@@ -30,6 +30,10 @@ export class ParametroConsultaService {
         return this.http.delete<Parametro>(`${this.url}/delete/${id}`);
     }
 
+    deleteParametroConsultaActivo(): Observable<{}> {
+        return this.http.put<Parametro>(`${this.url}/delete/selected`, null);
+    }
+
     updateParametroConsulta(parametro: Parametro): Observable<Parametro> {
         return this.http.put<Parametro>(`${this.url}/update/${parametro.id}`, parametro);
     }

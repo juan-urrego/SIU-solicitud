@@ -17,6 +17,7 @@ export class ProveedorComponent implements OnInit {
     submitted: boolean;
     proveedorForm: FormGroup;
     delayToast = 3000;
+    tipoProveedores = ['Persona jurídica', 'Persona natural'];
 
     
     constructor(private proveedorService: ProveedorService,

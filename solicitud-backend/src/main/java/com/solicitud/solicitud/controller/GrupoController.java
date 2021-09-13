@@ -7,6 +7,7 @@ import com.solicitud.solicitud.service.GrupoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,6 +30,7 @@ public class GrupoController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> getById(@PathVariable("id") int id){
         if(!grupoService.existsById(id))
             return new ResponseEntity<Mensaje>(new Mensaje("No existe un grupo con esa id"), HttpStatus.NOT_FOUND);
@@ -37,6 +39,7 @@ public class GrupoController {
     }
 
     @DeleteMapping("/delete/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Mensaje> delete (@PathVariable("id") int id){
         if(!grupoService.existsById(id))
             return new ResponseEntity<Mensaje>(new Mensaje("No existe un grupo con esa id"), HttpStatus.NOT_FOUND);
@@ -45,19 +48,22 @@ public class GrupoController {
     }
 
     @PostMapping("/save")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> save(@RequestBody GrupoDto grupoDto, BindingResult bindingResult){
         if(bindingResult.hasErrors())
             return new ResponseEntity<Mensaje>(new Mensaje("Campos mal puestos"), HttpStatus.BAD_REQUEST);
-        Grupo grupo = new Grupo(grupoDto.getNombre(), grupoDto.getCodColciencia());
+        Grupo grupo = new Grupo(grupoDto.getCodigoGrupo(), grupoDto.getNombre(), grupoDto.getCodColciencia());
         grupoService.save(grupo);
         return new ResponseEntity<Mensaje>(new Mensaje("Grupo guardado"), HttpStatus.OK);
     }
 
     @PutMapping("/update/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Mensaje> update(@PathVariable("id") int id, @RequestBody GrupoDto grupoDto){
         if (!grupoService.existsById(id))
             return new ResponseEntity<Mensaje>(new Mensaje("No existe un grupo con esa id"), HttpStatus.NOT_FOUND);
         Grupo grupo = grupoService.getOne(id).get();
+        grupo.setCodigoGrupo(grupoDto.getCodigoGrupo());
         grupo.setNombre(grupoDto.getNombre());
         grupo.setCodColciencia(grupoDto.getCodColciencia());
         grupoService.save(grupo);

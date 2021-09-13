@@ -53,11 +53,36 @@ export class ParametroConsultaComponent implements OnInit {
         });
     }
 
+    deleteSelected() {
+        this.parametroConsultaService.deleteParametroConsultaActivo().subscribe({
+            next: () => {
+                this.refresh();
+                this.messageService.add({
+                    severity:'success',
+                    summary: 'Exito',
+                    detail: 'Parametro Activado',
+                    life: this.delay
+                });
+            },
+            error: error => {
+                this.mensajerError = error.message;
+                this.messageService.add({
+                    severity:'error',
+                    summary: 'Error',
+                    detail: this.mensajerError,
+                    life: this.delay
+                });
+            }
+        })
+    }
+
     refresh() {
         this.parametroConsultaService.getParametroConsultas().subscribe({
             next: consultas => {
                 this.consultas = consultas;
-                this.consultaSelected = this.consultas.find(t => t.parametro == 1);
+                if (this.consultas){
+                    this.consultaSelected = this.consultas.find(t => t.parametro == 1);
+                }
             },
             error: error => this.mensajerError = error
         });

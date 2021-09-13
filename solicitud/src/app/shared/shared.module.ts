@@ -4,6 +4,8 @@ import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { FileUploadModule } from 'primeng/fileupload';
 import { ConfirmationService, MessageService } from "primeng/api";
 import { ButtonModule } from "primeng/button";
+import {ToggleButtonModule} from 'primeng/togglebutton';
+import {SplitButtonModule} from 'primeng/splitbutton';
 import { CardModule } from "primeng/card";
 import { ConfirmDialogModule } from "primeng/confirmdialog";
 import { DialogModule } from "primeng/dialog";
@@ -16,16 +18,23 @@ import { DropdownModule } from "primeng/dropdown";
 import {InputMaskModule} from 'primeng/inputmask';
 import {CalendarModule} from 'primeng/calendar';
 import {InputNumberModule} from 'primeng/inputnumber';
+import {StepsModule} from 'primeng/steps';
+import {BadgeModule} from 'primeng/badge';
+
 
 @NgModule({
     imports: [
         CommonModule,
         FormsModule,
         ReactiveFormsModule,
+        StepsModule,        
         FileUploadModule,
         TableModule,
+        BadgeModule,
         RadioButtonModule,
         ButtonModule,
+        ToggleButtonModule,
+        SplitButtonModule,
         DropdownModule,
         CalendarModule,
         InputMaskModule,
@@ -41,10 +50,14 @@ import {InputNumberModule} from 'primeng/inputnumber';
         CommonModule,
         FormsModule,
         ReactiveFormsModule,
+        StepsModule,
         FileUploadModule,
         TableModule,
+        BadgeModule,
         RadioButtonModule,
         ButtonModule,
+        ToggleButtonModule,
+        SplitButtonModule,
         DropdownModule,
         CalendarModule,
         InputMaskModule,

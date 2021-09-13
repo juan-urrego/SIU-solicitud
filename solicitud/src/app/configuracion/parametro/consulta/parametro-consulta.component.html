@@ -12,14 +12,20 @@
   
     <ng-template pTemplate="footer">
         <p-button label="Activar" 
-                [disabled]="consultaSelected.parametro === 1"
+                *ngIf="consultas"
+                [disabled]="!consultaSelected || consultaSelected.parametro === 1"
                 (click)="updateSelected(consultaSelected)"
                 class="mr-3">
       </p-button>
-      <button pButton pRipple label="Editar" 
-              icon="pi pi-pencil" 
+      <button pButton pRipple 
+              icon="pi pi-pencil"
+              *ngIf="consultas" 
               class="p-button-warning p-mr-2" 
               (click)="openNew(consultaSelected)"></button>
+      <button pButton pRipple 
+              icon="pi pi-times" 
+              class="p-button-warning p-mr-2" 
+              (click)="deleteSelected()"></button>
       <button pButton pRipple 
               icon="pi pi-plus" 
               class="p-button-success p-mr-2" 

@@ -11,7 +11,7 @@ const routes: Routes = [];
     { 
       path: '',
       canActivate: [guard],
-      data: { expectedRol: ['admin','user']},
+      data: { expectedRol: ['admin', 'user']},
       loadChildren: () => import('./Layouts/home.module').then(m => m.HomeModule)
     },
     { path: '**', redirectTo: 'home', pathMatch: 'full' }

@@ -1,16 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
+import { FormArray, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Subscription } from 'rxjs';
 import { Consulta } from 'src/app/consulta/consulta';
-import { Grupo } from 'src/app/configuracion/grupo/grupo';
-import { Investigador } from 'src/app/configuracion/investigador/investigador';
-import { Precotizacion } from 'src/app/solicitud/precotizacion';
-import { Solicitud } from 'src/app/solicitud/solicitud';
 import { ConsultaService } from 'src/app/consulta/consulta.service';
+import { ParametroConsultaService } from '../configuracion/parametro/consulta/parametroConsulta.service';
 
 @Component({
-    
+
     templateUrl: 'consulta-editar.component.html'
 })
 
@@ -20,77 +16,59 @@ export class ConsultaEditarComponent implements OnInit {
 
     consultaForm: FormGroup;
     consulta: Consulta;
-    grupo: Grupo;
-    investigador: Investigador;
-    solicitud: Solicitud;
-    precotizacion: Precotizacion;
 
-    valor: number;
-
-
-    private sub: Subscription;
-
-    get precotizaciones(): FormArray {
-        return this.consultaForm.get('precotizaciones') as FormArray;
+    get detalleTramiteDtos(): FormArray {
+        return this.consultaForm.get('_detalleTramiteDtos') as FormArray;
     }
+    get precotizacionDtos(): FormArray {
+        return this.consultaForm.get('_precotizacionDtos') as FormArray;
+    }
+    get argumentoDtos(): FormArray {
+        return this.consultaForm.get('_argumentoDtos') as FormArray;
+    }
+
     constructor(private consultaService: ConsultaService,
+        private parametroConsultaService: ParametroConsultaService,
         private router: Router,
-        private route: ActivatedRoute,
-        private fb: FormBuilder) { }
+        private route: ActivatedRoute) { }
 
     ngOnInit() {
+        this.route.data.subscribe(data => {            
+            this.consulta = data['resolvedData'].consulta;
+            this.consultaForm = data['resolvedData'].form;
+        });
+        
+        if (this.consulta.estado.estadoNombre == "CREADA") {
+            this.getParametroConsulta();
+        }
+        console.log(this.consulta.parametro);
+        
+    }
 
-        this.sub = this.route.paramMap.subscribe(
-            params => {
-                const id = +params.get('id');
-                this.getConsulta(id);
-            }
-        )
+    getParametroConsulta() {
+        return this.parametroConsultaService.getParametroConsultaActivo().subscribe({
+            next: parametro => {
+                this.consultaForm.get("parametro").setValue(parametro.descripcion);
+            },
+            error: error => this.mensajeError = error
+        });
+    }
 
-        this.consultaForm = this.fb.group({
-            acuerdo: '',
-
-        })
-     }
-
-     getConsulta(id: number){
-         this.consultaService.getConsulta(id).subscribe({
-             next: (consulta: Consulta) => this.displayConsulta(consulta),
-             error: err => this.mensajeError= err
-         });
-     }
-
-     onSaveComplete(): void{
-         this.consultaForm.reset();
-         this.router.navigate(['/consulta']);
-     }
-
-    //  update(id){        
-    //     let control = this.consulta.solicitud.precotizaciones;
-    //     control.forEach(x => {        
-    //         if(x.id == id){
-    //             this.valor= x.valorTotal;
-    //         }
-    //     });
-    //  }
-
-     displayConsulta(consulta: Consulta): void {
-         if(this.consultaForm){
-             this.consultaForm.reset();
-         }
-         this.consulta = consulta;
-         this.solicitud = consulta.solicitud;
-        //  this.title = `Editar consulta: ${this.consulta.solicitud.nombreProyecto}`;         
-         
-        //  this.consultaForm.patchValue({
-        //     acuerdo: this.consulta.,
-        //     porque: this.consulta.porque
-
-        // });
-     }
+    onSaveComplete(): void {
+        this.consultaForm.reset();
+        this.router.navigate(['/consulta']);
+    }
 
 
-     save(): void{
+    send(): void {
+        console.log(this.consultaForm.valid);
+        console.log(this.consultaForm.dirty);
+        
+        
+        if (this.consultaForm.valid) {
 
-     }
+        } else {
+            this.mensajeError = 'Verificar los errores de validacion'
+        }
+    }
 }

@@ -4,7 +4,7 @@ import { Component, OnInit } from '@angular/core';
   selector: 'app-login-layout',
   template: `
   <div class="jumbotron">
-    <router-outlet></router-outlet>
+    
 </div>
   `,
   styles: []

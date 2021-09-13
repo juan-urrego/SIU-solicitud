@@ -4,10 +4,7 @@
             <div class="card-header">
                 <ul class="nav nav-tabs">
                     <li class="nav-item">
-                        <a routerLink="/login" class="nav-link active">Iniciar Sesion</a>
-                    </li>
-                    <li class="nav-item">
-                        <a routerLink="registro" class="nav-link">Crear cuenta</a>
+                        Iniciar Sesion
                     </li>
                 </ul>
             </div>
@@ -16,19 +13,19 @@
                     <div class="form-group">
                         <label for="email">Email</label>
                         <input type="email" class="form-control" formControlName="email" [ngClass]="{'is-invalid': submitted && loginForm.get('email').errors}">
-                        <div class="invalid-feedback">
+                        <!-- <div class="invalid-feedback">
                             <div *ngIf="loginForm.get('email').errors.required">Email es obligatorio</div>
                         </div>
                         <div class="invalid-feedback">
                             <div *ngIf="loginForm.get('email').errors.email">Email inválido</div>
-                        </div>
+                        </div> -->
                     </div>
                     <div class="form-group">
                         <label for="password">Password</label>
                         <input type="password" class="form-control" formControlName="password" [ngClass]="{'is-invalid': submitted && loginForm.get('password').errors}">
-                        <div class="invalid-feedback">
+                        <!-- <div class="invalid-feedback">
                             <div *ngIf="loginForm.get('password').errors.required">Password es obligatoria</div>
-                        </div>
+                        </div> -->
                     </div>
                     <div class="form-group">
                         <button class="btn btn-outline-success btn-block" [disabled]="loading">
@@ -37,7 +34,7 @@
                         </button>
                     </div>
                 </form>
-                <div class="alert alert-danger mt-3" *ngIf="submitted && isLoginFail">{{errMensaje}}</div>
+                <div class="alert alert-danger mt-3" *ngIf="submitted">{{errMensaje}}</div>
             </div>
         </div>
     </div>

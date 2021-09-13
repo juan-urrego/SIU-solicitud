@@ -54,11 +54,37 @@ export class ParametroNecesidadComponent implements OnInit {
         });
     }
 
+
+    deleteSelected() {
+        this.parametroNecesidadService.deleteParametroNecesidadActivo().subscribe({
+            next: () => {
+                this.refresh();
+                this.messageService.add({
+                    severity:'success',
+                    summary: 'Exito',
+                    detail: 'Parametro Activado',
+                    life: this.delay
+                });
+            },
+            error: error => {
+                this.mensajerError = error.message;
+                this.messageService.add({
+                    severity:'error',
+                    summary: 'Error',
+                    detail: this.mensajerError,
+                    life: this.delay
+                });
+            }
+        })
+    }
+
     refresh() {
         this.parametroNecesidadService.getParametroNecesidades().subscribe({
             next: necesidades => {
                 this.necesidades = necesidades;
-                this.necesidadSelected = this.necesidades.find(t => t.parametro == 1);
+                if (this.necesidades) {
+                    this.necesidadSelected = this.necesidades.find(t => t.parametro == 1);
+                }
             },
             error: error => this.mensajerError = error
         });

@@ -2,6 +2,7 @@ package com.solicitud.solicitud.security.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.solicitud.solicitud.entity.Estudio;
+import com.solicitud.solicitud.entity.Solicitud;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -19,11 +20,14 @@ public class Usuario {
     @Column(name = "usr_nombre")
     private String nombre;
     @NotNull
-    @Column(name = "usr_apellido")
-    private String apellido;
-    @NotNull
     @Column(name = "usr_email")
     private String email;
+    @NotNull
+    @Column(name = "usr_cargo")
+    private String cargo;
+    @NotNull
+    @Column(name = "usr_activo")
+    private boolean activo;
     @NotNull
     @JsonIgnore
     @Column(name = "usr_password")
@@ -39,15 +43,16 @@ public class Usuario {
 
     @OneToMany(mappedBy = "usuario")
     @JsonIgnore
-    private Set<Estudio> estudios;
+    private Set<Solicitud> solicitudes;
 
     public Usuario() {
     }
 
-    public Usuario(@NotNull String nombre, @NotNull String apellido, @NotNull String email, @NotNull String password, @NotNull String firma) {
+    public Usuario(@NotNull String nombre, @NotNull String email, @NotNull String cargo, @NotNull boolean activo, @NotNull String password, @NotNull String firma) {
         this.nombre = nombre;
-        this.apellido = apellido;
         this.email = email;
+        this.cargo = cargo;
+        this.activo = activo;
         this.password = password;
         this.firma = firma;
     }
@@ -68,13 +73,6 @@ public class Usuario {
         this.nombre = nombre;
     }
 
-    public String getApellido() {
-        return apellido;
-    }
-
-    public void setApellido(String apellido) {
-        this.apellido = apellido;
-    }
 
     public String getEmail() {
         return email;
@@ -82,6 +80,22 @@ public class Usuario {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getCargo() {
+        return cargo;
+    }
+
+    public void setCargo(String cargo) {
+        this.cargo = cargo;
+    }
+
+    public boolean isActivo() {
+        return activo;
+    }
+
+    public void setActivo(boolean activo) {
+        this.activo = activo;
     }
 
     public String getPassword() {

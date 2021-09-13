@@ -1,0 +1,65 @@
+<form [formGroup]="solicitudForm">
+<div class="card mb-5 mx-5 shadow-lg">
+    <div class="card-header text-white">
+      <p class="font-weight-bold text-center" [style.font-size.px]="20">INFORMACIÓN DEL PROYECTO ASOCIADO CON EL TRÁMITE</p>
+    </div>
+    <div class="card-body px-5 py-5">
+      <div class="p-fluid p-formgrid p-grid">
+        <div class="p-field p-col-12">
+          <p>{{solicitudForm.get('necesidad').value}} </p>
+
+        </div>
+        <div class="p-field p-col-12 p-md-6 p-lg-12">
+            <label for="proyecto"><strong>Nombre del proyecto:<strong class="text-danger">*</strong></strong></label>            
+            <p-dropdown [options]="solicitudForm.get('grupo').value.proyectos"
+                                placeholder="Seleccione proyecto"                                                                    
+                                inputId="proyecto" dataKey="id"                          
+                                formControlName="proyecto" optionLabel="nombre"
+                                [ngClass]="{'is-invalid ng-dirty': 
+                                  (solicitudForm.get('proyecto').touched || 
+                                  solicitudForm.get('proyecto').dirty) && 
+                                  !solicitudForm.get('proyecto').valid}"
+                                (onChange)="displayProyecto($event.value)">
+                                </p-dropdown>
+            <span class="invalid-feedback">
+              <span *ngIf="solicitudForm.get('proyecto').errors?.required">
+                  Por favor seleccione un proyecto.
+              </span>
+            </span> 
+          
+        </div>
+        <div class="p-field p-col-12 p-md-6 p-lg-4">
+            <label for="codigo"><strong>Codigo del proyecto:</strong></label>            
+            <input id="codigo" pInputText
+              type="text" formControlName="_codigo_proyecto">                           
+        </div>
+        <div class="p-field p-col-12 p-md-6 p-lg-4">
+      
+            <label for="costos"><strong>Centro de costos:</strong></label>            
+            <input id="costos" pInputText formControlName="_centro_costos_proyecto"
+              type="text" >    
+        </div>
+        <div class="p-field p-col-12 p-md-6 p-lg-4">
+
+            <label for="fecha"><strong>Fecha:<strong class="text-danger">*</strong></strong></label>            
+            <p-calendar formControlName="fecha"
+                        dateFormat="dd-mm-yy" inputId="fecha"
+                        [ngClass]="{'is-invalid ng-dirty': 
+                                  (solicitudForm.get('fecha').touched || 
+                                  solicitudForm.get('fecha').dirty) && 
+                                  !solicitudForm.get('fecha').valid}"></p-calendar>
+            <span class="invalid-feedback">
+              <span *ngIf="solicitudForm.get('fecha').errors?.required">
+                  Por favor la fecha.
+              </span>
+            </span> 
+
+        </div>          
+    </div>
+    <div class="p-grid p-nogutter p-justify-between">
+      <p-button label="Atras" [routerLink]="['../info']" icon="pi pi-angle-left"></p-button>
+      <p-button label="Siguiente" [routerLink]="['../detalle']" icon="pi pi-angle-right" iconPos="right"></p-button>
+  </div>
+    </div>
+  </div>
+</form>

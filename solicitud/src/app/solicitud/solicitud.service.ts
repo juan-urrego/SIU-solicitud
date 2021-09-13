@@ -30,8 +30,8 @@ export class SolicitudService {
         return this.http.put<Solicitud>(`${this.solicitudUrl}/update/${solicitud.id}`, solicitud);
     }
 
-    confirmarSolicitud(id: number): Observable<Solicitud> {
-        return this.http.post<Solicitud>(`${this.solicitudUrl}/confirmar/${id}`, null);
+    confirmarSolicitud(id: number): Observable<{}> {
+        return this.http.post(`${this.solicitudUrl}/confirmar/${id}`, null);
     }
 
     crearDocumentos(idSolicitud: number, idUsuario: number): Observable<{}> {

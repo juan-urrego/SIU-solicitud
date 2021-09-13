@@ -13,14 +13,20 @@
 
   <ng-template pTemplate="footer">
       <p-button label="Activar" 
-                [disabled]="necesidadSelected.parametro === 1"
+                [disabled]="!necesidadSelected || necesidadSelected.parametro === 1"
+                *ngIf="necesidades"
                 (click)="updateSelected(necesidadSelected)"
                 class="mr-3">
       </p-button>
-      <button pButton pRipple label="Editar" 
+      <button pButton pRipple
               icon="pi pi-pencil" 
+              *ngIf="necesidades"
               class="p-button-warning p-mr-2" 
               (click)="openNew(necesidadSelected)"></button>
+      <button pButton pRipple 
+              icon="pi pi-times" 
+              class="p-button-warning p-mr-2" 
+              (click)="deleteSelected()"></button>
       <button pButton pRipple 
               icon="pi pi-plus" 
               class="p-button-success p-mr-2" 

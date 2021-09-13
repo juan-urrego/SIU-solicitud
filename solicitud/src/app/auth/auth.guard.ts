@@ -13,22 +13,14 @@ export class SolGuardService implements CanActivate {
     private router: Router) { }
 
     canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
-      const roles = this.authService.getAuthorities();
-      const currentUser = this.authService.getToken();
-    
-      this.realRol = 'user';
-      roles.forEach(rol => {
-        if(rol === 'ROLE_ADMIN'){
-          this.realRol = 'admin';
-        }
-      });
-
-      if (currentUser) {
-        return true;
-      }
+      const expectedRol = route.data.expectedRol;
+      this.realRol = this.authService.isAdmin() ? 'admin' : 'user';
       
-      this.router.navigate(['/login'], {queryParams: {returnUrl: state.url}});
-      return false
+      if (!this.authService.isLogged() || expectedRol.indexOf(this.realRol) === -1) {
+        this.router.navigate(['/login'], {queryParams: {returnUrl: state.url}});
+        return false
+      }
+      return true;
 
     }
 }

@@ -1,4 +1,4 @@
-<p-toast></p-toast>
+
 <p-card header="Acuerdo"  styleClass="p-card-shadow">
 
   <div class="p-field-radiobutton"
@@ -13,14 +13,20 @@
 
   <ng-template pTemplate="footer">
       <p-button label="Activar" 
-                [disabled]="acuerdoSelected.parametro === 1"
+                [disabled]="!acuerdoSelected || acuerdoSelected.parametro === 1"
+                *ngIf="acuerdos"
                 (click)="updateSelected(acuerdoSelected)"
                 class="mr-3">
       </p-button>
-      <button pButton pRipple label="Editar" 
+      <button pButton pRipple 
               icon="pi pi-pencil" 
+              *ngIf="acuerdos"
               class="p-button-warning p-mr-2" 
               (click)="openNew(acuerdoSelected)"></button>
+      <button pButton pRipple 
+              icon="pi pi-times" 
+              class="p-button-warning p-mr-2" 
+              (click)="deleteSelected()"></button>
       <button pButton pRipple 
               icon="pi pi-plus" 
               class="p-button-success p-mr-2" 
@@ -61,5 +67,3 @@
     </ng-template>
   
 </p-dialog>
-
-<p-confirmDialog [style]="{width: '450px'}"></p-confirmDialog>

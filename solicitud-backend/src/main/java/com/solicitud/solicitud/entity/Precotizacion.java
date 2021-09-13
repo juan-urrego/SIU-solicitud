@@ -36,7 +36,7 @@ public class Precotizacion {
     @JsonIgnore
     private Solicitud solicitudElegida;
 
-    @OneToMany(mappedBy = "precotizacion", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "precotizacion", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Argumento> argumentos;
 
     public Precotizacion(@NotNull int valorTotal, @NotNull int valorIva, @NotNull Proveedor proveedor) {

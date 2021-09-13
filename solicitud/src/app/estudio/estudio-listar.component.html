@@ -3,61 +3,43 @@
     <div class="card-header text-white">
         <h2>
             {{titulo}}
-
         </h2>
     </div>
     <div class="card-body">
-        <div class="row">
-            <div class="col-md-2">Buscar por estados:</div>
-            <div class="col-md-4">
-                <input type="text" [(ngModel)]="filtrar">
-            </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-6">
-            <h4>Filtrado por: {{filtrar}}</h4>
-        </div>
-    </div>
-    <div class="table-responsive">
-        <table class="table">
-            <thead>
-                <tr>
+        <p-table [value]="estudios">
+            <ng-template pTemplate="header">
+                <tr>                
                     <th>
-                        #
                     </th>
-                    <th>estado</th>
-                    
-                    <th>Solicitud de Trámite</th>
-                    
-
+                    <th>Estado de estudio</th>
+                    <th>Nombre investigador</th>
+                    <th>Nombre proyecto</th>
+                    <th>Autor</th>
                 </tr>
-            </thead>
-            <tbody>
-                <tr *ngFor="let estudio of filtrados; let i=index">
-                    <td>
-                        {{(i+1)}}
+            </ng-template>
+            <ng-template pTemplate="body" let-estudio>
+                <tr>                
+                    <td style="text-align: center;">
+                        <button type="button" pButton pRipple 
+                        class="p-button-secondary p-button-rounded p-mr-2" 
+                        icon="pi pi-pencil"
+                        [routerLink]="['/estudio', estudio.id, 'editar']"></button>
+                        <button pButton pRipple type="button" *ngIf="estudio.estado.estadoNombre === 'CREADA'"
+                        icon="pi pi-check-square" class="p-button-rounded p-mr-2" 
+                        title="verificar documentos"
+                        (click)="verifyDocument(estudio.id)"></button>
                     </td>
-                    <td>                        
-                        <div *ngIf="estudio.estado.nombre === 'CREADA'"  >
-                            <span class="badge badge-secondary">{{estudio.estado}}</span>
-                        </div>                        
-                        <div *ngIf="estudio.estado.nombre === 'FIRMADA'">
-                            <span class="badge badge-success">{{estudio.estado}}</span>
-                        </div>                   
-                    </td>
-                
-                    
-                    <td>{{estudio.solicitud.tipoTramite}}</td>
-                    <td><button class="btn btn-outline-secondary btn-sm"
-                        [routerLink]="['/estudio', estudio.id, 'editar']">
-                  Editar
-                </button></td>
-
-
-
+                    <td><div *ngIf="estudio.estado.estadoNombre === 'CREADA'">
+                        <span class="badge badge-secondary">{{estudio.estado.estadoNombre}}</span>
+                    </div>
+                    <div *ngIf="estudio.estado.estadoNombre === 'FIRMADA'">
+                        <span class="badge badge-success">{{estudio.estado.estadoNombre}}</span>
+                    </div></td>
+                    <td>{{estudio.solicitud.grupoInvestigador.investigador.nombre}}</td>
+                    <td>{{estudio.solicitud.grupoInvestigador.proyecto.nombre}}</td>                                               
+                    <td>{{estudio.solicitud.usuario.nombre}}</td>                                               
                 </tr>
-            </tbody>
-        </table>
+            </ng-template>
+        </p-table>
     </div>
 </div>

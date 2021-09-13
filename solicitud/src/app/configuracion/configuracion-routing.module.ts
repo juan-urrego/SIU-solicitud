@@ -4,7 +4,6 @@ import { ConfiguracionComponent } from "./configuracion.component";
 import { GrupoComponent } from "./grupo/grupo.component";
 import { InvestigadorComponent } from "./investigador/investigador.component";
 import { LineaGeneralComponent } from "./linea-general/linea-general.component";
-import { ProveedorEditarComponent } from "./proveedor/proveedor-editar.component";
 import { ProveedorComponent } from "./proveedor/proveedor.component";
 import { ProyectoComponent } from "./proyecto/proyecto.component";
 
@@ -16,7 +15,6 @@ import { ProyectoComponent } from "./proyecto/proyecto.component";
             { path: 'grupo', component: GrupoComponent },            
             { path: 'investigador', component: InvestigadorComponent },            
             { path: 'proveedor', component: ProveedorComponent },
-            { path: 'proovedor/:id/editar', component: ProveedorEditarComponent },
             { path: 'lineaGeneral', component: LineaGeneralComponent },
             { path: 'proyecto', component: ProyectoComponent },
             {

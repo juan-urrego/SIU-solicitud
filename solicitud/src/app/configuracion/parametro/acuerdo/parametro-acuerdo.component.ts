@@ -43,7 +43,7 @@ export class ParametroAcuerdoComponent implements OnInit {
                 });
             },
             error: error => {
-                this.mensajerError = error;
+                this.mensajerError = error.message;
                 this.messageService.add({
                     severity:'error',
                     summary: 'Error',
@@ -54,11 +54,38 @@ export class ParametroAcuerdoComponent implements OnInit {
         });
     }
 
+    deleteSelected() {
+        this.parametroAcuerdoService.deleteParametroAcuerdoActivo().subscribe({
+            next: () => {
+                this.refresh();
+                this.messageService.add({
+                    severity:'success',
+                    summary: 'Exito',
+                    detail: 'Parametro Activado',
+                    life: this.delay
+                });
+            },
+            error: error => {
+                this.mensajerError = error.message;
+                console.log(this.mensajerError);
+                
+                this.messageService.add({
+                    severity:'error',
+                    summary: 'Error',
+                    detail: this.mensajerError,
+                    life: this.delay
+                });
+            }
+        })
+    }
+
     refresh() {
         this.parametroAcuerdoService.getParametroAcuerdos().subscribe({
             next: acuerdos => {
                 this.acuerdos = acuerdos;
-                this.acuerdoSelected = this.acuerdos.find(t => t.parametro == 1);
+                if (this.acuerdos) {
+                    this.acuerdoSelected = this.acuerdos.find(t => t.parametro == 1);
+                }
             },
             error: error => this.mensajerError = error
         });

@@ -3,6 +3,7 @@ import { RouterModule } from '@angular/router';
 import { SolGuardService as guard } from '../auth/auth.guard';
 import { ConsultaEditarComponent } from "./consulta-editar.component";
 import { ConsultaListarComponent } from "./consulta-listar.component";
+import { ConsultaResolver } from "./consulta-resolver.service";
 
 @NgModule({
     imports: [
@@ -14,6 +15,7 @@ import { ConsultaListarComponent } from "./consulta-listar.component";
             },
             {
                 path: ':id/editar', 
+                resolve: { resolvedData: ConsultaResolver},
                 component: ConsultaEditarComponent
             }
         ])

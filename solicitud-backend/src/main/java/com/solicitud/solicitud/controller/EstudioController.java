@@ -5,6 +5,8 @@ import com.solicitud.solicitud.dto.Mensaje;
 import com.solicitud.solicitud.entity.*;
 import com.solicitud.solicitud.entity.Estudio;
 import com.solicitud.solicitud.enums.EstadoNombre;
+import com.solicitud.solicitud.security.entity.Usuario;
+import com.solicitud.solicitud.security.service.UsuarioService;
 import com.solicitud.solicitud.service.*;
 import com.solicitud.solicitud.service.EstudioService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,11 +32,14 @@ public class EstudioController {
     @Autowired
     UnidadAcademicaService unidadAcademicaService;
 
+    @Autowired
+    UsuarioService usuarioService;
+
 
 
     @GetMapping("/estudios")
     public ResponseEntity<List<Estudio>> list(){
-        List<Estudio> list = estudioService.getEstudio();
+        List<Estudio> list = estudioService.getEstudios();
         return new ResponseEntity<List<Estudio>>(list, HttpStatus.OK);
     }
 
@@ -42,6 +47,8 @@ public class EstudioController {
     public ResponseEntity<?> getById(@PathVariable("id") int id){
         if(!estudioService.existsById(id))
             return new ResponseEntity<Mensaje>(new Mensaje("No existe un estudio con esa id"), HttpStatus.NOT_FOUND);
+        if(!estudioService.getOne(id).isPresent())
+            return new ResponseEntity<Mensaje>(new Mensaje("No tiene acceso a este estudio"), HttpStatus.FORBIDDEN);
         Estudio estudio = estudioService.getOne(id).get();
         return new ResponseEntity<Estudio>(estudio, HttpStatus.OK);
     }
@@ -53,10 +60,9 @@ public class EstudioController {
         if (!estudioService.existsById(id))
             return new ResponseEntity<Mensaje>(new Mensaje("No existe un estudio con esa id"), HttpStatus.NOT_FOUND);
         Estudio estudio = estudioService.getOne(id).get();
-        UnidadAcademica unidadAcademica = unidadAcademicaService.getOne(estudioDto.getUnidadAcademica()).get();
-        estudio.setUnidadAcademica(unidadAcademica);
+        estudio.setUnidadAcademica(estudioDto.getUnidadAcademica());
         estudio.setAcuerdo(estudioDto.getAcuerdo());
-        estudio.setFirmaInvestigador(estudioDto.getFirmaInvestigador());
+        estudio.setFirmaDirector(estudioDto.getFirmaDirector());
         estudio.setFirmaUsuario(estudioDto.getFirmaUsuario());
         estudioService.save(estudio);
         return new ResponseEntity<Mensaje>(new Mensaje("Estudio actualizado"), HttpStatus.OK);
@@ -68,7 +74,7 @@ public class EstudioController {
             return new ResponseEntity<Mensaje>(new Mensaje("No existe un estudio con esa id"), HttpStatus.NOT_FOUND);
         Estudio estudio = estudioService.getOne(id).get();
         Estado estado = estadoService.getByEstadoNombre(EstadoNombre.VERIFICADA).get();
-        if ((estudio.getFirmaInvestigador() == (byte) 1) && (estudio.getFirmaUsuario() == (byte) 1)){
+        if ((estudio.getFirmaDirector() != null) && (estudio.getFirmaUsuario() != null)){
             estudio.setEstado(estado);
         } else {
             return new ResponseEntity<Mensaje>(new Mensaje("Documento aún no firmado"), HttpStatus.BAD_REQUEST);

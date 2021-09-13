@@ -1,145 +1,166 @@
+<div class="p-grid">
+  <div class="p-col-12 p-lg-4">
+    <img class="center-block img-responsive" src="../../assets/siu-02.png" [style.height.px]="120" [style.margin.px]="2"
+      width="100%" alt="Logo imagen">
+  </div>
+  <div class="p-col-12 p-lg-8">
 
-  <div class="row my-5 ml-5">
-    <div class="col-4">
-      <img class="center-block img-responsive" src="../../assets/siu-02.png" [style.height.px]="120"
-        [style.margin.px]="2">
+    <h4 class="card-title text-center">Consulta de precios del mercado</h4>
+    <p class="text-center card-text">COORDINACIÓN DE PROCESO GESTIÓN COMPRAS</p>
+    <p class="text-center card-text">Gestión compras y contratación</p>
+    <p class="text-center card-text">Administración SIU</p>
+  </div>
+</div>
+<br>
+
+
+<form [formGroup]="consultaForm">
+  <div class="card mb-5 mx-5 shadow-lg">
+    <div class="card-header text-white">
+      <p class="font-weight-bold text-center" [style.font-size.px]="20">Consulta de precios</p>
     </div>
-    <div class="col-8">
+    <div class="card-body px-5 py-5">
+      <div class="p-fluid p-formgrid p-grid">
+        <div class="p-field p-col-12 p-md-6 p-lg-4">
+          <label for="fecha"><strong>Fecha:</strong></label>
+          <p-calendar formControlName="_fecha" inputId="fecha"></p-calendar>
+        </div>
+        <div class="p-field p-col-12">
+          <p>{{consultaForm.get('parametro').value}}</p>
+        </div>
 
-      <h4 class="card-title text-center">Consulta de precios del mercado</h4>
-      <p class="text-center card-text">COORDINACIÓN DE PROCESO GESTIÓN COMPRAS</p>
-      <p class="text-center card-text">Gestión compras y contratación</p>
-      <p class="text-center card-text">Administración SIU</p>
+        <div class="p-field p-col-12 ">
+          <p><strong>Descripcion del objeto del contrato</strong></p>
+        </div>
+
+
+        <p-table [value]="detalleTramiteDtos.controls" styleClass="p-datatable-responsive-demo" class="p-field">
+          <ng-template pTemplate="header">
+            <tr>
+              <th>Linea General</th>
+              <th>Linea Especifica</th>
+              <th>Descripcion</th>
+              <th>Cantidad</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" formArrayName="_detalleTramiteDtos" let-detail let-rowIndex="rowIndex">
+            <tr [formGroupName]="rowIndex">
+              <td>
+                <input pInputText formControlName="_lineaGeneral" type="text">
+              </td>
+              <td>
+                <input pInputText formControlName="_lineaEspecifica" type="text">
+              </td>
+              <td>
+                <textarea pInputTextarea type="text" rows="5" formControlName="_descripcion"></textarea>
+              </td>
+              <td>
+                <input pInputText type="text" formControlName="_cantidad">
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+
+        <div class="p-field p-col-12">
+          <p><strong>Hemos consultado con las siguientes personas naturales y/o jurídicas, el valor del mismo
+              así:</strong></p>
+        </div>
+
+        <p-table [value]="precotizacionDtos.controls" styleClass="p-datatable-responsive-demo" class="p-field">
+          <ng-template pTemplate="header">
+            <tr>
+              <th>Nombre del proveedor</th>
+              <th>Nit/Cédula</th>
+              <th>Teléfono</th>
+              <th>Ciudad</th>
+              <th>Valor total Precotizado</th>
+              <th>Valor total del IVA</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" formArrayName="_precotizacionDtos" let-precotizacion let-rowIndex="rowIndex">
+            <tr [formGroupName]="rowIndex">
+              <td>
+                <input pInputText formControlName="_proveedor" type="text">
+              </td>
+              <td>
+                <input pInputText type="text" formControlName="_identificacion_proveedor">
+              </td>
+              <td>
+                <input pInputText type="text" formControlName="_telefono_proveedor">
+              </td>
+              <td>
+                <input pInputText type="text" formControlName="_ciudad_proveedor">
+              </td>
+              <td>
+                <input pInputText formControlName="_valorTotal" type="text">
+              </td>
+              <td>
+                <input pInputText formControlName="_valorIva" type="text">
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+        <div class="p-field p-col-12">
+          <label for="elegida"><strong>De acuerdo con las cotizaciones recibidas, se decide contratar
+              con:</strong></label>
+          <input id="elegida" pInputText formControlName="_precotizacionDto" type="text">
+        </div>
+        <div class="p-field p-col-12">
+          <label for="valorSeleccionado"><strong>por valor de:</strong></label>
+          <input id="valorSeleccionado" pInputText formControlName="_valorElegido" type="text">
+        </div>
+
+        <p-table [value]="argumentoDtos.controls" styleClass="p-datatable-responsive-demo" class="p-field">
+          <ng-template pTemplate="header">
+            <tr>
+              <th>Argumentos de la contratacion</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-argumento let-rowIndex="rowIndex" formArrayName="_argumentoDtos">
+            <tr [formGroupName]="rowIndex">
+              <td>
+                <input pInputText formControlName="_descripcion" type="text">
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+
+        <div class="p-field p-col-12 ">
+          <label for="nombre"><strong>Observaciones:</strong></label>
+          <textarea id="nombre" pInputTextarea formControlName="_observacion" type="text" rows="5"></textarea>
+        </div>
+
+        <div class="p-field p-col-12 p-md-6">
+          <label for="grupoInvestigacion"><strong>Grupo de investigacion:</strong></label>
+          <input id="grupoInvestigacion" pInputText formControlName="_grupo" type="text">
+        </div>
+        <div class="p-field p-col-12 p-md-6">
+          <label for="investigador"><strong>Nombre del investigador:</strong></label>
+          <input id="investigador" pInputText formControlName="_investigador" type="text">
+        </div>
+        <div class="p-field p-col-12 p-md-6">
+          <label for="identificacionInvestigador"><strong>Identificacion:</strong></label>
+          <input id="identificacionInvestigador" pInputText type="text" formControlName="_identificacion_investigador">
+        </div>
+        <div class="p-field p-col-12 p-md-6">
+          <label for="telefonoInvestigador"><strong>Identificacion:</strong></label>
+          <input id="telefonoInvestigador" pInputText type="text" formControlName="_telefono_investigador">
+        </div>
+      </div>
     </div>
   </div>
-
-
-  <form novalidate [formGroup]="consultaForm" (ngSubmit)="save()">
-
-
-
-    <div class="card mb-5 mx-5 shadow-lg">
-      <div class="card-header text-white">
-        <p class="font-weight-bold text-center" [style.font-size.px]="20">Consulta de precios</p>
-      </div>
-     
-
-
-      <div class="card-body px-5 py-5">
-        <div class="row">
-          <p>En calidad de empleado de la Universidad de Antioquia, y en cumplimiento del Artículo 31 Capítulo 1 Título IV de la Resolución Rectoral 39475, Acuerdo Superior 419 de 2014; que consagra la obligación de consignar por escrito las cotizaciones obtenidas para la adquisición de bienes y servicios, informo que requiero contratar lo siguiente:</p>
-  
-        </div>
-        <div class="row">
-
-          <div class="form-group col-md-3 mb-3">
-            <label for="fechaId" class="col-form-label"><b>Fecha:</b></label>
-  
-            <input id="fechaId" class="form-control" readonly [value]="solicitud?.fecha | date">
-  
-  
-          </div>
-  
-          
-            <div class="form-group col-md-9 mb-3">
-              <label for="descripcionId" class="col-form-label"><b>Descripción del objeto del contrato:</b></label>
-  
-              <textarea id="descripcionId" class="form-control" rows="5" disabled [value]="consulta.solicitud.tipoTramite"></textarea>
-            </div>
-  
-          
-        </div>
-  
-        <b>Hemos consultado con las siguientes personas naturales y/o jurídicas, el valor del mismo así:</b>
-          <hr>
-        <div class="table-responsive">
-          <table class="table mb-5">
-              <thead class="thead-dark">
-                  <tr>
-                      <th>Nr</th>
-                      <th>Nombre del proveedor</th>
-                      <th>Teléfono</th>
-                      <th>Nit/Cédula</th>
-                      <th>Valor precotizado</th>                      
-                  </tr>
-              </thead>
-              <tbody>
-                  <tr *ngFor="let precotizacion of consulta.solicitud.precotizaciones; let i=index">
-                      <th scope="row">{{i+1}}</th>
-                      <td>{{precotizacion.proveedor.nombre}}</td>
-                      <td>{{precotizacion.proveedor.telefono}}</td>
-                      <td>{{precotizacion.proveedor.nit}}</td>
-                      <td>{{precotizacion.valorTotal}}</td>
-                  </tr>
-              </tbody>
-          </table>
-      </div>
-      <hr>
-
-        <div class="row">
-          <div class="form-group col-12 mb-3">
-            <label for="descripcionId" class="col-form-label"><b>Observaciones:</b></label>
-
-            <textarea id="descripcionId" class="form-control" rows="5" disabled [value]="consulta.solicitud.observacion"></textarea>
-          </div>
-
-        </div>
-
-        <div class="row">
-          <div class="col-md-6 mb-3 form-group">                          
-                <label class="col-form-label" for="idGrupoId"><b>Grupo de investigacion:</b></label>                
-                <input id="grupoId" class="form-control" readonly [value]="consulta.solicitud.grupoInvestigador.nombreContacto"> 
-          </div>
-
-          <div class="mb-3 col-md-6 form-group">                          
-                <label class="col-form-label" for="investigadorNombreId"><b>Nombre del investigador:</b></label>                
-                <input id="investigadorNombreId" class="form-control" readonly [value]="consulta.solicitud.grupoInvestigador.nombreContacto"> 
-          </div>
-        </div>
-
-          <div class="row">                              
-   
-              <div class="mb-3 col-md-6 form-group"> 
-                <label for="identificacionId" class="col-form-label"><b>Número de identificacion:</b></label>
-                <input id="identificacionId" type="text" class="form-control" type="text" readonly [value]="consulta.solicitud.grupoInvestigador.telefonoContacto">                            
-              </div>                                    
-            
-              <div class="mb-3 col-md-6 form-group">                          
-                  <label for="telefonoId" class="col-form-label"><b>Número de telefono:</b> </label>
-                  
-                    <input id="telefonoId" type="text" class="form-control" type="text" readonly [value]="consulta.solicitud.grupoInvestigador.telefonoContacto">
-                  </div>
-
-                  
-                            
-            </div>   
-
-
-      </div>
-
-
-
-
-    </div>
-
-
-
-
+</form>
 
 <div class="form-group row">
   <div class="offset-md-1 mb-5">
-    <button class="btn btn-success mr-3" style="width:200px;" type="submit">
-      Enviar
-    </button>
     <button class="btn btn-outline-secondary mr-3" style="width:100px;" type="button" title="Cancelar"
-              [routerLink]="['/consulta']">
-              Cancelar
-            </button>
+      routerLink="/consulta">
+      Cancelar
+    </button>
+    <button class="btn btn-success mr-3" style="width:200px;" type="button" 
+            [disabled]="consulta.estado.estadoNombre != 'CREADA'"
+            (click)="send()">
+      Confirmar documento
+    </button>
   </div>
 </div>
-
-</form>
-
-<pre>
-  {{consultaForm.value | json}}
-</pre>

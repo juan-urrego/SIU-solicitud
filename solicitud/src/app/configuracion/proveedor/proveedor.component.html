@@ -11,7 +11,8 @@
                 <th>Telefono</th>
                 <th>Ciudad</th>
                 <th>
-                    <button type="button" pButton pRipple icon="pi pi-plus" (click)="openNew()"></button>
+                    <button type="button" class="p-button-success"
+                    pButton pRipple icon="pi pi-plus" (click)="openNew()"></button>
                 </th>
             </tr>
         </ng-template>
@@ -33,7 +34,6 @@
 
 <p-dialog [(visible)]="proveedorDialog" [style]="{width: '600px'}"
           header="Proveedor" [modal]="true" styleClass="p-fluid">
-
           <ng-template pTemplate="content">
               <form [formGroup]="proveedorForm" novalidate>
                 <div class="row">
@@ -51,6 +51,23 @@
                       
                     </div>
                   </div>
+                  
+                  <div class="row">
+                    <div class="col-12 mb-3 form-group">
+                      <label for="tipo" class="col-form-label"><b>Tipo de Proveedor:</b></label>            
+                      <p-dropdown [options]="tipoProveedores" formControlName="tipo" 
+                                  placeholder="Seleccione tipo" inputId="tipo"
+                                  [ngClass]="{'is-invalid': (proveedorForm.get('tipo').touched || proveedorForm.get('tipo').dirty) && !proveedorForm.get('tipo').valid}">
+                                </p-dropdown>
+                      <span class="invalid-feedback">
+                        <span *ngIf="proveedorForm.get('tipo').errors?.required">
+                          Por favor ingrese un tipo de proveedor.
+                        </span>
+                      </span>
+                      
+                    </div>
+                  </div>
+
                 <div class="row">
                     <div class="col-12 mb-3 form-group">
         
@@ -66,6 +83,7 @@
                       
                     </div>
                   </div>
+
                 <div class="row">
                     <div class="col-12 mb-3 form-group">
         
@@ -81,6 +99,7 @@
                       
                     </div>
                   </div>
+
                 <div class="row">
                     <div class="col-12 mb-3 form-group">
         
@@ -96,21 +115,8 @@
                       
                     </div>
                   </div>
-                <div class="row">
-                    <div class="col-12 mb-3 form-group">
-        
-                      <label for="tipo" class="col-form-label"><b>Tipo de Proveedor:</b></label>            
-                      <input id="tipo" class="form-control mb-3"
-                      formControlName="tipo"  rows="5" type="text"
-                      [ngClass]="{'is-invalid': (proveedorForm.get('tipo').touched || proveedorForm.get('tipo').dirty) && !proveedorForm.get('tipo').valid}">
-                      <span class="invalid-feedback">
-                        <span *ngIf="proveedorForm.get('tipo').errors?.required">
-                          Por favor ingrese la necesidad.
-                        </span>
-                      </span>
-                      
-                    </div>
-                  </div>
+
+                
               </form>
           </ng-template>
 
@@ -125,6 +131,5 @@
             label="Delete" icon="pi pi-trash" class="p-button-text" 
             (click)="deleteProveedor(proveedorSelected)"></button>
           </ng-template>
-
 </p-dialog>
 <p-confirmDialog [style]="{width: '450px'}"></p-confirmDialog>

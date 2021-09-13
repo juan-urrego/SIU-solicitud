@@ -9,19 +9,19 @@ import javax.validation.constraints.NotBlank;
 public class EstudioDto {
 
     @NotBlank
-    private int unidadAcademica;
+    private UnidadAcademica unidadAcademica;
     @NotBlank
     private String acuerdo;
     @NotBlank
-    private byte firmaUsuario;
+    private String firmaUsuario;
     @NotBlank
-    private byte firmaInvestigador;
+    private String firmaDirector;
 
-    public int getUnidadAcademica() {
+    public UnidadAcademica getUnidadAcademica() {
         return unidadAcademica;
     }
 
-    public void setUnidadAcademica(int unidadAcademica) {
+    public void setUnidadAcademica(UnidadAcademica unidadAcademica) {
         this.unidadAcademica = unidadAcademica;
     }
 
@@ -33,19 +33,19 @@ public class EstudioDto {
         this.acuerdo = acuerdo;
     }
 
-    public byte getFirmaUsuario() {
+    public String getFirmaUsuario() {
         return firmaUsuario;
     }
 
-    public void setFirmaUsuario(byte firmaUsuario) {
+    public void setFirmaUsuario(String firmaUsuario) {
         this.firmaUsuario = firmaUsuario;
     }
 
-    public byte getFirmaInvestigador() {
-        return firmaInvestigador;
+    public String getFirmaDirector() {
+        return firmaDirector;
     }
 
-    public void setFirmaInvestigador(byte firmaInvestigador) {
-        this.firmaInvestigador = firmaInvestigador;
+    public void setFirmaDirector(String firmaDirector) {
+        this.firmaDirector = firmaDirector;
     }
 }

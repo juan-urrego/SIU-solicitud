@@ -11,8 +11,7 @@ import { first } from 'rxjs/operators';
 })
 export class LoginComponent implements OnInit {
 
-  isLogged = false;
-  isLoginFail = false;
+
   loginUsuario: LoginUsuario;
   roles: string[] = [];
   errMensaje: string;
@@ -27,16 +26,8 @@ export class LoginComponent implements OnInit {
     private route : ActivatedRoute,
     private fb: FormBuilder
   ) { 
-    const user = this.authService.getToken();
-    if (user){
+    if (this.authService.getToken()){
       this.router.navigate(['/solicitud']);
-      console.log("deberia irmeeeeeee con token");
-      console.log("este es el token");
-      console.log(this.authService.getToken());
-      
-      
-      console.log(this.authService.currentUserValue);
-      
     }
   }
   
@@ -58,14 +49,13 @@ export class LoginComponent implements OnInit {
     this.loading = true;
 
     this.loginUsuario = new LoginUsuario(this.loginForm.get('email').value, this.loginForm.get('password').value);
-    this.authService.login(this.loginUsuario).pipe(first()).subscribe(
+    this.authService.login(this.loginUsuario).subscribe(
       data =>{
-        this.roles = data.authorities;
+        this.authService.setToken(data.token);
         this.router.navigate([this.returnUrl]);
       },
       err => {
-        this.isLoginFail = true;
-        this.errMensaje = err.error.mensaje;
+        this.errMensaje = err.error.message;
         this.loading = false;
       }
     );

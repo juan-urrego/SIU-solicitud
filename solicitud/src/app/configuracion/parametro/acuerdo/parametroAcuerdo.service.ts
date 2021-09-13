@@ -21,13 +21,17 @@ export class ParametroAcuerdoService {
         return this.http.get<Parametro>(`${this.url}/acuerdos/selected`);
     }
 
-
+    
     createParametroAcuerdo(parametro: Parametro): Observable<Parametro> {
         return this.http.post<Parametro>(`${this.url}/save`, parametro);
     }
 
     deleteParametroAcuerdo(id: number): Observable<{}> {
         return this.http.delete<Parametro>(`${this.url}/delete/${id}`);
+    }
+    
+    deleteParametroAcuerdoActivo(): Observable<{}> {
+        return this.http.put<{}>(`${this.url}/delete/selected`, null);
     }
 
     updateParametroAcuerdo(parametro: Parametro): Observable<Parametro> {

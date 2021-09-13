@@ -18,6 +18,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -33,6 +34,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -56,7 +58,6 @@ public class AuthController {
 
     @Autowired
     JwtProvider jwtProvider;
-
     
     @PostMapping("/nuevo")
     public ResponseEntity<?> nuevo(@RequestParam("usuario") String model, @RequestParam(value = "imageFile") MultipartFile file) throws Exception {
@@ -65,12 +66,20 @@ public class AuthController {
         if(usuarioService.existsByEmail(nuevoUsuario.getEmail()))
             return new ResponseEntity<Mensaje>(new Mensaje("este email ya existe"), HttpStatus.BAD_REQUEST);
         Usuario usuario =
-                new Usuario(nuevoUsuario.getNombre(), nuevoUsuario.getApellido(), nuevoUsuario.getEmail(),
+                new Usuario(nuevoUsuario.getNombre(), nuevoUsuario.getEmail(), nuevoUsuario.getCargo(), true,
                         passwordEncoder.encode(nuevoUsuario.getPassword()), usuarioService.saveImage(file.getBytes(),file.getOriginalFilename()));
         Set<Rol> roles = new HashSet<>();
         roles.add(rolService.getByRolNombre(RolNombre.ROLE_USER).get());
         if(nuevoUsuario.getRoles().contains("admin"))
             roles.add(rolService.getByRolNombre(RolNombre.ROLE_ADMIN).get());
+        if(nuevoUsuario.getRoles().contains("director")) {
+            roles.add(rolService.getByRolNombre(RolNombre.ROLE_DIRECTOR).get());
+            Usuario usuarioDirector = usuarioService.getDirectorActivo();
+            if (usuarioDirector != null){
+                usuarioDirector.setActivo(false);
+                usuarioService.save(usuarioDirector);
+            }
+        }
         usuario.setRoles(roles);
         usuarioService.save(usuario);
         return new ResponseEntity<Mensaje>(new Mensaje("Usuario guardado"), HttpStatus.CREATED);
@@ -86,8 +95,7 @@ public class AuthController {
                 authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginUsuario.getEmail(), loginUsuario.getPassword()));
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String jwt = jwtProvider.generateToken(authentication);
-        UserDetails userDetails = (UserDetails)authentication.getPrincipal();
-        JwtDto jwtDto = new JwtDto(jwt, userDetails.getUsername(), userDetails.getAuthorities());
+        JwtDto jwtDto = new JwtDto(jwt);
         return new ResponseEntity<JwtDto>(jwtDto, HttpStatus.OK);
     }
 
@@ -98,9 +106,14 @@ public class AuthController {
         return new ResponseEntity<List<Usuario>>(list, HttpStatus.OK);
     }
 
-    @GetMapping("/image/{id}")
-    public FileSystemResource getImageById(@PathVariable("id") int id){
-        return usuarioService.findImageById(id);
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping(value= "/image/{id}", produces = MediaType.IMAGE_JPEG_VALUE)
+    public ResponseEntity<?> getImageById(@PathVariable("id") int id){
+        if (!usuarioService.existsById(id))
+            return new ResponseEntity<Mensaje>(new Mensaje("No existe un usuario con esa id"), HttpStatus.NOT_FOUND);
+        FileSystemResource file = usuarioService.findImageById(id);
+        return new ResponseEntity<FileSystemResource>(file, HttpStatus.OK);
     }
 
     
@@ -110,6 +123,24 @@ public class AuthController {
         if(!usuarioService.existsById(id))
             return new ResponseEntity<Mensaje>(new Mensaje("no existe id"), HttpStatus.NOT_FOUND);
         Usuario usuario = usuarioService.getOne(id).get();
+        return new ResponseEntity<Usuario>(usuario, HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasRole('USER')")
+    @GetMapping("/directorActivo")
+    public ResponseEntity<?> getDirectorActivo(){
+        Usuario directorActivo = usuarioService.getDirectorActivo();
+        if (directorActivo == null)
+            return new ResponseEntity<Mensaje>(new Mensaje("No se encuentra un director registrado en el sistema"), HttpStatus.NOT_FOUND);
+        return new ResponseEntity<Usuario>(directorActivo, HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasRole('USER')")
+    @GetMapping("/director/{firma}")
+    public ResponseEntity<?> getDirectorByFirma(@PathVariable("firma")String firma){
+        Usuario usuario = usuarioService.getUserByFirma(firma);
+        if (usuario == null)
+            return new ResponseEntity<Mensaje>(new Mensaje("No se encuentra un usuario que tenga esa firma en el sistema"), HttpStatus.NOT_FOUND);
         return new ResponseEntity<Usuario>(usuario, HttpStatus.OK);
     }
 
@@ -126,27 +157,50 @@ public class AuthController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/update/{id}")
-    public ResponseEntity<Mensaje> update(@PathVariable("id")int id, @RequestBody NuevoUsuario nuevoUsuario){
+    public ResponseEntity<Mensaje> update(@RequestParam("usuario") String model, @RequestParam(value = "imageFile", required = false) MultipartFile file,
+                                          @PathVariable("id")int id) throws Exception {
+        ObjectMapper mapper = new ObjectMapper();
+        NuevoUsuario nuevoUsuario = mapper.readValue(model, NuevoUsuario.class);
         if(!usuarioService.existsById(id))
             return new ResponseEntity<Mensaje>(new Mensaje("no existe con esa id"), HttpStatus.NOT_FOUND);
         if(StringUtils.isBlank(nuevoUsuario.getEmail()))
             return new ResponseEntity<Mensaje>(new Mensaje("el email es obligatorio"), HttpStatus.BAD_REQUEST);
         if(StringUtils.isBlank(nuevoUsuario.getPassword()))
             return new ResponseEntity<Mensaje>(new Mensaje("La contraseña es obligatoria"), HttpStatus.BAD_REQUEST);
-        if(StringUtils.isBlank(nuevoUsuario.getFirma()))
-            return new ResponseEntity<Mensaje>(new Mensaje("La Firma es obligatoria"), HttpStatus.BAD_REQUEST);
         Usuario usuario = usuarioService.getOne(id).get();
         usuario.setNombre(nuevoUsuario.getNombre());
-        usuario.setApellido(nuevoUsuario.getApellido());
         usuario.setEmail(nuevoUsuario.getEmail());
+        usuario.setActivo(true);
         usuario.setPassword(passwordEncoder.encode(nuevoUsuario.getPassword()));
-        usuario.setFirma(nuevoUsuario.getFirma());
+        usuario.setCargo(nuevoUsuario.getCargo());
+        if(!usuarioService.findImageById(id).exists() && file != null) {
+            usuario.setFirma(usuarioService.saveImage(file.getBytes(),file.getOriginalFilename()));
+        }
+        if(file != null && usuarioService.findImageById(id).exists()){
+            usuarioService.deleteImageByPath(usuario.getFirma());
+            usuario.setFirma(usuarioService.saveImage(file.getBytes(),file.getOriginalFilename()));
+        }
+
         Set<Rol> roles = new HashSet<>();
         roles.add(rolService.getByRolNombre(RolNombre.ROLE_USER).get());
         if(nuevoUsuario.getRoles().contains("admin"))
             roles.add(rolService.getByRolNombre(RolNombre.ROLE_ADMIN).get());
+        if(nuevoUsuario.getRoles().contains("director"))
+            roles.add(rolService.getByRolNombre(RolNombre.ROLE_DIRECTOR).get());
+            Usuario usuarioDirector = usuarioService.getDirectorActivo();
+            if (usuarioDirector != null){
+                usuarioDirector.setActivo(false);
+                usuarioService.save(usuarioDirector);
+            }
         usuario.setRoles(roles);
         usuarioService.save(usuario);
         return new ResponseEntity<Mensaje>(new Mensaje("usuario actualizado"), HttpStatus.OK);
+    }
+
+    @PostMapping("/refresh")
+    public ResponseEntity<JwtDto> refresh(@RequestBody JwtDto jwtDto) throws ParseException {
+        String token = jwtProvider.refreshToken(jwtDto);
+        JwtDto jwt = new JwtDto(token);
+        return new ResponseEntity<JwtDto>(jwt, HttpStatus.OK);
     }
 }

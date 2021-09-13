@@ -9,7 +9,6 @@ import { ParametroNecesidadComponent } from './necesidad/parametro-necesidad.com
 import { ParametroObservacionComponent } from './observacion/parametro-observacion.component';
 import { ParametroRoutingModule } from './parametro-routing.module';
 import { ParametroComponent } from './parametro.component';
-import { PruebaComponent } from './observacion/prueba.component';
 
 
 
@@ -26,7 +25,6 @@ import { PruebaComponent } from './observacion/prueba.component';
         ParametroConsultaComponent,
         ParametroNecesidadComponent,
         ParametroObservacionComponent,
-        PruebaComponent,
         ParametroComponent
     ],
     providers: [],

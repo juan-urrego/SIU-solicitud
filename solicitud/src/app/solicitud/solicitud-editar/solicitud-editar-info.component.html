@@ -1,0 +1,123 @@
+<form [formGroup]="solicitudForm">
+    <div class="card mb-5 mx-5 shadow-lg">
+        <div class="card-header text-white">
+          <p class="font-weight-bold text-center" [style.font-size.px]="20">INFORMACIÓN DE SOLICITANTES</p>
+        </div>
+        <div class="card-body px-5 py-5">
+          <div class="p-fluid p-formgrid p-grid">
+            <div class="p-field p-col-12 p-md-6 p-lg-4">
+                <label for="tipoTramite"><strong>Tipo de tramite:<strong class="text-danger">*</strong></strong></label>            
+                <p-dropdown [options]="tipoTramites"
+                                    placeholder="Seleccione tipo de tramite" 
+                                    formControlName="tipoTramite"
+                                    inputId="tipoTramite"
+                                    [ngClass]="{'is-invalid ng-dirty': 
+                                              (solicitudForm.get('tipoTramite').touched || 
+                                              solicitudForm.get('tipoTramite').dirty) && 
+                                              !solicitudForm.get('tipoTramite').valid}"
+                                    ></p-dropdown>
+                <span class="invalid-feedback">
+                  <span *ngIf="solicitudForm.get('tipoTramite').errors?.required">
+                      Por favor seleccione un tipo de trámite.
+                  </span>
+                </span> 
+              
+            </div>
+            <div class="p-field p-col-12 p-md-6 p-lg-4">
+                <label for="grupoInvestigacion"><strong>Grupo de investigacion:<strong class="text-danger">*</strong></strong></label>            
+                <p-dropdown [options]="grupos"
+                                    placeholder="Seleccione grupo" optionLabel="nombre"     
+                                    formControlName="grupo"
+                                    inputId="grupoInvestigacion"
+                                    dataKey="id"
+                                    [ngClass]="{'is-invalid ng-dirty': 
+                                              (solicitudForm.get('grupo').touched || 
+                                              solicitudForm.get('grupo').dirty) && 
+                                              !solicitudForm.get('grupo').valid}"
+                                    (onChange)="displayProyectos()"></p-dropdown>
+                <span class="invalid-feedback">
+                  <span *ngIf="solicitudForm.get('grupo').errors?.required">
+                      Por favor seleccione el grupo de investigacion.
+                  </span>
+                </span> 
+              
+            </div>
+            <div class="p-field p-col-12 p-md-12 p-lg-4">
+          
+                <label for="nombreContacto"><strong>Nombre Contacto grupo:<strong class="text-danger">*</strong></strong></label>            
+                <input id="nombreContacto" pInputText
+                  type="text" formControlName="nombreContacto"
+                  class="form-control"
+                  [ngClass]="{'is-invalid ng-dirty': 
+                                              (solicitudForm.get('nombreContacto').touched || 
+                                              solicitudForm.get('nombreContacto').dirty) && 
+                                              !solicitudForm.get('nombreContacto').valid}">
+                <span class="invalid-feedback">
+                <span *ngIf="solicitudForm.get('nombreContacto').errors?.required">
+                    Por favor ingrese un nombre de contacto.
+                </span>
+                </span> 
+  
+            </div>
+            <div class="p-field p-col-12 p-md-6 p-lg-3">
+                <label for="investigador"><strong>Investigador:<strong class="text-danger">*</strong></strong></label>            
+                <p-dropdown [options]="investigadores"
+                                    placeholder="Seleccione Investigador" optionLabel="nombre"     
+                                    formControlName="investigador"
+                                    inputId="investigador" dataKey="id"
+                                    [ngClass]="{'is-invalid ng-dirty': 
+                                              (solicitudForm.get('investigador').touched || 
+                                              solicitudForm.get('investigador').dirty) && 
+                                              !solicitudForm.get('investigador').valid}"
+                                    (onChange)="displayInvestigador($event.value)"></p-dropdown>
+                <span class="invalid-feedback">
+                <span *ngIf="solicitudForm.get('investigador').errors?.required">
+                    Por favor seleccione el investigador.
+                </span>
+                </span> 
+  
+            </div>
+            <div class="p-field p-col-12 p-md-6 p-lg-3">
+                <label for="identificacionInvestigador"><strong>Identificacion:</strong></label>            
+                <input id="identificacionInvestigador" pInputText
+                  type="text" formControlName="_identificacion_investigador">
+            </div>
+            <div class="p-field p-col-12 p-md-6 p-lg-3">
+   
+                <label for="telefonoContacto"><strong>Telefono contacto:<strong class="text-danger">*</strong></strong></label>            
+                <input id="telefonoContacto" pInputText
+                  type="text" formControlName="telefonoContacto"
+                  [ngClass]="{'is-invalid ng-dirty': 
+                                  (solicitudForm.get('telefonoContacto').touched || 
+                                  solicitudForm.get('telefonoContacto').dirty) && 
+                                  !solicitudForm.get('telefonoContacto').valid}">
+                <span class="invalid-feedback">
+                <span *ngIf="solicitudForm.get('telefonoContacto').errors?.required">
+                    Por favor ingrese un telefono de contacto.
+                </span>
+                </span> 
+  
+            </div>
+            <div class="p-field p-col-12 p-md-6 p-lg-3">
+                <label for="cargo"><strong>Cargo:<strong class="text-danger">*</strong></strong></label>            
+                <input id="cargo" pInputText
+                  type="text" formControlName="cargo"
+                  [ngClass]="{'is-invalid ng-dirty': 
+                                  (solicitudForm.get('cargo').touched || 
+                                  solicitudForm.get('cargo').dirty) && 
+                                  !solicitudForm.get('cargo').valid}">
+                <span class="invalid-feedback">
+                <span *ngIf="solicitudForm.get('cargo').errors?.required">
+                    Por favor ingrese el cargo.
+                </span>
+                </span> 
+  
+            </div>
+        </div>
+        <div class="p-grid p-nogutter p-justify-end">
+            <p-button label="Siguiente" [routerLink]="['../proyecto']" icon="pi pi-angle-right" iconPos="right"></p-button>
+        </div>
+
+        </div>
+      </div>
+</form>

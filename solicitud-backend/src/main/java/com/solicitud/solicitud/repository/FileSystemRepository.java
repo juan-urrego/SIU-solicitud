@@ -5,9 +5,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.stereotype.Repository;
 
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.io.IOException;
+import java.nio.file.*;
 import java.util.Date;
 
 @Repository
@@ -27,6 +26,16 @@ public class FileSystemRepository {
         try{
             return new FileSystemResource(Paths.get(location));
         } catch (Exception e) {
+            throw new RuntimeException();
+        }
+    }
+
+    public void deleteByPath(String location) {
+        Path path = Paths.get(location);
+        try {
+            // Delete file or directory
+            Files.delete(path);
+        } catch (IOException ex) {
             throw new RuntimeException();
         }
     }

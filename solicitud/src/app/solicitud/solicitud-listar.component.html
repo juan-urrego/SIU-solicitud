@@ -1,82 +1,56 @@
-
+<p-toast></p-toast>
 <div class="card">
     <div class="card-header text-white">
         <h2>
-
             {{titulo}}
         </h2>
     </div>
     <div class="card-body">
-        <div class="row">
-            <div class="col-md-2">Buscar por nombre:</div>
-            <div class="col-md-4">
-                <input type="text" [(ngModel)]="filtrar">
-            </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-6">
-            <h4>Filtrado por: {{filtrar}}</h4>
-        </div>
-    </div>
-    <div class="table-responsive">
-        <table class="table mb-5">
-            <thead>
-                <tr>
-                    <th><button class="btn btn-outline-primary btn-sm" [routerLink]="['/solicitud/0/editar']">
-                        Agregar
-                    </button></th>
-                    <th>Nr.</th>
+        <p-table [value]="solicitudes">
+            <ng-template pTemplate="header">
+                <tr>                
+                    <th style="width:170px; text-align: center;"><button type="button" class="p-button-success p-button-rounded p-ai-center"
+                        pButton pRipple icon="pi pi-plus" label="Nuevo"
+                        [routerLink]="['/solicitud/0/editar']"></button></th>
                     <th>Estado de proyecto</th>
-                    <th>Nombre Proyecto</th>
-                    <th>nombre del investigador</th>
-                    <th>nombre del grupo</th>
+                    <th>Nombre del proyecto</th>
+                    <th>Nombre del investigador</th>
+                    <th>Nombre del grupo</th>
                     <th>Fecha</th>
+                    <th>Autor</th>
                 </tr>
-            </thead>
-            <tbody>
-                <tr *ngFor="let solicitud of filtrados; let i=index">
-                    <td>
-                        <div class="btn-group" dropdown>
-                            <button type="button" class="btn btn-outline-secondary btn-sm"
-                            [routerLink]="['/solicitud', solicitud.id, 'editar']">Editar</button>
-                            <button id="button-split" type="button" dropdownToggle
-                            class="btn btn-outline-secondary dropdown-toggle dropdown-toggle-split"
-                            aria-controls="dropdown-split">
-
-                        </button>
-                        <ul id="dropdown-split" *dropdownMenu class="dropdown-menu" role="menu"
-                        aria-labelledby="button-split">
-                        <li role="menuitem" *ngIf="solicitud.estado.nombre === 'VERIFICADA'"><a role="button" class="dropdown-item" (click)="sendDocuments(solicitud.id)">Crear Documentos</a></li>
-                        <li role="menuitem" *ngIf="solicitud.estado.nombre === 'DOCUMENTADA'"><a role="button" class="dropdown-item" (click)="downloadPdfs()">descargar documentos</a></li>
-                        <li role="menuitem"><a class="dropdown-item" href="#">Eliminar</a>
-                        </li>
-
-                    </ul>
-                </div>
-            </td>
-            <th scope="row">{{i+1}}</th>
-                    <td>
-                        <div *ngIf="solicitud.estado.nombre === 'CREADA'">
-                            <span class="badge badge-secondary">{{solicitud.estado}}</span>
-                        </div>
-                        <div *ngIf="solicitud.estado.nombre === 'VERIFICADA'">
-                            <span class="badge badge-success">{{solicitud.estado}}</span>
-                        </div>
-                        <div *ngIf="solicitud.estado.nombre === 'DOCUMENTADA'">
-                            <span class="badge badge-success">{{solicitud.estado}}</span>
-                        </div>
+            </ng-template>
+            <ng-template pTemplate="body" let-solicitud>
+                <tr>                
+                    <td style="text-align: center;">
+                        <button pButton pRipple type="button" 
+                        icon="pi pi-pencil" class="p-button-rounded p-button-secondary p-mr-2"
+                        title="ver/editar"
+                        [routerLink]="['/solicitud', solicitud.id, 'editar']"></button>
+                        <button pButton pRipple type="button" *ngIf="solicitud.estado.estadoNombre === 'CREADA'"
+                        icon="pi pi-check-square" class="p-button-rounded p-mr-2" 
+                        title="verificar documentos"
+                        (click)="verifyDocument(solicitud.id)"></button>
+                        <button pButton pRipple type="button" *ngIf="solicitud.estado.estadoNombre === 'VERIFICADA'"
+                        icon="pi pi-align-center" class="p-button-rounded p-button-help"
+                        title="crear documentos"
+                        (click)="createDocuments(solicitud.id)"></button>
                     </td>
-
-                    <td>{{solicitud.tipoTramite}}</td>
-                    <td>{{solicitud.grupoInvestigador.nombreContacto}}</td>
-                    <td>{{solicitud.grupoInvestigador.nombreContacto}}</td>
+                    <td><div *ngIf="solicitud.estado.estadoNombre === 'CREADA'">
+                        <span class="badge badge-secondary">{{solicitud.estado.estadoNombre}}</span>
+                    </div>
+                    <div *ngIf="solicitud.estado.estadoNombre === 'VERIFICADA'">
+                        <span class="badge badge-success">{{solicitud.estado.estadoNombre}}</span>
+                    </div></td>
+                    <td>{{solicitud.grupoInvestigador.proyecto.nombre}}</td>
+                    <td>{{solicitud.grupoInvestigador.investigador.nombre}}</td>
+                    <td>{{solicitud.grupoInvestigador.grupo.nombre}}</td>
                     <td>{{solicitud.fecha | date}}</td>
-
-
-
+                    <td>{{solicitud.usuario.nombre}}</td>
                 </tr>
-            </tbody>
-        </table>
+            </ng-template>
+        </p-table>
     </div>
+
 </div>
+<p-confirmDialog [style]="{width: '450px'}"></p-confirmDialog>

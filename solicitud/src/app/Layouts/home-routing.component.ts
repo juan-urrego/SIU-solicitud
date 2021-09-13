@@ -9,9 +9,9 @@ import { HomeLayoutComponent } from "./home-layout.component";
         RouterModule.forChild([
             {
                 path: '',
-                canActivate: [guard],
                 component: HomeLayoutComponent,
-                data: { expectedRol: ['admin','user']},
+                canActivate: [guard],
+                data: { expectedRol: ['admin', 'user' ,'director']},
                 children: [
                     {
                         path: 'solicitud',
@@ -24,6 +24,10 @@ import { HomeLayoutComponent } from "./home-layout.component";
                       {
                         path: 'consulta',
                         loadChildren: () => import('../consulta/consulta.module').then(m => m.ConsultaModule)
+                      },
+                      {
+                        path: 'usuario',
+                        loadChildren: () => import('../usuario/usuario.module').then(m => m.UsuarioModule)
                       },
                       {
                         path: 'configuracion',
