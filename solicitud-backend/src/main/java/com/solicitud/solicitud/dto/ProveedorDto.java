@@ -4,7 +4,7 @@ import javax.validation.constraints.NotBlank;
 
 public class ProveedorDto {
 
-    @NotBlank
+    @NotBlank(message = "no debe estar vacio el nombre")
     private String nombre;
     @NotBlank
     private String identificacion;

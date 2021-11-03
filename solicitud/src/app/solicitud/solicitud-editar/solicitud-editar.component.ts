@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Solicitud, SolicitudResolved } from '../solicitud';
-import { FormGroup } from '@angular/forms';
+import { Mail, Solicitud, SolicitudResolved } from '../solicitud';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SolicitudService } from '../solicitud.service';
 import { ConfirmationService, MenuItem, MessageService } from 'primeng/api';
@@ -18,6 +18,10 @@ export class SolicitudEditarComponent implements OnInit {
     solicitudForm: FormGroup;
     solicitud: Solicitud;
     delayToast = 3000;
+    emailForm: FormGroup;
+    emailDialog: boolean;
+    emailLogged: string;
+    mail: Mail;
 
 
     items: MenuItem[];
@@ -31,7 +35,10 @@ export class SolicitudEditarComponent implements OnInit {
         private route: ActivatedRoute,
         private messageService: MessageService,
         private confirmationService: ConfirmationService,
-        private authService: AuthService) { }
+        private authService: AuthService,
+        private fb: FormBuilder) {
+            this.emailLogged = this.authService.getEmail();
+         }
 
     ngOnInit() {        
         this.items = [{
@@ -67,6 +74,47 @@ export class SolicitudEditarComponent implements OnInit {
         this.solicitudForm.reset();
         this.router.navigate(['/solicitud']);
     }    
+
+    openNew(): void {
+        this.emailForm = this.fb.group({
+            nombre: ['', Validators.required],
+            originEmail: this.emailLogged,
+            destinyEmail: this.solicitud.grupoInvestigador.investigador.email,
+            asunto: `Observaciones de solicitud de trámite #${this.solicitud.id}`,
+            cuerpo: ['', Validators.required]
+        });
+        this.emailDialog = true;
+    }
+
+    hideDialog() {
+        this.emailForm.reset();
+        this.emailDialog = false;        
+    }
+
+    enviarEmail(){
+        console.log("correo enviado");
+        if(this.emailForm.valid){
+            console.log("esto es uns save");
+            if(this.emailForm.dirty){
+                const p = {...this.mail, ...this.emailForm.value}
+                this.solicitudService.enviarCorreo(this.solicitud.id, p).subscribe({
+                    next: () => {
+                        this.onSaveComplete();
+                    },
+                    error: error => {
+                        this.mensajeError = error.message;
+                        this.messageService.add({
+                            severity:'error',
+                            summary: 'Error',
+                            detail: this.mensajeError,
+                            life: this.delayToast
+                        });
+                    }
+                });
+                
+            }
+        }
+    }
 
 
     deleteSolicitud(): void {

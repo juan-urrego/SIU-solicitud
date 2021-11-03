@@ -38,21 +38,10 @@ export class ConsultaEditarComponent implements OnInit {
             this.consultaForm = data['resolvedData'].form;
         });
         
-        if (this.consulta.estado.estadoNombre == "CREADA") {
-            this.getParametroConsulta();
-        }
         console.log(this.consulta.parametro);
         
     }
 
-    getParametroConsulta() {
-        return this.parametroConsultaService.getParametroConsultaActivo().subscribe({
-            next: parametro => {
-                this.consultaForm.get("parametro").setValue(parametro.descripcion);
-            },
-            error: error => this.mensajeError = error
-        });
-    }
 
     onSaveComplete(): void {
         this.consultaForm.reset();

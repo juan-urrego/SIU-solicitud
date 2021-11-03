@@ -3,8 +3,6 @@ package com.solicitud.solicitud.service;
 import com.solicitud.solicitud.entity.Estado;
 import com.solicitud.solicitud.enums.EstadoNombre;
 import com.solicitud.solicitud.repository.EstadoRepository;
-import com.solicitud.solicitud.security.entity.Rol;
-import com.solicitud.solicitud.security.enums.RolNombre;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

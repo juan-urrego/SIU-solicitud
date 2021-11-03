@@ -25,8 +25,8 @@ export class SolInterceptorService implements HttpInterceptor {
       console.log('error', error.status);
       if(error.status === 401) {
         console.log("sesion expirada");
+        this.authService.logOut();
       }
-      this.authService.logOut();
       return throwError(error);
     }));
   }

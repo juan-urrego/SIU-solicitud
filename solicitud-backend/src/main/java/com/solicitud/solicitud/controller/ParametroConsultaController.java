@@ -1,10 +1,8 @@
 package com.solicitud.solicitud.controller;
 
-import com.solicitud.solicitud.dto.Mensaje;
+import com.solicitud.solicitud.dto.Message;
 import com.solicitud.solicitud.dto.ParametroDto;
-import com.solicitud.solicitud.entity.ParametroAcuerdo;
 import com.solicitud.solicitud.entity.ParametroConsulta;
-import com.solicitud.solicitud.service.ParametroAcuerdoService;
 import com.solicitud.solicitud.service.ParametroConsultaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -43,44 +41,44 @@ public class ParametroConsultaController {
     @GetMapping("/{id}")
     public ResponseEntity<?> getById(@PathVariable("id") int id){
         if(!parametroConsultaService.existsById(id))
-            return new ResponseEntity<Mensaje>(new Mensaje("No existe un parametro-consulta con esa id"), HttpStatus.NOT_FOUND);
+            return new ResponseEntity<Message>(new Message("No existe un parametro-consulta con esa id"), HttpStatus.NOT_FOUND);
         ParametroConsulta parametroConsulta = parametroConsultaService.getOne(id).get();
         return new ResponseEntity<ParametroConsulta>(parametroConsulta, HttpStatus.OK);
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<Mensaje> delete (@PathVariable("id") int id){
+    public ResponseEntity<Message> delete (@PathVariable("id") int id){
         if(!parametroConsultaService.existsById(id))
-            return new ResponseEntity<Mensaje>(new Mensaje("No existe un parametro-consulta con esa id"), HttpStatus.NOT_FOUND);
+            return new ResponseEntity<Message>(new Message("No existe un parametro-consulta con esa id"), HttpStatus.NOT_FOUND);
         parametroConsultaService.delete(id);
-        return new ResponseEntity<Mensaje>(new Mensaje("parametro-consulta eliminado"), HttpStatus.OK);
+        return new ResponseEntity<Message>(new Message("parametro-consulta eliminado"), HttpStatus.OK);
     }
 
     @PostMapping("/save")
     public ResponseEntity<?> save(@RequestBody ParametroDto parametroDto, BindingResult bindingResult){
         if(bindingResult.hasErrors())
-            return new ResponseEntity<Mensaje>(new Mensaje("Campos mal puestos"), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<Message>(new Message("Campos mal puestos"), HttpStatus.BAD_REQUEST);
         ParametroConsulta parametroConsulta= new ParametroConsulta(parametroDto.getDescripcion(), (byte) 0);
         if (parametroConsultaService.getConsulta().isEmpty())
             parametroConsulta.setParametro((byte) 1);
         parametroConsultaService.save(parametroConsulta);
-        return new ResponseEntity<Mensaje>(new Mensaje("Parametro-consulta guardado"), HttpStatus.OK);
+        return new ResponseEntity<Message>(new Message("Parametro-consulta guardado"), HttpStatus.OK);
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<Mensaje> update(@PathVariable("id") int id, @RequestBody ParametroDto parametroDto){
+    public ResponseEntity<Message> update(@PathVariable("id") int id, @RequestBody ParametroDto parametroDto){
         if (!parametroConsultaService.existsById(id))
-            return new ResponseEntity<Mensaje>(new Mensaje("No existe un parametro-consulta con esa id"), HttpStatus.NOT_FOUND);
+            return new ResponseEntity<Message>(new Message("No existe un parametro-consulta con esa id"), HttpStatus.NOT_FOUND);
         ParametroConsulta parametroConsulta = parametroConsultaService.getOne(id).get();
         parametroConsulta.setDescripcion(parametroDto.getDescripcion());
         parametroConsultaService.save(parametroConsulta);
-        return new ResponseEntity<Mensaje>(new Mensaje("Parametro-consulta actualizado"), HttpStatus.OK);
+        return new ResponseEntity<Message>(new Message("Parametro-consulta actualizado"), HttpStatus.OK);
     }
 
     @PutMapping("/update/selected/{id}")
-    public ResponseEntity<Mensaje> updateSelected(@PathVariable("id") int id){
+    public ResponseEntity<Message> updateSelected(@PathVariable("id") int id){
         if (!parametroConsultaService.existsById(id))
-            return new ResponseEntity<Mensaje>(new Mensaje("No existe un parametro-consulta con esa id"), HttpStatus.NOT_FOUND);
+            return new ResponseEntity<Message>(new Message("No existe un parametro-consulta con esa id"), HttpStatus.NOT_FOUND);
         ParametroConsulta parametroConsultaActivo = parametroConsultaService.getByParametro((byte) 1).orElse(null);
         if (parametroConsultaActivo != null) {
             parametroConsultaActivo.setParametro((byte) 0);
@@ -89,17 +87,17 @@ public class ParametroConsultaController {
         ParametroConsulta parametroConsulta = parametroConsultaService.getOne(id).get();
         parametroConsulta.setParametro((byte) 1);
         parametroConsultaService.save(parametroConsulta);
-        return new ResponseEntity<Mensaje>(new Mensaje("Parametro-consulta actualizado"), HttpStatus.OK);
+        return new ResponseEntity<Message>(new Message("Parametro-consulta actualizado"), HttpStatus.OK);
     }
 
     @PutMapping("/delete/selected")
-    public ResponseEntity<Mensaje> deleteSelected() {
+    public ResponseEntity<Message> deleteSelected() {
         ParametroConsulta parametroConsultaActivo = parametroConsultaService.getByParametro((byte) 1).orElse(null);
         if  (parametroConsultaActivo == null)
-            return new ResponseEntity<Mensaje>(new Mensaje("No hay ningun otro parametro activo"), HttpStatus.NOT_FOUND);
+            return new ResponseEntity<Message>(new Message("No hay ningun otro parametro activo"), HttpStatus.NOT_FOUND);
         parametroConsultaActivo.setParametro((byte) 0);
         parametroConsultaService.save(parametroConsultaActivo);
         ;
-        return new ResponseEntity<Mensaje>(new Mensaje("Parametro-consulta actualizado"), HttpStatus.OK);
+        return new ResponseEntity<Message>(new Message("Parametro-consulta actualizado"), HttpStatus.OK);
     }
 }

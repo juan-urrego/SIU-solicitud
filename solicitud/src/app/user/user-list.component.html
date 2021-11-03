@@ -1,0 +1,46 @@
+<p-toast></p-toast>
+<div class="card">
+    <div class="card-header text-white">
+        <h2>{{titulo}}</h2>
+    </div>
+    <div class="card-body">
+        <p-table [value]="users">
+            <ng-template pTemplate="header">
+                <tr>
+                    <th style="width:170px; text-align: center;">
+                        <button type="button" pButton pRipple class="p-button-success p-button-rounded"
+                            icon="pi pi-plus" [routerLink]="['/usuario/0/editar']"></button>
+                    </th>
+                    <th>Nombre</th>
+                    <th>Email</th>
+                    <th>activo</th>
+                    <th>Cargo</th>
+                    <th>Roles</th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-user>
+                <tr>
+                    <td style="width:170px; text-align: center;">
+                        <button type="button" pButton pRipple class="p-button-secondary p-button-rounded p-mr-2"
+                            icon="pi pi-pencil" title="ver/editar"
+                            [routerLink]="['/usuario', user.id, 'editar']"></button>
+                        <button type="button" pButton pRipple
+                            class="p-button-outlined p-button-success p-button-rounded p-mr-2" icon="pi pi-check-circle"
+                            title="Activar" *ngIf="!user.active && email != user.email"
+                            (click)="activateUser(user.id, true)"></button>
+                        <button type="button" pButton pRipple
+                            class="p-button-outlined p-button-danger p-button-rounded p-mr-2" icon="pi pi-times-circle"
+                            title="Desactivar" *ngIf="user.active && email != user.email"
+                            (click)="activateUser(user.id, false)"></button>
+                    </td>
+                    <td>{{user.name}}</td>
+                    <td>{{user.email}}</td>
+                    <td>{{user.active}}</td>
+                    <td>{{user.position}}</td>
+                    <td>{{user.roles[0].roleName}}</td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </div>
+</div>
+<p-confirmDialog [style]="{width: '450px'}"></p-confirmDialog>

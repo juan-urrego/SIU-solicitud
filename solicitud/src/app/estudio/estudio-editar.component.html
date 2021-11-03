@@ -88,11 +88,11 @@
 
         <div class="p-field p-col-12 p-lg-6">
           <p><strong>Competente:</strong></p>
-          <span>{{directorActivo.nombre}}</span>
+          <span>{{estudio.director.name}}</span>
         </div>
         <div class="p-field p-col-12 p-lg-6">
           <p><strong>Acuerdo: </strong></p>
-          <input pInputText id="centroCostosId" type="text" formControlName="acuerdo">
+          <input pInputText id="centroCostosId" type="text" formControlName="_acuerdo">
         </div>
 
         <div class="p-field p-col-12">
@@ -118,22 +118,29 @@
 
         <!-- Firma de los usuarios -->
         <div class="p-col-12 p-lg-6">
-          <div>
-            <button *ngIf="rol == 'usuario'" pButton pRipple type="button" label="Firmar" (click)="signUser()" class="p-button-raised"></button>
-            <div *ngIf="urlUser">
-              <img [src]="urlUser" [style.height.px]="250" [style.margin.px]="2" alt="firmaUsuario">
-            </div>
-          </div>
+            <button *ngIf="isUserSignable()" pButton pRipple type="button" label="Firmar" (click)="signUser()" class="p-button-raised"></button>
+              <img [src]="urlUser" [style.height.px]="250" [style.margin.px]="2" alt="firma"
+                                *ngIf="urlUser">
+                                <br><br>
+                                <div *ngIf="estudio.firmaUsuario">
+
+                                  <span>{{estudio.solicitud.user.name}}</span>
+                                  <br>
+                                  <span>{{estudio.solicitud.user.position}}</span>
+                                </div>
         </div>
 
         <!-- Firma del director -->
         <div class="p-col-12 p-lg-6">
-          <div>
-            <button *ngIf="rol == 'director'" pButton pRipple type="button" label="Firmar" (click)="signDirector()" class="p-button-raised"></button>
-            <div *ngIf="urlUser">
-              <img [src]="urlDirector" [style.height.px]="250" [style.margin.px]="2" alt="firmaDirector">
-            </div>
-          </div>
+            <button *ngIf="isDirectorSignable()" pButton pRipple type="button" label="Firmar" (click)="signDirector()" class="p-button-raised"></button>
+              <img [src]="urlDirector" [style.height.px]="250" [style.margin.px]="2" alt="firmaDirector" *ngIf="urlDirector">
+              <br><br>
+              <div *ngIf="estudio.firmaDirector">
+
+                <span>{{estudio.director.name}}</span>
+                <br>
+                <span>{{estudio.director.position}}</span>
+              </div>
         </div>
       </div>
     </div>
@@ -144,13 +151,7 @@
   <div class="offset-md-1 mb-5">
     <button class="btn btn-outline-secondary mr-3" style="width:100px;" type="button" title="Cancelar"
       routerLink="/estudio">
-      Cancelar
-    </button>
-    <button class="btn btn-success mr-3" style="width:200px;" type="button">
-      Actualizar informacion
-    </button>
-    <button class="btn btn-success mr-3" style="width:200px;" type="button">
-      Confirmar documento
+      Atrás
     </button>
   </div>
 </div>

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Solicitud } from './solicitud';
+import { Mail, Solicitud } from './solicitud';
 
 
 @Injectable({providedIn: 'root'})
@@ -34,7 +34,11 @@ export class SolicitudService {
         return this.http.post(`${this.solicitudUrl}/confirmar/${id}`, null);
     }
 
-    crearDocumentos(idSolicitud: number, idUsuario: number): Observable<{}> {
-        return this.http.post(`${this.solicitudUrl}/crear/${idSolicitud}/${idUsuario}`, null);
+    crearDocumentos(idSolicitud: number): Observable<{}> {
+        return this.http.post(`${this.solicitudUrl}/crear/${idSolicitud}`, null);
+    }
+
+    enviarCorreo(id: number, mail: Mail): Observable<{}> {
+        return this.http.post(`${this.solicitudUrl}/email/${id}`, mail);
     }
 }

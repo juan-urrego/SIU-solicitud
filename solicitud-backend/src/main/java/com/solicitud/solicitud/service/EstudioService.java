@@ -2,8 +2,8 @@ package com.solicitud.solicitud.service;
 
 import com.solicitud.solicitud.entity.Estudio;
 import com.solicitud.solicitud.repository.EstudioRepository;
-import com.solicitud.solicitud.security.entity.Usuario;
-import com.solicitud.solicitud.security.service.UsuarioService;
+import com.solicitud.solicitud.security.entity.User;
+import com.solicitud.solicitud.security.service.UserService;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,11 +19,11 @@ public class EstudioService {
     EstudioRepository estudioRepository;
 
     final
-    UsuarioService usuarioService;
+    UserService userService;
 
-    public EstudioService(EstudioRepository estudioRepository, UsuarioService usuarioService) {
+    public EstudioService(EstudioRepository estudioRepository, UserService userService) {
         this.estudioRepository = estudioRepository;
-        this.usuarioService = usuarioService;
+        this.userService = userService;
     }
 
     public boolean existsById(final int id){
@@ -31,23 +31,19 @@ public class EstudioService {
     }
 
     public Optional<Estudio> getOne(int id){
-        if (SecurityContextHolder.getContext().getAuthentication().getAuthorities().size() == 1) {
-            if (usuarioService.getByEmail(SecurityContextHolder.getContext().getAuthentication().getName()).isPresent()) {
-                Usuario usuario = usuarioService.getByEmail(SecurityContextHolder.getContext().getAuthentication().getName()).get();
-                return estudioRepository.findByIdAndSolicitud_Usuario(id, usuario);
-            }
+        if (SecurityContextHolder.getContext().getAuthentication().getAuthorities().stream().anyMatch(o -> o.getAuthority().equals("ROLE_USER"))){
+            User user = userService.getUserByEmail(SecurityContextHolder.getContext().getAuthentication().getName()).get();
+            return estudioRepository.findByIdAndSolicitud_User(id, user);
         }
         return estudioRepository.findById(id);
     }
 
     public List<Estudio> getEstudios(){
-        if (SecurityContextHolder.getContext().getAuthentication().getAuthorities().size() != 1)
-            return estudioRepository.findAll();
-        if (usuarioService.getByEmail(SecurityContextHolder.getContext().getAuthentication().getName()).isPresent()){
-            Usuario usuario = usuarioService.getByEmail(SecurityContextHolder.getContext().getAuthentication().getName()).get();
-            return estudioRepository.findAllBySolicitud_Usuario(usuario);
+        if (SecurityContextHolder.getContext().getAuthentication().getAuthorities().stream().anyMatch(o -> o.getAuthority().equals("ROLE_USER"))){
+            User user = userService.getUserByEmail(SecurityContextHolder.getContext().getAuthentication().getName()).get();
+            return estudioRepository.findAllBySolicitud_User(user);
         }
-        return null;
+        return estudioRepository.findAll();
     }
 
     public void save(final Estudio estudio){

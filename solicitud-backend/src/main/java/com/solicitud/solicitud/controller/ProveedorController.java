@@ -1,7 +1,7 @@
 package com.solicitud.solicitud.controller;
 
 import com.solicitud.solicitud.dto.ProveedorDto;
-import com.solicitud.solicitud.dto.Mensaje;
+import com.solicitud.solicitud.dto.Message;
 import com.solicitud.solicitud.entity.Proveedor;
 import com.solicitud.solicitud.service.ProveedorService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,32 +30,32 @@ public class ProveedorController {
     @GetMapping("/{id}")
     public ResponseEntity<?> getById(@PathVariable("id") int id){
         if(!proveedorService.existsById(id))
-            return new ResponseEntity<Mensaje>(new Mensaje("No existe un proveedor con esa id"), HttpStatus.NOT_FOUND);
+            return new ResponseEntity<Message>(new Message("No existe un proveedor con esa id"), HttpStatus.NOT_FOUND);
         Proveedor proveedor = proveedorService.getOne(id).get();
         return new ResponseEntity<Proveedor>(proveedor, HttpStatus.OK);
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<Mensaje> delete (@PathVariable("id") int id){
+    public ResponseEntity<Message> delete (@PathVariable("id") int id){
         if(!proveedorService.existsById(id))
-            return new ResponseEntity<Mensaje>(new Mensaje("No existe un proveedor con esa id"), HttpStatus.NOT_FOUND);
+            return new ResponseEntity<Message>(new Message("No existe un proveedor con esa id"), HttpStatus.NOT_FOUND);
         proveedorService.delete(id);
-        return new ResponseEntity<Mensaje>(new Mensaje("Proveedor eliminado"), HttpStatus.OK);
+        return new ResponseEntity<Message>(new Message("Proveedor eliminado"), HttpStatus.OK);
     }
 
     @PostMapping("/save")
     public ResponseEntity<?> save(@RequestBody ProveedorDto proveedorDto, BindingResult bindingResult){
         if(bindingResult.hasErrors())
-            return new ResponseEntity<Mensaje>(new Mensaje("Campos mal puestos"), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<Message>(new Message("Campos mal puestos"), HttpStatus.BAD_REQUEST);
         Proveedor proveedor = new Proveedor(proveedorDto.getNombre(), proveedorDto.getIdentificacion(), proveedorDto.getTelefono(), proveedorDto.getCiudad(), proveedorDto.getTipo());
         proveedorService.save(proveedor);
-        return new ResponseEntity<Mensaje>(new Mensaje("Proveedor guardado"), HttpStatus.OK);
+        return new ResponseEntity<Message>(new Message("Proveedor guardado"), HttpStatus.OK);
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<Mensaje> update(@PathVariable("id") int id, @RequestBody ProveedorDto proveedorDto){
+    public ResponseEntity<Message> update(@PathVariable("id") int id, @RequestBody ProveedorDto proveedorDto){
         if (!proveedorService.existsById(id))
-            return new ResponseEntity<Mensaje>(new Mensaje("No existe un proveedor con esa id"), HttpStatus.NOT_FOUND);
+            return new ResponseEntity<Message>(new Message("No existe un proveedor con esa id"), HttpStatus.NOT_FOUND);
         Proveedor proveedor = proveedorService.getOne(id).get();
         proveedor.setNombre(proveedorDto.getNombre());
         proveedor.setIdentificacion(proveedorDto.getIdentificacion());
@@ -63,6 +63,6 @@ public class ProveedorController {
         proveedor.setCiudad(proveedorDto.getCiudad());
         proveedor.setTipo(proveedorDto.getTipo());
         proveedorService.save(proveedor);
-        return new ResponseEntity<Mensaje>(new Mensaje("Proveedor actualizado"), HttpStatus.OK);
+        return new ResponseEntity<Message>(new Message("Proveedor actualizado"), HttpStatus.OK);
     }
 }

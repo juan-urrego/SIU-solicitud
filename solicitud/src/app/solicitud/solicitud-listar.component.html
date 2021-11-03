@@ -41,12 +41,17 @@
                     </div>
                     <div *ngIf="solicitud.estado.estadoNombre === 'VERIFICADA'">
                         <span class="badge badge-success">{{solicitud.estado.estadoNombre}}</span>
-                    </div></td>
+                    </div>
+                    <div *ngIf="solicitud.estado.estadoNombre === 'DOCUMENTADA'">
+                        <span class="badge badge-primary">{{solicitud.estado.estadoNombre}}</span>
+                    </div>
+                    {{solicitud.estado.estadoNombre}}
+                </td>
                     <td>{{solicitud.grupoInvestigador.proyecto.nombre}}</td>
                     <td>{{solicitud.grupoInvestigador.investigador.nombre}}</td>
                     <td>{{solicitud.grupoInvestigador.grupo.nombre}}</td>
                     <td>{{solicitud.fecha | date}}</td>
-                    <td>{{solicitud.usuario.nombre}}</td>
+                    <td>{{solicitud.user.name}}</td>
                 </tr>
             </ng-template>
         </p-table>

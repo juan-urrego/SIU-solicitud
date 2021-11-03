@@ -5,6 +5,7 @@ import { Investigador } from '../configuracion/investigador/investigador';
 import { Proyecto } from '../configuracion/proyecto/proyecto';
 import { Proveedor } from '../configuracion/proveedor/proveedor';
 import { FormGroup } from '@angular/forms';
+import { User } from '../user/user';
 
 
 export interface Solicitud {
@@ -20,7 +21,7 @@ export interface Solicitud {
     precotizaciones : Precotizacion[],
     precotizacionElegida : Precotizacion,
     detalleTramites : DetalleTramite[],
-    usuario: any
+    user: User
 }
 
 export interface Argumento {
@@ -64,4 +65,12 @@ export interface SolicitudResolved {
 export interface Estado {
     id ?: number,
     estadoNombre : string
+}
+
+export interface Mail {
+    nombre : string,
+    originEmail: string,
+    destinyEmail: string,
+    asunto : string,
+    cuerpo : string
 }

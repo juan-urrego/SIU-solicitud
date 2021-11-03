@@ -1,22 +1,30 @@
 package com.solicitud.solicitud.security.service;
 
-import com.solicitud.solicitud.security.entity.Usuario;
-import com.solicitud.solicitud.security.entity.UsuarioPrincipal;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.solicitud.solicitud.security.entity.User;
+import com.solicitud.solicitud.security.entity.MainUser;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 
 @Service
+@Transactional
 public class UserDetailsServiceImpl implements UserDetailsService {
 
-    @Autowired
-    UsuarioService usuarioService;
+    final
+    UserService userService;
+
+    public UserDetailsServiceImpl(UserService userService) {
+        this.userService = userService;
+    }
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        Usuario usuario = usuarioService.getByEmail(email).get();
-        return UsuarioPrincipal.build(usuario);
+        User user = userService.getUserByEmail(email).orElseThrow(
+                () -> new UsernameNotFoundException("User Not Found with -> username or email: " + email)
+        );
+        return MainUser.build(user);
     }
 }

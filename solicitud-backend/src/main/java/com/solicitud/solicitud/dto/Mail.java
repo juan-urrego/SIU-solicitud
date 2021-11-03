@@ -2,13 +2,16 @@ package com.solicitud.solicitud.dto;
 
 public class Mail {
     private String nombre;
-    private String email;
+    private String originEmail;
+    private String destinyEmail;
     private String asunto;
     private String cuerpo;
 
-    public Mail(String nombre, String mail, String asunto, String cuerpo) {
+
+    public Mail(String nombre, String originEmail, String destinyEmail, String asunto, String cuerpo) {
         this.nombre = nombre;
-        this.email = mail;
+        this.originEmail = originEmail;
+        this.destinyEmail = destinyEmail;
         this.asunto = asunto;
         this.cuerpo = cuerpo;
     }
@@ -24,12 +27,20 @@ public class Mail {
         this.nombre = nombre;
     }
 
-    public String getEmail() {
-        return email;
+    public String getOriginEmail() {
+        return originEmail;
     }
 
-    public void setEMail(String mail) {
-        this.email = mail;
+    public void setOriginEmail(String originEmail) {
+        this.originEmail = originEmail;
+    }
+
+    public String getDestinyEmail() {
+        return destinyEmail;
+    }
+
+    public void setDestinyEmail(String destinyEmail) {
+        this.destinyEmail = destinyEmail;
     }
 
     public String getAsunto() {

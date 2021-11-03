@@ -2,8 +2,7 @@ package com.solicitud.solicitud.controller;
 
 
 import com.solicitud.solicitud.dto.LineaGeneralDto;
-import com.solicitud.solicitud.dto.Mensaje;
-import com.solicitud.solicitud.entity.DetalleTramite;
+import com.solicitud.solicitud.dto.Message;
 import com.solicitud.solicitud.entity.LineaEspecifica;
 import com.solicitud.solicitud.entity.LineaGeneral;
 import com.solicitud.solicitud.service.LineaGeneralService;
@@ -34,17 +33,17 @@ public class LineaGeneralController {
     @GetMapping("/{id}")
     public ResponseEntity<?> getById(@PathVariable("id") int id){
         if(!lineaGeneralService.existsById(id))
-            return new ResponseEntity<Mensaje>(new Mensaje("No existe una linea general con esa id"), HttpStatus.NOT_FOUND);
+            return new ResponseEntity<Message>(new Message("No existe una linea general con esa id"), HttpStatus.NOT_FOUND);
         LineaGeneral lineaGeneral = lineaGeneralService.getOne(id).get();
         return new ResponseEntity<LineaGeneral>(lineaGeneral, HttpStatus.OK);
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<Mensaje> delete (@PathVariable("id") int id){
+    public ResponseEntity<Message> delete (@PathVariable("id") int id){
         if(!lineaGeneralService.existsById(id))
-            return new ResponseEntity<Mensaje>(new Mensaje("No existe una linea general con esa id"), HttpStatus.NOT_FOUND);
+            return new ResponseEntity<Message>(new Message("No existe una linea general con esa id"), HttpStatus.NOT_FOUND);
         lineaGeneralService.delete(id);
-        return new ResponseEntity<Mensaje>(new Mensaje("linea general eliminada"), HttpStatus.OK);
+        return new ResponseEntity<Message>(new Message("linea general eliminada"), HttpStatus.OK);
     }
 
     @PostMapping("/save")
@@ -57,13 +56,13 @@ public class LineaGeneralController {
         });
         lineaGeneral.setLineaEspecificas(lineaEspecificas);
         lineaGeneralService.save(lineaGeneral);
-        return new ResponseEntity<>(new Mensaje("Linea general guardada"), HttpStatus.OK);
+        return new ResponseEntity<>(new Message("Linea general guardada"), HttpStatus.OK);
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<Mensaje> update(@PathVariable("id") int id, @RequestBody LineaGeneralDto lineaGeneralDto){
+    public ResponseEntity<Message> update(@PathVariable("id") int id, @RequestBody LineaGeneralDto lineaGeneralDto){
         if (!lineaGeneralService.existsById(id))
-            return new ResponseEntity<Mensaje>(new Mensaje("No existe un linea general con esa id"), HttpStatus.NOT_FOUND);
+            return new ResponseEntity<Message>(new Message("No existe un linea general con esa id"), HttpStatus.NOT_FOUND);
         LineaGeneral lineaGeneral = lineaGeneralService.getOne(id).get();
         lineaGeneral.setNombre(lineaGeneralDto.getNombre());
         Set<LineaEspecifica> lineaEspecificas = new HashSet<>();
@@ -73,6 +72,6 @@ public class LineaGeneralController {
         });
         lineaGeneral.setLineaEspecificas(lineaEspecificas);
         lineaGeneralService.save(lineaGeneral);
-        return new ResponseEntity<Mensaje>(new Mensaje("linea general actualizado"), HttpStatus.OK);
+        return new ResponseEntity<Message>(new Message("linea general actualizado"), HttpStatus.OK);
     }
 }

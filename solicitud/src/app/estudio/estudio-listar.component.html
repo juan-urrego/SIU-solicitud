@@ -1,4 +1,4 @@
-
+<p-toast></p-toast>
 <div class="card">
     <div class="card-header text-white">
         <h2>
@@ -21,10 +21,11 @@
                 <tr>                
                     <td style="text-align: center;">
                         <button type="button" pButton pRipple 
-                        class="p-button-secondary p-button-rounded p-mr-2" 
+                        class="p-button-secondary p-button-rounded p-mr-2"
+                        title="ver/editar"
                         icon="pi pi-pencil"
                         [routerLink]="['/estudio', estudio.id, 'editar']"></button>
-                        <button pButton pRipple type="button" *ngIf="estudio.estado.estadoNombre === 'CREADA'"
+                        <button pButton pRipple type="button" *ngIf="estudio.estado.estadoNombre === 'FIRMADO'"
                         icon="pi pi-check-square" class="p-button-rounded p-mr-2" 
                         title="verificar documentos"
                         (click)="verifyDocument(estudio.id)"></button>
@@ -34,12 +35,14 @@
                     </div>
                     <div *ngIf="estudio.estado.estadoNombre === 'FIRMADA'">
                         <span class="badge badge-success">{{estudio.estado.estadoNombre}}</span>
-                    </div></td>
+                    </div>{{estudio.estado.estadoNombre}}
+                </td>
                     <td>{{estudio.solicitud.grupoInvestigador.investigador.nombre}}</td>
                     <td>{{estudio.solicitud.grupoInvestigador.proyecto.nombre}}</td>                                               
-                    <td>{{estudio.solicitud.usuario.nombre}}</td>                                               
+                    <td>{{estudio.solicitud.user.name}}</td>                                               
                 </tr>
             </ng-template>
         </p-table>
     </div>
 </div>
+<p-confirmDialog [style]="{width: '450px'}"></p-confirmDialog>

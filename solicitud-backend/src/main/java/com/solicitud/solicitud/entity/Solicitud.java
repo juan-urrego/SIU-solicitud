@@ -2,12 +2,10 @@ package com.solicitud.solicitud.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.solicitud.solicitud.security.entity.Usuario;
+import com.solicitud.solicitud.security.entity.User;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import java.util.Date;
-import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -71,10 +69,10 @@ public class Solicitud {
 
     @ManyToOne
     @JsonIgnoreProperties({"password","roles"})
-    @JoinColumn(name = "est_usuario_id")
-    private Usuario usuario;
+    @JoinColumn(name = "sol_usuario_id")
+    private User user;
 
-    public Solicitud(@NotNull String tipoTramite, @NotNull String necesidad, @NotNull String fecha, @NotNull double valor, @NotNull @NotNull String verificacion, @NotNull String observacion, @NotNull GrupoInvestigador grupoInvestigador, @NotNull Estado estado, @NotNull Usuario usuario) {
+    public Solicitud(@NotNull String tipoTramite, @NotNull String necesidad, @NotNull String fecha, @NotNull double valor, @NotNull @NotNull String verificacion, @NotNull String observacion, @NotNull GrupoInvestigador grupoInvestigador, @NotNull Estado estado, @NotNull User user) {
         this.tipoTramite = tipoTramite;
         this.necesidad = necesidad;
         this.fecha = fecha;
@@ -83,7 +81,7 @@ public class Solicitud {
         this.observacion = observacion;
         this.grupoInvestigador = grupoInvestigador;
         this.estado = estado;
-        this.usuario = usuario;
+        this.user = user;
     }
 
     public Solicitud() {
@@ -211,11 +209,11 @@ public class Solicitud {
         this.precotizacionElegida = precotizacionElegida;
     }
 
-    public Usuario getUsuario() {
-        return usuario;
+    public User getUser() {
+        return user;
     }
 
-    public void setUsuario(Usuario usuario) {
-        this.usuario = usuario;
+    public void setUser(User user) {
+        this.user = user;
     }
 }

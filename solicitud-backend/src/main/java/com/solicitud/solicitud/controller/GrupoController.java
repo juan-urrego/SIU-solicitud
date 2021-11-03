@@ -1,7 +1,7 @@
 package com.solicitud.solicitud.controller;
 
 import com.solicitud.solicitud.dto.GrupoDto;
-import com.solicitud.solicitud.dto.Mensaje;
+import com.solicitud.solicitud.dto.Message;
 import com.solicitud.solicitud.entity.Grupo;
 import com.solicitud.solicitud.service.GrupoService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,40 +33,40 @@ public class GrupoController {
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> getById(@PathVariable("id") int id){
         if(!grupoService.existsById(id))
-            return new ResponseEntity<Mensaje>(new Mensaje("No existe un grupo con esa id"), HttpStatus.NOT_FOUND);
+            return new ResponseEntity<Message>(new Message("No existe un grupo con esa id"), HttpStatus.NOT_FOUND);
         Grupo grupo = grupoService.getOne(id).get();
         return new ResponseEntity<Grupo>(grupo, HttpStatus.OK);
     }
 
     @DeleteMapping("/delete/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Mensaje> delete (@PathVariable("id") int id){
+    public ResponseEntity<Message> delete (@PathVariable("id") int id){
         if(!grupoService.existsById(id))
-            return new ResponseEntity<Mensaje>(new Mensaje("No existe un grupo con esa id"), HttpStatus.NOT_FOUND);
+            return new ResponseEntity<Message>(new Message("No existe un grupo con esa id"), HttpStatus.NOT_FOUND);
         grupoService.delete(id);
-        return new ResponseEntity<Mensaje>(new Mensaje("Grupo eliminado"), HttpStatus.OK);
+        return new ResponseEntity<Message>(new Message("Grupo eliminado"), HttpStatus.OK);
     }
 
     @PostMapping("/save")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> save(@RequestBody GrupoDto grupoDto, BindingResult bindingResult){
         if(bindingResult.hasErrors())
-            return new ResponseEntity<Mensaje>(new Mensaje("Campos mal puestos"), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<Message>(new Message("Campos mal puestos"), HttpStatus.BAD_REQUEST);
         Grupo grupo = new Grupo(grupoDto.getCodigoGrupo(), grupoDto.getNombre(), grupoDto.getCodColciencia());
         grupoService.save(grupo);
-        return new ResponseEntity<Mensaje>(new Mensaje("Grupo guardado"), HttpStatus.OK);
+        return new ResponseEntity<Message>(new Message("Grupo guardado"), HttpStatus.OK);
     }
 
     @PutMapping("/update/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Mensaje> update(@PathVariable("id") int id, @RequestBody GrupoDto grupoDto){
+    public ResponseEntity<Message> update(@PathVariable("id") int id, @RequestBody GrupoDto grupoDto){
         if (!grupoService.existsById(id))
-            return new ResponseEntity<Mensaje>(new Mensaje("No existe un grupo con esa id"), HttpStatus.NOT_FOUND);
+            return new ResponseEntity<Message>(new Message("No existe un grupo con esa id"), HttpStatus.NOT_FOUND);
         Grupo grupo = grupoService.getOne(id).get();
         grupo.setCodigoGrupo(grupoDto.getCodigoGrupo());
         grupo.setNombre(grupoDto.getNombre());
         grupo.setCodColciencia(grupoDto.getCodColciencia());
         grupoService.save(grupo);
-        return new ResponseEntity<Mensaje>(new Mensaje("Grupo actualizado"), HttpStatus.OK);
+        return new ResponseEntity<Message>(new Message("Grupo actualizado"), HttpStatus.OK);
     }
 }

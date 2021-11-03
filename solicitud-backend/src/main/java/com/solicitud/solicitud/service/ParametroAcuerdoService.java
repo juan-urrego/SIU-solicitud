@@ -2,7 +2,6 @@ package com.solicitud.solicitud.service;
 
 import com.solicitud.solicitud.entity.ParametroAcuerdo;
 import com.solicitud.solicitud.repository.ParametroAcuerdoRepository;
-import com.solicitud.solicitud.security.entity.Usuario;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

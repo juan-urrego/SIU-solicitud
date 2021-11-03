@@ -3,7 +3,7 @@ import { FormArray, FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { ActivatedRouteSnapshot, Resolve, RouterStateSnapshot } from "@angular/router";
 import { Observable, of } from "rxjs";
 import { map } from "rxjs/operators";
-import { EstudiioResolved } from "./estudio";
+import { EstudiioResolved, Estudio } from "./estudio";
 import { EstudioService } from "./estudio.service";
 
 @Injectable({ providedIn: 'root' })
@@ -23,10 +23,12 @@ export class EstudioResolver implements Resolve<EstudiioResolved> {
         state: RouterStateSnapshot): Observable<EstudiioResolved> {
         const id = route.paramMap.get('id');
         this.estudioForm = this.fb.group({
-            acuerdo: ['', [Validators.required]],
             unidadAcademica: ['', [Validators.required]],
-            firmaUsuario: '',
-            firmaDirector: '',
+            firmaUsuario: false,
+            firmaDirector: false,
+            _director: { value: '', disabled: true },
+            _usuario: { value: '', disabled: true },
+            _acuerdo: { value: '', disabled: true },
             _fecha: { value: '', disabled: true },
             _centroCostos: { value: '', disabled: true },
             _necesidad: { value: '', disabled: true },
@@ -47,7 +49,7 @@ export class EstudioResolver implements Resolve<EstudiioResolved> {
             );
     }
 
-    displayForm(estudio): FormGroup {
+    displayForm(estudio: Estudio): FormGroup {
         estudio.solicitud.detalleTramites.forEach(detalle => {
             let newDetail = this.buildDetails();
             newDetail.patchValue({                
@@ -60,10 +62,10 @@ export class EstudioResolver implements Resolve<EstudiioResolved> {
         });
 
         this.estudioForm.patchValue({
-            acuerdo: estudio.parametro,
             unidadAcademica: estudio.unidadAcademica,
-            firmaUsuario: estudio.firmaUsuario,
-            firmaDirector: estudio.firmaDirector,
+            _director: estudio.director.name,
+            _usuario: estudio.solicitud.user.name,
+            _acuerdo: estudio.acuerdo,
             _fecha: new Date(estudio.solicitud.fecha),
              _centroCostos: estudio.solicitud.grupoInvestigador.proyecto.centroCostos,
             _necesidad: estudio.solicitud.necesidad,

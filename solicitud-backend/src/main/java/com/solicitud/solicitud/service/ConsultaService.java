@@ -2,8 +2,8 @@ package com.solicitud.solicitud.service;
 
 import com.solicitud.solicitud.entity.Consulta;
 import com.solicitud.solicitud.repository.ConsultaRepository;
-import com.solicitud.solicitud.security.entity.Usuario;
-import com.solicitud.solicitud.security.service.UsuarioService;
+import com.solicitud.solicitud.security.entity.User;
+import com.solicitud.solicitud.security.service.UserService;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,11 +19,11 @@ public class ConsultaService {
     ConsultaRepository consultaRepository;
 
     final
-    UsuarioService usuarioService;
+    UserService userService;
 
-    public ConsultaService(ConsultaRepository consultaRepository, UsuarioService usuarioService) {
+    public ConsultaService(ConsultaRepository consultaRepository, UserService userService) {
         this.consultaRepository = consultaRepository;
-        this.usuarioService = usuarioService;
+        this.userService = userService;
     }
 
     public boolean existsById(final int id){
@@ -31,23 +31,19 @@ public class ConsultaService {
     }
 
     public Optional<Consulta> getOne(int id){
-        if (SecurityContextHolder.getContext().getAuthentication().getAuthorities().size() == 1) {
-            if (usuarioService.getByEmail(SecurityContextHolder.getContext().getAuthentication().getName()).isPresent()) {
-                Usuario usuario = usuarioService.getByEmail(SecurityContextHolder.getContext().getAuthentication().getName()).get();
-                return consultaRepository.findByIdAndSolicitud_Usuario(id, usuario);
-            }
+        if (SecurityContextHolder.getContext().getAuthentication().getAuthorities().stream().anyMatch(o -> o.getAuthority().equals("ROLE_USER"))){
+            User user = userService.getUserByEmail(SecurityContextHolder.getContext().getAuthentication().getName()).get();
+            return consultaRepository.findByIdAndSolicitud_User(id, user);
         }
         return consultaRepository.findById(id);
     }
 
     public List<Consulta> getConsultas(){
-        if (SecurityContextHolder.getContext().getAuthentication().getAuthorities().size() != 1)
-            return consultaRepository.findAll();
-        if (usuarioService.getByEmail(SecurityContextHolder.getContext().getAuthentication().getName()).isPresent()){
-            Usuario usuario = usuarioService.getByEmail(SecurityContextHolder.getContext().getAuthentication().getName()).get();
-            return consultaRepository.findAllBySolicitud_Usuario(usuario);
+        if (SecurityContextHolder.getContext().getAuthentication().getAuthorities().stream().anyMatch(o -> o.getAuthority().equals("ROLE_USER"))){
+            User user = userService.getUserByEmail(SecurityContextHolder.getContext().getAuthentication().getName()).get();
+            return consultaRepository.findAllBySolicitud_User(user);
         }
-        return null;
+        return consultaRepository.findAll();
     }
 
     public void save(final Consulta consulta){

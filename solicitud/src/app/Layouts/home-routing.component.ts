@@ -27,7 +27,7 @@ import { HomeLayoutComponent } from "./home-layout.component";
                       },
                       {
                         path: 'usuario',
-                        loadChildren: () => import('../usuario/usuario.module').then(m => m.UsuarioModule)
+                        loadChildren: () => import('../user/user.module').then(m => m.UserModule)
                       },
                       {
                         path: 'configuracion',

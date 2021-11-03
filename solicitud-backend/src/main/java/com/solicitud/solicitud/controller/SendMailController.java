@@ -24,8 +24,8 @@ public class SendMailController {
 
     @PostMapping("/sendMail")
     public String sendMail(@RequestBody Mail mail) {
-        String message = mail.getCuerpo() +"\n\n Datos de contacto: " + "\nNombre: " + mail.getNombre() + "\nE-mail: " + mail.getEmail();
-        sendMailService.sendMail("juanurrego21277@gmail.com","juan.urrego@udea.edu.co",mail.getAsunto(),message);
+        String message = mail.getCuerpo() +"\n\n Datos de contacto: " + "\nNombre: " + mail.getNombre() + "\nE-mail: " + mail.getOriginEmail();
+        sendMailService.sendMail("juanurrego21277@gmail.com",mail.getDestinyEmail(), mail.getAsunto(),message);
         return "Mail enviado";
     }
 }

@@ -1,7 +1,7 @@
 package com.solicitud.solicitud.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.solicitud.solicitud.security.entity.Usuario;
+import com.solicitud.solicitud.security.entity.User;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -34,6 +34,11 @@ public class Estudio {
     @JoinColumn(name = "est_unidad_academica_id")
     private UnidadAcademica unidadAcademica;
 
+    @ManyToOne
+    @JsonIgnoreProperties({"password","roles"})
+    @JoinColumn(name = "est_usuario_id")
+    private User director;
+
     @NotNull
     @ManyToOne
     @JoinColumn(name = "est_estado_id")
@@ -42,12 +47,10 @@ public class Estudio {
     public Estudio() {
     }
 
-    public Estudio(@NotNull String acuerdo, @NotNull String firmaUsuario, @NotNull String firmaDirector, Solicitud solicitud, UnidadAcademica unidadAcademica, @NotNull Estado estado) {
+    public Estudio(@NotNull String acuerdo, Solicitud solicitud, User director, @NotNull Estado estado) {
         this.acuerdo = acuerdo;
-        this.firmaUsuario = firmaUsuario;
-        this.firmaDirector = firmaDirector;
         this.solicitud = solicitud;
-        this.unidadAcademica = unidadAcademica;
+        this.director = director;
         this.estado = estado;
     }
 
@@ -106,5 +109,12 @@ public class Estudio {
     public void setEstado(Estado estado) {
         this.estado = estado;
     }
-    
+
+    public User getDirector() {
+        return director;
+    }
+
+    public void setDirector(User director) {
+        this.director = director;
+    }
 }

@@ -4,7 +4,7 @@ import com.nimbusds.jwt.JWT;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.JWTParser;
 import com.solicitud.solicitud.security.dto.JwtDto;
-import com.solicitud.solicitud.security.entity.UsuarioPrincipal;
+import com.solicitud.solicitud.security.entity.MainUser;
 import io.jsonwebtoken.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,7 +13,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;
 
-import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
@@ -30,13 +29,13 @@ public class JwtProvider {
     private int expiration;
 
     public String generateToken(Authentication authentication){
-        UsuarioPrincipal usuarioPrincipal = (UsuarioPrincipal) authentication.getPrincipal();
-        List<String> roles = usuarioPrincipal.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList());
+        MainUser mainUser = (MainUser) authentication.getPrincipal();
+        List<String> roles = mainUser.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList());
         return Jwts.builder()
-                .setSubject(usuarioPrincipal.getUsername())
+                .setSubject(mainUser.getUsername())
                 .claim("roles", roles)
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(new Date().getTime() + expiration * 100000))
+                .setExpiration(new Date(new Date().getTime() + expiration * 100000L))
                 .signWith(SignatureAlgorithm.HS512, secret.getBytes())
                 .compact();
     }
@@ -50,15 +49,15 @@ public class JwtProvider {
             Jwts.parser().setSigningKey(secret.getBytes()).parseClaimsJws(token);
             return true;
         }catch (MalformedJwtException e){
-            logger.error("token mal formado");
+            logger.error("malformed token");
         }catch (UnsupportedJwtException e){
-            logger.error("token no soportado");
+            logger.error("unsupported token");
         }catch (ExpiredJwtException e){
-            logger.error("token expirado");
+            logger.error("expired token");
         }catch (IllegalArgumentException e){
-            logger.error("token vacío");
+            logger.error("empty token");
         }catch (SignatureException e){
-            logger.error("fail en la firma");
+            logger.error("fail in the signature");
         }
         return false;
     }

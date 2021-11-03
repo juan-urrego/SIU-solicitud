@@ -1,7 +1,7 @@
 package com.solicitud.solicitud.repository;
 
 import com.solicitud.solicitud.entity.Estudio;
-import com.solicitud.solicitud.security.entity.Usuario;
+import com.solicitud.solicitud.security.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -10,6 +10,6 @@ import java.util.Optional;
 
 @Repository
 public interface EstudioRepository extends JpaRepository<Estudio, Integer> {
-    List<Estudio> findAllBySolicitud_Usuario(Usuario usuario);
-    Optional<Estudio> findByIdAndSolicitud_Usuario(int id, Usuario usuario);
+    List<Estudio> findAllBySolicitud_User(User user);
+    Optional<Estudio> findByIdAndSolicitud_User(int id, User user);
 }

@@ -21,7 +21,8 @@
                     <tr>                
                         <td style="text-align: center;">
                             <button type="button" pButton pRipple 
-                            class="p-button-secondary p-button-rounded p-mr-2" 
+                            class="p-button-secondary p-button-rounded p-mr-2"
+                            title="ver/editar"
                             icon="pi pi-pencil"
                             [routerLink]="['/consulta', consulta.id, 'editar']"></button>
                             <button pButton pRipple type="button" *ngIf="consulta.estado.estadoNombre === 'CREADA'"
@@ -37,7 +38,7 @@
                         </div></td>
                         <td>{{consulta.solicitud.grupoInvestigador.investigador.nombre}}</td>
                         <td>{{consulta.solicitud.grupoInvestigador.proyecto.nombre}}</td>                                               
-                        <td>{{consulta.solicitud.usuario.nombre}}</td>                                               
+                        <td>{{consulta.solicitud.user.name}}</td>                                               
                     </tr>
                 </ng-template>
             </p-table>

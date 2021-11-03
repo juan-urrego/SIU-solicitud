@@ -38,8 +38,31 @@ export class SolicitudListarComponent implements OnInit {
         });
     }
 
-    createDocuments(id: number):void {
-        console.log('crear');
+    createDocuments(idSolicitud: number):void {
+        this.confirmationService.confirm({
+            message: '¿Estás seguro de crear los siguientes documentos?: Estudios previos, Consulta de precios',
+            header: 'Confirmacion',
+            icon: 'pi pi-exclamation-triangle',
+            accept: () => {
+                this.solicitudService.crearDocumentos(idSolicitud).subscribe({
+                    next: () => {
+                        this.refresh();
+                        this.messageService.add({
+                            severity:'success',
+                            summary: 'Verificado'
+                        });
+                    },
+                    error: error => {
+                        this.mensajeError = error
+                        this.messageService.add({
+                            severity:'error',
+                            summary: 'Error',
+                            detail: this.mensajeError
+                        });
+                    }
+                });
+            }
+        });
         
     }
 

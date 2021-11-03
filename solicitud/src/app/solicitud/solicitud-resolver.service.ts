@@ -128,8 +128,10 @@ export class SolicitudResolver implements Resolve<SolicitudResolved> {
             precotizacionDto: solicitud.precotizacionElegida,
             _valor_selected: solicitud.precotizacionElegida.valorTotal,                        
             observacion: solicitud.observacion,
-            usuarioEmail: solicitud.usuario.email
+            usuarioEmail: solicitud.user.email
         });
+        
+        
         return this.solicitudForm;
     }
 

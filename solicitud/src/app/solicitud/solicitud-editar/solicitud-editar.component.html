@@ -21,6 +21,52 @@
   
    <router-outlet></router-outlet>
 
+   <p-dialog [(visible)]="emailDialog" [style]="{width: '600px'}"
+          header="Email" [modal]="true" styleClass="p-fluid">
+          <ng-template pTemplate="content">
+              <form [formGroup]="emailForm" novalidate>
+                <div class="row">
+                    <div class="col-12 mb-3 form-group">
+        
+                      <label for="nombre" class="col-form-label"><b>Nombre remitente:</b></label>            
+                      <input id="nombre" class="form-control mb-3"
+                      formControlName="nombre"  type="text"
+                      [ngClass]="{'is-invalid': (emailForm.get('nombre').touched || emailForm.get('nombre').dirty) && !emailForm.get('nombre').valid}">
+                      <span class="invalid-feedback">
+                        <span *ngIf="emailForm.get('nombre').errors?.required">
+                          Por favor ingrese su nombre.
+                        </span>
+                      </span>
+                      
+                    </div>
+                  </div>
+
+                <div class="row">
+                  <div class="col-12 mb-3 form-group">
+                    <label for="cuerpo" class="col-form-label"><b>Observaciones:</b></label>            
+                      <textarea id="cuerpo" pInputTextarea formControlName="cuerpo"
+            type="text" rows="5"
+            [ngClass]="{'is-invalid': (emailForm.get('cuerpo').touched || emailForm.get('cuerpo').dirty) && !emailForm.get('cuerpo').valid}"></textarea>
+                    <span class="invalid-feedback">
+                      <span *ngIf="emailForm.get('cuerpo').errors?.required">
+                        Por favor ingrese sus observaciones.
+                      </span>
+                    </span>
+                    
+                  </div>
+                </div>
+              </form>
+          </ng-template>
+
+          <ng-template pTemplate="footer">      
+            <button pButton pRipple label="Cancel" icon="pi pi-times" 
+            class="p-button-text" (click)="hideDialog()"></button>
+            <button pButton 
+            [disabled]="emailForm.invalid" 
+            pRipple label="Save" icon="pi pi-check" class="p-button-text" 
+            (click)="enviarEmail()"></button>
+          </ng-template>
+</p-dialog>
 
     <div class="form-group row">
       <div class="offset-md-1 mb-5">
@@ -33,9 +79,15 @@
           routerLink="/solicitud">
           Cancelar
         </button>
-        <button class="btn btn-outline-warning" style="width:90px" type="button"
+        <button class="btn btn-outline-warning mr-3" style="width:90px" type="button"
           title="Borrar solicitud" (click)="deleteSolicitud()">
           Borrar
+        </button>
+        <button class="btn btn-outline-primary"  type="button"
+          
+          title="Enviar correo"
+          (click)="openNew()">
+          Enviar Correo para observaciones
         </button>
       </div>
     </div>
