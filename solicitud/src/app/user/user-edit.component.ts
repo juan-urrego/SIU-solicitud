@@ -46,18 +46,9 @@ export class UserEditComponent implements OnInit {
         
     }
 
-    addTag(): void {
-        this.roles.push(new FormControl());
-      }
-    
-    deleteTag(index: number): void {
-    this.roles.removeAt(index);
-    this.roles.markAsDirty();
-    }
-
     loadFirma() {
         if (this.user) {
-            this.usuarioService.getUserFirma(this.user.id).subscribe({
+            this.usuarioService.getFirmaById(this.user.id).subscribe({
                 next: image => this.createImageFromBlob(image),
                 error: error => this.mensajeError = error
             });
@@ -84,7 +75,6 @@ export class UserEditComponent implements OnInit {
         
     }
 
-
     onSaveComplete(): void {
         this.usuarioForm.reset();
         this.router.navigate(['/usuario']);
@@ -102,7 +92,7 @@ export class UserEditComponent implements OnInit {
                             this.onSaveComplete();
                         },
                         error: error => {
-                            this.mensajeError = error
+                            this.mensajeError = error.error.message
                             this.messageService.add({
                                 severity: 'error',
                                 summary: 'Error',
@@ -119,14 +109,15 @@ export class UserEditComponent implements OnInit {
     saveUser(): void {
         if (this.usuarioForm.valid) {
             if (this.usuarioForm.dirty) {
+                const p = { ...this.user, ...this.usuarioForm.value}
                 if (!this.user) {
-                    this.usuarioService.createUser(JSON.stringify(this.usuarioForm.value), this.file)
+                    this.usuarioService.createUser(p, this.file)
                         .subscribe({
                             next: () => {
                                 this.onSaveComplete();
                             },
                             error: error => {
-                                this.mensajeError = error.message;
+                                this.mensajeError = error.error.message;
                                 this.messageService.add({
                                     severity: 'error',
                                     summary: 'Error',
@@ -136,13 +127,13 @@ export class UserEditComponent implements OnInit {
                             }
                         });
                 } else {
-                    this.usuarioService.updateUser(JSON.stringify(this.usuarioForm.value), this.file, this.user.id)
+                    this.usuarioService.updateUser(p, this.file, this.user.id)
                         .subscribe({
                             next: () => {
                                 this.onSaveComplete();
                             },
                             error: error => {
-                                this.mensajeError = error;
+                                this.mensajeError = error.error.message;
                                 this.messageService.add({
                                     severity: 'error',
                                     summary: 'Error',

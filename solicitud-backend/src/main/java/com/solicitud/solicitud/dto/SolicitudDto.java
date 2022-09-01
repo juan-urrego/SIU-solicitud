@@ -2,10 +2,8 @@ package com.solicitud.solicitud.dto;
 
 import com.solicitud.solicitud.entity.*;
 
-import javax.persistence.ManyToOne;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 

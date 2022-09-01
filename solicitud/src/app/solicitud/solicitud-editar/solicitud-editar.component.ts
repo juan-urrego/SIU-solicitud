@@ -22,6 +22,7 @@ export class SolicitudEditarComponent implements OnInit {
     emailDialog: boolean;
     emailLogged: string;
     mail: Mail;
+    rol: string;
 
 
     items: MenuItem[];
@@ -38,6 +39,7 @@ export class SolicitudEditarComponent implements OnInit {
         private authService: AuthService,
         private fb: FormBuilder) {
             this.emailLogged = this.authService.getEmail();
+            this.rol = this.authService.getRole();
          }
 
     ngOnInit() {        
@@ -65,9 +67,13 @@ export class SolicitudEditarComponent implements OnInit {
             this.solicitud = resolvedData.solicitud;
             this.solicitudForm = resolvedData.form
         });
-        if(this.authService.getRole() === "director"){ 
-            this.solicitudForm.disable();
-        }        
+        if  (this.solicitud){
+            if(this.authService.getRole() === "ROLE_DIRECTOR" || 
+                this.solicitud.estado.estadoNombre === "DOCUMENTADA" || 
+                this.solicitud.estado.estadoNombre === "VERIFICADA"){ 
+                this.solicitudForm.disable();
+            }        
+        }
     }
 
     onSaveComplete(): void {
@@ -77,7 +83,7 @@ export class SolicitudEditarComponent implements OnInit {
 
     openNew(): void {
         this.emailForm = this.fb.group({
-            nombre: ['', Validators.required],
+            nombre: [''],
             originEmail: this.emailLogged,
             destinyEmail: this.solicitud.grupoInvestigador.investigador.email,
             asunto: `Observaciones de solicitud de trámite #${this.solicitud.id}`,

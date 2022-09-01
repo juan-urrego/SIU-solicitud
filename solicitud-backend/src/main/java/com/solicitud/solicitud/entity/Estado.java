@@ -15,8 +15,7 @@ public class Estado {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "es_id")
     private int id;
-    @Column(name = "es_nombre")
-    @NotNull
+    @Column(name = "es_nombre", nullable = false)
     @Enumerated(EnumType.STRING)
     private EstadoNombre estadoNombre;
 
@@ -32,7 +31,7 @@ public class Estado {
     @JsonIgnore
     private Set<Consulta> consultas;
 
-    public Estado(@NotNull EstadoNombre estadoNombre) {
+    public Estado(EstadoNombre estadoNombre) {
         this.estadoNombre = estadoNombre;
     }
 

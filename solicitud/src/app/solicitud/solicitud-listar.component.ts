@@ -6,6 +6,8 @@ import { SolicitudService } from './solicitud.service';
 import { AuthService } from '../auth/auth.service';
 import { ConfirmationService, MenuItem, MessageService } from 'primeng/api';
 import { LowerCasePipe } from '@angular/common';
+import { EstudioService } from '../estudio/estudio.service';
+import { ConsultaService } from '../consulta/consulta.service';
 
 @Component({
     templateUrl: 'solicitud-listar.component.html'
@@ -23,7 +25,9 @@ export class SolicitudListarComponent implements OnInit {
 
     constructor(private solicitudService: SolicitudService,
         private messageService: MessageService,
-        private confirmationService: ConfirmationService) { }
+        private confirmationService: ConfirmationService,
+        private estudioService: EstudioService,
+        private consultaService: ConsultaService) { }
 
     ngOnInit(): void {
         this.refresh();
@@ -90,6 +94,13 @@ export class SolicitudListarComponent implements OnInit {
                     }
                 });
             }
+        });
+    }
+
+    downloadAllDocuments(id: number): void {
+        this.solicitudService.descargarPdf(id).subscribe({
+            next: () => console.log("elementos descargados"),
+            error: mensajeError => this.mensajeError = mensajeError
         });
     }
 

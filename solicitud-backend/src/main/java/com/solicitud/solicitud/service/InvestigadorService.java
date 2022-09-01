@@ -1,14 +1,14 @@
 package com.solicitud.solicitud.service;
 
+import com.solicitud.solicitud.dto.InvestigadorDto;
 import com.solicitud.solicitud.entity.Investigador;
-import com.solicitud.solicitud.repository.FileSystemRepository;
 import com.solicitud.solicitud.repository.InvestigadorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.FileSystemResource;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 
-import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
 
@@ -16,51 +16,57 @@ import java.util.Optional;
 @Service
 public class InvestigadorService {
 
-    @Autowired
+    final
     InvestigadorRepository investigadorRepository;
 
     @Autowired
-    FileSystemRepository fileSystemRepository;
-
-    public Optional<Investigador> getOne(int id){
-        return investigadorRepository.findById(id);
+    public InvestigadorService(InvestigadorRepository investigadorRepository) {
+        this.investigadorRepository = investigadorRepository;
     }
 
-
-
-    public boolean existsById(final int id){
-        return investigadorRepository.existsById(id);
+    public Investigador getInvestigadorById(int id){
+        return investigadorRepository.findById(id).orElseThrow(() ->
+                new ResponseStatusException(HttpStatus.NOT_FOUND, "investigator does not exist, or not found"));
     }
 
-    public boolean existByIdentificacion(final String identificacion){
+    public boolean existByIdentificacion(String identificacion){
         return investigadorRepository.existsInvestigadorByIdentificacion(identificacion);
     }
 
-    public List<Investigador> getInvestigador(){
-        final List<Investigador> investigadors;
-        investigadors = investigadorRepository.findAll();
-        return investigadors;
+    public boolean existByEmail(String email) {
+        return investigadorRepository.existsByEmail(email);
     }
 
-    public void save(final Investigador investigador){
+    public List<Investigador> getAll(){
+        return investigadorRepository.findAll();
+    }
+
+    public void save(Investigador investigador){
         investigadorRepository.save(investigador);
     }
 
+    public void saveInvestigador(InvestigadorDto investigadorDto) {
+        if(existByIdentificacion(investigadorDto.getIdentificacion()))
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "investigator with this identification, already exists");
+        if(existByEmail(investigadorDto.getEmail()))
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "investigator with this email, already exists");
+        Investigador investigador = new Investigador(investigadorDto.getIdentificacion(), investigadorDto.getNombre(), investigadorDto.getTelefono(), investigadorDto.getEmail());
+        save(investigador);
+    }
+
+    public void update(int id,InvestigadorDto investigadorDto) {
+        Investigador investigador = getInvestigadorById(id);
+        if(existByEmail(investigadorDto.getEmail()) && !investigador.getEmail().equals(investigadorDto.getEmail()))
+            throw  new ResponseStatusException(HttpStatus.BAD_REQUEST, "email already exists");
+        investigador.setNombre(investigadorDto.getNombre());
+        investigador.setTelefono(investigadorDto.getTelefono());
+        investigador.setEmail(investigadorDto.getEmail());
+        save(investigador);
+    }
+
     public void delete(int id){
-        investigadorRepository.deleteById(id);
+        Investigador investigador = getInvestigadorById(id);
+        investigadorRepository.delete(investigador);
     }
-
-
-
-    //Guardar imagen en los archivos del sistema y retorna su ubicacion
-    public String saveImage(byte[] bytes, String nombreInvestigador) throws Exception{
-        return fileSystemRepository.saveImageFileSystem(bytes, nombreInvestigador);
-    }
-
-    //encontrar imagen por Id de investigador
-//    public FileSystemResource findImageById(int id) {
-//        Investigador investigador = investigadorRepository.findById(id).get();
-//        return fileSystemRepository.findInFileSystem(investigador.getFirma());
-//    }
 
 }

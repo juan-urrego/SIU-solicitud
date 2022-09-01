@@ -1,17 +1,27 @@
 package com.solicitud.solicitud.security.service;
 
 import com.solicitud.solicitud.repository.FileSystemRepository;
-import com.solicitud.solicitud.security.dto.NewUserDto;
+import com.solicitud.solicitud.security.dto.JwtDto;
+import com.solicitud.solicitud.security.dto.LoginUserDto;
 import com.solicitud.solicitud.security.entity.Role;
 import com.solicitud.solicitud.security.entity.User;
 import com.solicitud.solicitud.security.enums.RoleName;
+import com.solicitud.solicitud.security.jwt.JwtProvider;
 import com.solicitud.solicitud.security.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 
+import java.text.ParseException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -30,87 +40,93 @@ public class UserService {
     final
     RoleService roleService;
 
+    final
+    AuthenticationManager authenticationManager;
+
+    final
+    JwtProvider jwtProvider;
+
     final PasswordEncoder passwordEncoder;
 
+    @Autowired
     public UserService(UserRepository userRepository,
                        FileSystemRepository fileSystemRepository,
                        RoleService roleService,
-                       PasswordEncoder passwordEncoder) {
+                       PasswordEncoder passwordEncoder,
+                       AuthenticationManager authenticationManager,
+                       JwtProvider jwtProvider) {
         this.userRepository = userRepository;
         this.fileSystemRepository = fileSystemRepository;
         this.roleService = roleService;
         this.passwordEncoder = passwordEncoder;
+        this.authenticationManager = authenticationManager;
+        this.jwtProvider = jwtProvider;
     }
 
 
-    public Optional<User> getUserById(int id){
-        return userRepository.findById(id);
+    public User getUserById(int id){
+        return userRepository.findById(id).orElseThrow(() -> new ResponseStatusException(
+                HttpStatus.NOT_FOUND, "user does not exist with this id or not found"));
     }
-    public Optional<User> getUserByEmail(final String email){
-        return userRepository.findByEmail(email);
+
+    public User getUserByEmail(String email){
+        return userRepository.findByEmail(email).orElseThrow(() ->
+                new ResponseStatusException(HttpStatus.NOT_FOUND, "user does not exist with this email, or not found"));
     }
-    public Optional<User> getUserByDirectorActive() {
-        Optional<Role> roleDirector = roleService.getByRoleName(RoleName.ROLE_DIRECTOR);
+
+    public Optional<User> getUserByRoleActive(Optional<Role> role) {
         Set<Role> roles = new HashSet<>();
-        roleDirector.ifPresent(roles::add);
+        role.ifPresent(roles::add);
         return userRepository.findByActiveAndRolesIn(true, roles);
+    }
+
+    public Optional<User> getDirectorActive(){
+        Optional<Role> roleDirector = roleService.getByRoleName(RoleName.ROLE_DIRECTOR);
+        return getUserByRoleActive(roleDirector);
     }
 
     public boolean existsByEmail(final String email){
         return userRepository.existsByEmail(email);
-    }
-    public boolean existsById(final int id){
-        return userRepository.existsById(id);
     }
 
     public boolean existsActiveByEmail(String email) {
         return userRepository.existsByActiveFalseAndEmail(email);
     }
 
-
     public List<User> getAll(){
-        final List<User> users;
-        users = userRepository.findAll();
-        return users;
+        return userRepository.findAll();
     }
 
-    public String saveImage(byte[] bytes, String name) throws Exception{
-        return fileSystemRepository.saveImageFileSystem(bytes, name);
-    }
-
-    public FileSystemResource getImageById(int id) {
-        Optional<User> user = userRepository.findById(id);
-        return fileSystemRepository.findInFileSystem(user.get().getSignatureUrl());
-    }
-
-    public FileSystemResource findSignature(String firma) {
-        return fileSystemRepository.findInFileSystem(firma);
-    }
-
-    public void deleteImageByPath(String location){
-        fileSystemRepository.deleteByPath(location);
-    }
-
-    public void save(final User user){
+    public void save(User user) {
         userRepository.save(user);
     }
 
-    public void saveUser(final NewUserDto newUserDto, MultipartFile file) throws Exception {
-        User user =
-                new User(newUserDto.getName(), newUserDto.getEmail(), newUserDto.getPosition(), true,
-                        passwordEncoder.encode(newUserDto.getPassword()), saveImage(file.getBytes(),file.getOriginalFilename()));
-        user.setRoles(getRoles(newUserDto));
+    public void saveUser(String name, String email, String position, String password, String role, MultipartFile file) throws Exception {
+        if (!getAll().isEmpty() &&
+                !SecurityContextHolder.getContext().getAuthentication().isAuthenticated()
+                )
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "you must be admin user and be authenticated");
+        if (existsByEmail(email))
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "email already exists");
+        User user = new User(name,
+                        email,
+                        position,
+                        true,
+                        passwordEncoder.encode(password),
+                        saveImage(file.getBytes(),file.getOriginalFilename()));
+        user.setRoles(getRoles(role));
         save(user);
     }
 
-    public void update(NewUserDto newUserDto, MultipartFile file, int id) throws  Exception {
-        User user = getUserById(id).orElseThrow(() -> new Exception("user not found"));
-        user.setName(newUserDto.getName());
-        user.setEmail(newUserDto.getEmail());
+    public void update(int id, String name, String email, String position, String password, MultipartFile file) throws  Exception {
+        User user = getUserById(id);
+        if(existsByEmail(email) && !user.getEmail().equals(email))
+            throw  new ResponseStatusException(HttpStatus.BAD_REQUEST, "email already exists");
+        user.setName(name);
+        user.setEmail(email);
+        user.setPosition(position);
         user.setActive(true);
-        user.setPassword(passwordEncoder.encode(newUserDto.getPassword()));
-        user.setPosition(newUserDto.getPosition());
-
+        user.setPassword(passwordEncoder.encode(password));
         if(!getImageById(id).exists() && file != null) {
             user.setSignatureUrl(saveImage(file.getBytes(),file.getOriginalFilename()));
         }
@@ -118,24 +134,49 @@ public class UserService {
             deleteImageByPath(user.getSignatureUrl());
             user.setSignatureUrl(saveImage(file.getBytes(),file.getOriginalFilename()));
         }
-        user.setRoles(getRoles(newUserDto));
         save(user);
     }
 
-    private Set<Role> getRoles(NewUserDto newUserDto) {
+    public void delete(int id){
+        User user = getUserById(id);
+        if (user.getRoles().stream().anyMatch(role -> role.getRoleName().equals(RoleName.ROLE_ADMIN)) ||
+                user.getRoles().stream().anyMatch(role -> role.getRoleName().equals(RoleName.ROLE_DIRECTOR)))
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "you can not delete this user");
+        userRepository.delete(user);
+    }
+
+    public JwtDto login(LoginUserDto loginUserDto) {
+        if (existsActiveByEmail(loginUserDto.getEmail()))
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "this user is not longer active");
+        Authentication authentication =
+                authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginUserDto.getEmail(), loginUserDto.getPassword()));
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        String jwt = jwtProvider.generateToken(authentication);
+        return new JwtDto(jwt);
+    }
+
+    public JwtDto refreshToken(JwtDto jwtDto) throws ParseException {
+        String token = jwtProvider.refreshToken(jwtDto);
+        return new JwtDto(token);
+    }
+
+    private Set<Role> getRoles(String role) {
         Optional<Role> roleUser = roleService.getByRoleName(RoleName.ROLE_USER);
         Optional<Role> roleAdmin = roleService.getByRoleName(RoleName.ROLE_ADMIN);
         Optional<Role> roleDirector = roleService.getByRoleName(RoleName.ROLE_DIRECTOR);
         Set<Role> roles = new HashSet<>();
-        if(newUserDto.getRoles().contains("admin")) {
+        if(role.equals("admin")) {
             roleAdmin.ifPresent(roles::add);
+            Optional<User> userAdmin = getUserByRoleActive(roleAdmin);
+            if (userAdmin.isPresent())
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "admin user already exists, can not have more than one admin user");
         }
-        else if (newUserDto.getRoles().contains("director")) {
+        else if (role.equals("director")) {
             roleDirector.ifPresent(roles::add);
-            Optional<User> userDirector = getUserByDirectorActive();
+            Optional<User> userDirector = getUserByRoleActive(roleDirector);
             if (userDirector.isPresent()){
                 userDirector.get().setActive(false);
-                save(userDirector.get());
+                userRepository.save(userDirector.get());
             }
         }
         else {
@@ -144,8 +185,29 @@ public class UserService {
         return(roles);
     }
 
-    public void delete(int id){
-        userRepository.deleteById(id);
+    public void activeUser(int id, boolean isActive) {
+        User user = getUserById(id);
+        if (user.getRoles().stream().anyMatch(role -> role.getRoleName().equals(RoleName.ROLE_DIRECTOR)))
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "It is not possible to modify a user director, it always must have an active director");
+        if (user.getRoles().stream().anyMatch(role -> role.getRoleName().equals(RoleName.ROLE_ADMIN)))
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "It is not possible to modify a user admin, it always must have an active admin");
+        if (user.getEmail().equals(SecurityContextHolder.getContext().getAuthentication().getName()))
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "It is not possible to modify, if you are logged in the same user account");
+        user.setActive(isActive);
+        save(user);
+    }
+
+    public String saveImage(byte[] bytes, String name) throws Exception{
+        return fileSystemRepository.saveImageFileSystem(bytes, name);
+    }
+
+    public FileSystemResource getImageById(int id) {
+        User user = getUserById(id);
+        return fileSystemRepository.findInFileSystem(user.getSignatureUrl());
+    }
+
+    public void deleteImageByPath(String location){
+        fileSystemRepository.deleteByPath(location);
     }
 
 

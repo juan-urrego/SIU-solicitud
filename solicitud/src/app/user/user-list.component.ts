@@ -40,7 +40,7 @@ export class UserListComponent implements OnInit {
       header: 'Confirmacion',
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
-          this.usuarioService.updateByActive(id, isActive).subscribe({
+          this.usuarioService.activeUser(id, isActive).subscribe({
               next: (mensaje: any) => {
                   this.refresh();
                   console.log(mensaje.message);

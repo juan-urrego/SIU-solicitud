@@ -20,6 +20,7 @@ import {CalendarModule} from 'primeng/calendar';
 import {InputNumberModule} from 'primeng/inputnumber';
 import {StepsModule} from 'primeng/steps';
 import {BadgeModule} from 'primeng/badge';
+import {PasswordModule} from 'primeng/password';
 
 
 @NgModule({
@@ -30,6 +31,7 @@ import {BadgeModule} from 'primeng/badge';
         StepsModule,        
         FileUploadModule,
         TableModule,
+        PasswordModule,
         BadgeModule,
         RadioButtonModule,
         ButtonModule,
@@ -53,6 +55,7 @@ import {BadgeModule} from 'primeng/badge';
         StepsModule,
         FileUploadModule,
         TableModule,
+        PasswordModule,
         BadgeModule,
         RadioButtonModule,
         ButtonModule,

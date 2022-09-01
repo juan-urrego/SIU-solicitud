@@ -2,14 +2,11 @@ package com.solicitud.solicitud.controller;
 
 import com.solicitud.solicitud.dto.Message;
 import com.solicitud.solicitud.dto.ProyectoDto;
-import com.solicitud.solicitud.entity.Grupo;
 import com.solicitud.solicitud.entity.Proyecto;
-import com.solicitud.solicitud.service.GrupoService;
 import com.solicitud.solicitud.service.ProyectoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,55 +16,41 @@ import java.util.List;
 @CrossOrigin
 public class ProyectoController {
 
-    @Autowired
+    final
     ProyectoService proyectoService;
 
     @Autowired
-    GrupoService grupoService;
+    public ProyectoController(ProyectoService proyectoService) {
+        this.proyectoService = proyectoService;
+    }
 
     @GetMapping("/proyectos")
     public ResponseEntity<List<Proyecto>> list(){
-        List<Proyecto> list = proyectoService.getProyecto();
-        return new ResponseEntity<List<Proyecto>>(list, HttpStatus.OK);
+        List<Proyecto> list = proyectoService.getAll();
+        return new ResponseEntity<>(list, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> getById(@PathVariable("id") int id){
-        if(!proyectoService.existsById(id))
-            return new ResponseEntity<Message>(new Message("No existe un proyecto con esa id"), HttpStatus.NOT_FOUND);
-        Proyecto proyecto = proyectoService.getOne(id).get();
-        return new ResponseEntity<Proyecto>(proyecto, HttpStatus.OK);
+    public ResponseEntity<Proyecto> getById(@PathVariable(value = "id") int id){
+        Proyecto proyecto = proyectoService.getProyectoById(id);
+        return new ResponseEntity<>(proyecto, HttpStatus.OK);
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<Message> delete (@PathVariable("id") int id){
-        if(!proyectoService.existsById(id))
-            return new ResponseEntity<Message>(new Message("No existe un Proyecto con esa id"), HttpStatus.NOT_FOUND);
+    public ResponseEntity<Message> delete (@PathVariable(value = "id") int id){
         proyectoService.delete(id);
-        return new ResponseEntity<Message>(new Message("Proyecto eliminado"), HttpStatus.OK);
+        return new ResponseEntity<>(new Message("projects deleted"), HttpStatus.OK);
     }
 
     @PostMapping("/save")
-    public ResponseEntity<?> save(@RequestBody ProyectoDto proyectoDto, BindingResult bindingResult){
-        if(bindingResult.hasErrors())
-            return new ResponseEntity<Message>(new Message("Campos mal puestos"), HttpStatus.BAD_REQUEST);
-        Grupo grupo = grupoService.getOne(proyectoDto.getGrupo()).get();
-        Proyecto proyecto = new Proyecto(proyectoDto.getNombre(), proyectoDto.getCodigoProyecto(), proyectoDto.getCentroCostos(), grupo);
-        proyectoService.save(proyecto);
-        return new ResponseEntity<Message>(new Message("Proyecto guardado"), HttpStatus.OK);
+    public ResponseEntity<Message> save(@RequestBody ProyectoDto proyectoDto){
+        proyectoService.saveProyecto(proyectoDto);
+        return new ResponseEntity<>(new Message("project created"), HttpStatus.OK);
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<Message> update(@PathVariable("id") int id, @RequestBody ProyectoDto proyectoDto){
-        if (!proyectoService.existsById(id))
-            return new ResponseEntity<Message>(new Message("No existe un investigador con esa id"), HttpStatus.NOT_FOUND);
-        Grupo grupo = grupoService.getOne(proyectoDto.getGrupo()).get();
-        Proyecto proyecto = proyectoService.getOne(id).get();
-        proyecto.setNombre(proyectoDto.getNombre());
-        proyecto.setCodigoProyecto(proyectoDto.getCodigoProyecto());
-        proyecto.setCentroCostos(proyectoDto.getCentroCostos());
-        proyecto.setGrupo(grupo);
-        proyectoService.save(proyecto);
-        return new ResponseEntity<Message>(new Message("Proyecto actualizado"), HttpStatus.OK);
+    public ResponseEntity<Message> update(@PathVariable(value = "id") int id, @RequestBody ProyectoDto proyectoDto){
+        proyectoService.update(id, proyectoDto);
+        return new ResponseEntity<>(new Message("project updated"), HttpStatus.OK);
     }
 }

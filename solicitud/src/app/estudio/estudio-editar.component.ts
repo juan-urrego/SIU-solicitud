@@ -24,6 +24,7 @@ export class EstudioEditarComponent implements OnInit {
     estudio: Estudio;
     unidadesAcademicas: Parametro[];
     emailLogged: string = '';
+    userAdmin: User;
 
 
     get detalleTramiteDtos(): FormArray {
@@ -46,11 +47,11 @@ export class EstudioEditarComponent implements OnInit {
             this.estudioForm = data['resolvedData'].form;
         });
         this.getUnidadesAcademicas();
+        if (this.authService.isAdmin()) {
+            this.getUserByEmail(this.emailLogged);
+        }
         if (this.estudio.firmaDirector){
             this.getFirma(this.estudio.director.id, "ROLE_DIRECTOR");
-        }
-        if (this.estudio.firmaUsuario){
-            this.getFirma(this.estudio.solicitud.user.id, "ROLE_USER");
         }
     }
 
@@ -68,7 +69,7 @@ export class EstudioEditarComponent implements OnInit {
     }
 
     getFirma(id: number, rol: string) {
-        this.usuarioService.getUserFirma(id).subscribe({
+        this.usuarioService.getFirmaById(id).subscribe({
             next: image => this.createImageFromBlob(image, rol),
             error: error => this.mensajeError = error
         });
@@ -121,14 +122,17 @@ export class EstudioEditarComponent implements OnInit {
         this.router.navigate(['/estudio']);
     }
 
-    isUserSignable(): boolean { 
-        if(this.estudio.firmaUsuario){
-            return false;
-        }
-        if(this.estudio.solicitud.user.email == this.emailLogged){
-            return true;
-        }
-        return false;
+
+    getUserByEmail(email:string) {
+        this.usuarioService.getUserByEmail(email).subscribe({
+            next: user => {
+                this.userAdmin = user;
+                if (this.estudio.firmaUsuario){
+                    this.getFirma(this.userAdmin.id, "ROLE_ADMIN");
+                }
+            },
+            error: error => this.mensajeError = error
+        })
     }
 
     isDirectorSignable(): boolean { 
@@ -141,5 +145,14 @@ export class EstudioEditarComponent implements OnInit {
         return false;
     }
 
+    isAdminSignable(): boolean { 
+        if(this.estudio.firmaUsuario){
+            return false;
+        }
+        if(this.authService.isAdmin()){
+           return true;
+        }        
+        return false;
+    }
     
 }

@@ -1,6 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { ConfirmationService, MessageService } from 'primeng/api';
-import { AuthService } from '../auth/auth.service';
 import { Estudio } from './estudio';
 import { EstudioService } from './estudio.service';
 
@@ -14,9 +12,7 @@ export class EstudioListarComponent implements OnInit {
     estudios: Estudio[]
 
 
-    constructor(private estudioService: EstudioService,
-        private messageService: MessageService,
-        private confirmationService: ConfirmationService) { }
+    constructor(private estudioService: EstudioService) { }
 
     ngOnInit(): void {
         this.refresh();
@@ -28,33 +24,6 @@ export class EstudioListarComponent implements OnInit {
                 this.estudios = estudios;;
             },
             error: err => this.mensajeError = err
-        });
-    }
-
-    verifyDocument(id:number): void {
-        this.confirmationService.confirm({
-            message: '¿Estás seguro de confirmar esta solicitud?',
-            header: 'Confirmacion',
-            icon: 'pi pi-exclamation-triangle',
-            accept: () => {
-                this.estudioService.confirmarEstudio(id).subscribe({
-                    next: () => {
-                        this.refresh();
-                        this.messageService.add({
-                            severity:'success',
-                            summary: 'Verificado'
-                        });
-                    },
-                    error: error => {
-                        this.mensajeError = error
-                        this.messageService.add({
-                            severity:'error',
-                            summary: 'Error',
-                            detail: this.mensajeError
-                        });
-                    }
-                });
-            }
         });
     }
 }

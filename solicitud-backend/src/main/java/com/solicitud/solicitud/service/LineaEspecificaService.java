@@ -1,41 +1,57 @@
 package com.solicitud.solicitud.service;
 
+import com.solicitud.solicitud.dto.LineaEspecificaDto;
 import com.solicitud.solicitud.entity.LineaEspecifica;
-import com.solicitud.solicitud.entity.LineaGeneral;
 import com.solicitud.solicitud.repository.LineaEspecificaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @Transactional
 public class LineaEspecificaService {
 
-    @Autowired
+    final
     LineaEspecificaRepository lineaEspesificaRepository;
 
-    public Optional<LineaEspecifica> getOne(int id){
-        return lineaEspesificaRepository.findById(id);
+    @Autowired
+    public LineaEspecificaService(LineaEspecificaRepository lineaEspesificaRepository) {
+        this.lineaEspesificaRepository = lineaEspesificaRepository;
     }
 
-    public boolean existsById(final int id){
-        return lineaEspesificaRepository.existsById(id);
+    public LineaEspecifica getLineaEspecificaById(int id){
+        return lineaEspesificaRepository.findById(id).orElseThrow(() ->
+                new ResponseStatusException(HttpStatus.NOT_FOUND, "specific line does not exist with ths id, or not found"));
     }
 
-    public List<LineaEspecifica> getLineaEspecifica(){
-        final List<LineaEspecifica> lineaEspecificas;
-        lineaEspecificas = lineaEspesificaRepository.findAll();
-        return lineaEspecificas;
+    public List<LineaEspecifica> getAll(){
+        return lineaEspesificaRepository.findAll();
     }
 
     public void save(final LineaEspecifica lineaEspecifica){
         lineaEspesificaRepository.save(lineaEspecifica);
     }
 
+    public void saveLinea(LineaEspecificaDto lineaEspecificaDto) {
+        LineaEspecifica lineaEspecifica = new LineaEspecifica(
+                lineaEspecificaDto.getNombre(),
+                null
+        );
+        save(lineaEspecifica);
+    }
+
+    public void update(int id, LineaEspecificaDto lineaEspecificaDto) {
+        LineaEspecifica lineaEspecifica = getLineaEspecificaById(id);
+        lineaEspecifica.setNombre(lineaEspecificaDto.getNombre());
+        save(lineaEspecifica);
+    }
+
     public void delete(int id){
-        lineaEspesificaRepository.deleteById(id);
+        LineaEspecifica lineaEspecifica = getLineaEspecificaById(id);
+        lineaEspesificaRepository.delete(lineaEspecifica);
     }
 }

@@ -1,7 +1,6 @@
 package com.solicitud.solicitud.entity;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "ma_parametros_argumento")
@@ -9,13 +8,12 @@ public class ParametroArgumento {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "parArgs_id")
+    @Column(name = "par_args_id")
     private int id;
-    @NotNull
-    @Column(name = "parArgs_descipcion")
+    @Column(name = "par_args_descipcion", nullable = false)
     private String descripcion;
 
-    public ParametroArgumento(@NotNull String descripcion) {
+    public ParametroArgumento(String descripcion) {
         this.descripcion = descripcion;
     }
 

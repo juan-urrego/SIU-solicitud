@@ -4,5 +4,4 @@ export interface Investigador {
     nombre: string,
     telefono: number,
     email: string,
-    firma : string
 }

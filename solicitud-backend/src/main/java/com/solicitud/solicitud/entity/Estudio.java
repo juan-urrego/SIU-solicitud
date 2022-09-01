@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.solicitud.solicitud.security.entity.User;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "estudios")
@@ -14,10 +13,8 @@ public class Estudio {
     @Column(name = "est_id")
     private int id;
 
-    @NotNull
-    @Column(name = "est_acuerdo")
+    @Column(name = "est_acuerdo", nullable = false)
     private String acuerdo;
-
 
     @Column(name = "est_firma_usuario")
     private String firmaUsuario;
@@ -39,15 +36,14 @@ public class Estudio {
     @JoinColumn(name = "est_usuario_id")
     private User director;
 
-    @NotNull
     @ManyToOne
-    @JoinColumn(name = "est_estado_id")
+    @JoinColumn(name = "est_estado_id", nullable = false)
     private Estado estado;
     
     public Estudio() {
     }
 
-    public Estudio(@NotNull String acuerdo, Solicitud solicitud, User director, @NotNull Estado estado) {
+    public Estudio(String acuerdo, Solicitud solicitud, User director, Estado estado) {
         this.acuerdo = acuerdo;
         this.solicitud = solicitud;
         this.director = director;

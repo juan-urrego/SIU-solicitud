@@ -17,7 +17,7 @@ public class LineaGeneral {
     private int id;
 
     @NotNull
-    @Column(name = "general_nombre")
+    @Column(name = "general_nombre", nullable = false)
     private String nombre;
 
     @OneToMany(mappedBy = "lineaGeneral")

@@ -34,7 +34,7 @@ export class ConsultaListarComponent implements OnInit {
 
     verifyDocument(id:number): void {
         this.confirmationService.confirm({
-            message: '¿Estás seguro de confirmar esta solicitud?',
+            message: '¿Estás seguro de verificar esta consulta?',
             header: 'Confirmacion',
             icon: 'pi pi-exclamation-triangle',
             accept: () => {
@@ -47,7 +47,9 @@ export class ConsultaListarComponent implements OnInit {
                         });
                     },
                     error: error => {
-                        this.mensajeError = error
+                        this.mensajeError = error.error.message
+                        console.log(error.message);
+                        
                         this.messageService.add({
                             severity:'error',
                             summary: 'Error',

@@ -1,9 +1,6 @@
 package com.solicitud.solicitud.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "proveedor_detalle")
@@ -14,14 +11,12 @@ public class ProveedorDetalle {
     @Column(name = "pd_id")
     private int id;
 
-    @NotNull
     @ManyToOne
-    @JoinColumn(name = "pd_detalle_id")
+    @JoinColumn(name = "pd_detalle_id", nullable = false)
     private DetalleTramite detalleTramite;
 
-    @NotNull
     @ManyToOne
-    @JoinColumn(name = "gi_proveedor_id")
+    @JoinColumn(name = "gi_proveedor_id", nullable = false)
     private Proveedor proveedor;
 
     public ProveedorDetalle() {

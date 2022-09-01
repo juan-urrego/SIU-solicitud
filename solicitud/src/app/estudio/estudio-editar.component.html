@@ -118,15 +118,15 @@
 
         <!-- Firma de los usuarios -->
         <div class="p-col-12 p-lg-6">
-            <button *ngIf="isUserSignable()" pButton pRipple type="button" label="Firmar" (click)="signUser()" class="p-button-raised"></button>
+            <button *ngIf="isAdminSignable()" pButton pRipple type="button" label="Firmar" (click)="signUser()" class="p-button-raised"></button>
               <img [src]="urlUser" [style.height.px]="250" [style.margin.px]="2" alt="firma"
                                 *ngIf="urlUser">
                                 <br><br>
-                                <div *ngIf="estudio.firmaUsuario">
+                                <div *ngIf="estudio.firmaUsuario && userAdmin">
 
-                                  <span>{{estudio.solicitud.user.name}}</span>
+                                  <span>{{userAdmin.name}}</span>
                                   <br>
-                                  <span>{{estudio.solicitud.user.position}}</span>
+                                  <span>{{userAdmin.position}}</span>
                                 </div>
         </div>
 

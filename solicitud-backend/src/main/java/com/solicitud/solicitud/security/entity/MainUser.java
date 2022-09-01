@@ -74,15 +74,5 @@ public class MainUser implements UserDetails {
         return name;
     }
 
-    public String getPosition() {
-        return position;
-    }
 
-    public boolean isActive() {
-        return active;
-    }
-
-    public String getSignatureUrl() {
-        return signatureUrl;
-    }
 }

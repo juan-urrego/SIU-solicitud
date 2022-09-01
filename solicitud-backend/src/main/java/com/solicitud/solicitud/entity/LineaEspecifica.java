@@ -1,7 +1,6 @@
 package com.solicitud.solicitud.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
 import java.util.Set;
@@ -15,11 +14,11 @@ public class LineaEspecifica {
     @Column(name = "espec_id")
     private int id;
 
-    @Column(name = "espec_nombre")
+    @Column(name = "espec_nombre", nullable = false)
     private String nombre;
     @ManyToOne
     @JsonIgnore
-    @JoinColumn(name = "espec_general_id")
+    @JoinColumn(name = "espec_general_id", nullable = false)
     private LineaGeneral lineaGeneral;
 
     @OneToMany(mappedBy = "lineaEspecifica")

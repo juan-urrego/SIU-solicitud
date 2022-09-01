@@ -18,39 +18,50 @@ export class UserService {
         return this.httpClient.get<User>(`${this.authURL}/user/${id}`);
     }
 
+    public getUserByEmail(email: string): Observable<User> {
+        return this.httpClient.get<User>(`${this.authURL}/user/email/${email}`);
+    }
+
     public getUsers(): Observable<User[]> {
         return this.httpClient.get<User[]>(`${this.authURL}/users`);
-    }
-
-    public getUserFirma(id: number): Observable<Blob> {
-        return this.httpClient.get(`${this.authURL}/image/${id}`, {responseType: 'blob'});
-    }
-
-    public getDirectorActivo(): Observable<User> {
-        return this.httpClient.get<User>(`${this.authURL}/directorActive`);
-    }
-
-    public updateByActive(id: number, isActive: any): Observable<User> {
-        const data = new FormData();
-        data.append('isActive', isActive);
-        return this.httpClient.put<User>(`${this.authURL}/isActive/${id}`, data);
-    }
-    
-    public createUser(user: string, file: File): Observable<User> {
-        var data = new FormData();
-        data.append('imageFile', file);
-        data.append('user', user);
-        return this.httpClient.post<User>(`${this.authURL}/new`, data);
     }
 
     public deleteUser(id: number): Observable<{}> {
         return this.httpClient.delete<User>(`${this.authURL}/delete/${id}`);
     }
 
-    public updateUser(user: string, file: File, id: number): Observable<User> {
+    public createUser(user: User, file: File): Observable<User> {
         var data = new FormData();
+        data.append('name', user.name);
+        data.append('email', user.email);
+        data.append('position', user.position);
+        data.append('password', user.password);
+        data.append('role', user.roles[0].roleName);
         data.append('imageFile', file);
-        data.append('user', user);
+        return this.httpClient.post<User>(`${this.authURL}/new`, data);
+    }
+
+    public updateUser(user: User, file: File, id: number): Observable<User> {
+        var data = new FormData();
+        data.append('name', user.name);
+        data.append('email', user.email);
+        data.append('position', user.position);
+        data.append('password', user.password);
+        data.append('imageFile', file);
         return this.httpClient.put<any>(`${this.authURL}/update/${id}`, data);
+    }
+
+    public getDirectorActivo(): Observable<User> {
+        return this.httpClient.get<User>(`${this.authURL}/directorActive`);
+    }
+
+    public getFirmaById(id: number): Observable<Blob> {
+        return this.httpClient.get(`${this.authURL}/image/${id}`, {responseType: 'blob'});
+    }
+
+    public activeUser(id: number, isActive: any): Observable<User> {
+        const data = new FormData();
+        data.append('isActive', isActive);
+        return this.httpClient.put<User>(`${this.authURL}/isActive/${id}`, data);
     }
 }

@@ -3,7 +3,6 @@ package com.solicitud.solicitud.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 import java.util.Set;
 
 @Entity
@@ -14,15 +13,14 @@ public class UnidadAcademica {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "uni_id")
     private int id;
-    @NotNull
-    @Column(name = "uni_nombre")
+    @Column(name = "uni_nombre", nullable = false)
     private String descripcion;
 
     @JsonIgnore
     @OneToMany(mappedBy = "unidadAcademica")
     private Set<Estudio> estudios;
 
-    public UnidadAcademica(@NotNull String descripcion) {
+    public UnidadAcademica(String descripcion) {
         this.descripcion = descripcion;
     }
 

@@ -1,10 +1,8 @@
 package com.solicitud.solicitud.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "argumentos")
@@ -14,10 +12,8 @@ public class Argumento {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "args_id")
     private int id;
-    @NotNull
-    @Column(name = "args_descripcion")
+    @Column(name = "args_descripcion", nullable = false)
     private String descripcion;
-
     @ManyToOne
     @JsonIgnore
     @JoinColumn(name = "args_precotizacion_elegida")
@@ -26,7 +22,7 @@ public class Argumento {
     public Argumento() {
     }
 
-    public Argumento(@NotNull String descripcion, Precotizacion precotizacion) {
+    public Argumento(String descripcion, Precotizacion precotizacion) {
         this.descripcion = descripcion;
         this.precotizacion = precotizacion;
     }

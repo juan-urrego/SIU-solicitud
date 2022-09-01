@@ -14,13 +14,16 @@ export class ConsultaService {
         return this.http.get<Consulta[]>(`${this.consultaUrl}/consultas`);
     }
 
+    descargarPdf(id: number) {
+        return this.http.get(`${this.consultaUrl}/consultas/${id}`);
+    }
+
     getConsulta(id: number): Observable<Consulta> {
         return this.http.get<Consulta>(`${this.consultaUrl}/${id}`);
     }
 
-
     confirmarConsulta(id: number): Observable<Consulta> {
-        return this.http.post<Consulta>(`${this.consultaUrl}/confirmar/${id}`, null);
+        return this.http.put<Consulta>(`${this.consultaUrl}/confirmar/${id}`, null);
     }
 
 }

@@ -1,4 +1,4 @@
-
+<p-toast></p-toast>
     <div class="card">
         <div class="card-header text-white">
             <h2>
@@ -22,7 +22,7 @@
                         <td style="text-align: center;">
                             <button type="button" pButton pRipple 
                             class="p-button-secondary p-button-rounded p-mr-2"
-                            title="ver/editar"
+                            title="ver"
                             icon="pi pi-pencil"
                             [routerLink]="['/consulta', consulta.id, 'editar']"></button>
                             <button pButton pRipple type="button" *ngIf="consulta.estado.estadoNombre === 'CREADA'"
@@ -33,7 +33,7 @@
                         <td><div *ngIf="consulta.estado.estadoNombre === 'CREADA'">
                             <span class="badge badge-secondary">{{consulta.estado.estadoNombre}}</span>
                         </div>
-                        <div *ngIf="consulta.estado.estadoNombre === 'DILIGENCIADA'">
+                        <div *ngIf="consulta.estado.estadoNombre === 'VERIFICADA'">
                             <span class="badge badge-success">{{consulta.estado.estadoNombre}}</span>
                         </div></td>
                         <td>{{consulta.solicitud.grupoInvestigador.investigador.nombre}}</td>
@@ -44,3 +44,4 @@
             </p-table>
         </div>
     </div>
+    <p-confirmDialog [style]="{width: '450px'}"></p-confirmDialog>

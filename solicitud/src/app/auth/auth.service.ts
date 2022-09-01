@@ -1,8 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { Observable } from 'rxjs';
 import { JwtDto } from 'src/app/shared/models/login/jwt-dto';
 import { LoginUsuario } from 'src/app/shared/models/login/login-usuario';
 

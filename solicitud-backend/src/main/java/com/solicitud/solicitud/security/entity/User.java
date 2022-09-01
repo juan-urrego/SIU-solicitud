@@ -3,19 +3,21 @@ package com.solicitud.solicitud.security.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.solicitud.solicitud.entity.Estudio;
 import com.solicitud.solicitud.entity.Solicitud;
-import lombok.Getter;
-import lombok.Setter;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Table(name = "usuario")
+@Table(
+        name = "usuario",
+        uniqueConstraints = {
+                @UniqueConstraint(name = "usr_email_unique", columnNames = "usr_email")
+        }
+)
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,7 +28,7 @@ public class User {
     private String name;
     @Email(message = "it must to be an email")
     @NotBlank
-    @Column(name = "usr_email", nullable = false, unique = true)
+    @Column(name = "usr_email", nullable = false)
     private String email;
     @NotNull
     @Column(name = "usr_cargo")

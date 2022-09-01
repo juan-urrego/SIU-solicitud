@@ -14,6 +14,10 @@ export class SolicitudService {
         return this.http.get<Solicitud[]>(`${this.solicitudUrl}/solicitudes`);
     }
 
+    descargarPdf(id: number) {
+        return this.http.get(`${this.solicitudUrl}/solicitudes/${id}`);
+    }
+
     getSolicitud(id: number): Observable<Solicitud> {
         return this.http.get<Solicitud>(`${this.solicitudUrl}/${id}`);
     }
@@ -31,7 +35,7 @@ export class SolicitudService {
     }
 
     confirmarSolicitud(id: number): Observable<{}> {
-        return this.http.post(`${this.solicitudUrl}/confirmar/${id}`, null);
+        return this.http.put(`${this.solicitudUrl}/confirmar/${id}`, null);
     }
 
     crearDocumentos(idSolicitud: number): Observable<{}> {
@@ -39,6 +43,6 @@ export class SolicitudService {
     }
 
     enviarCorreo(id: number, mail: Mail): Observable<{}> {
-        return this.http.post(`${this.solicitudUrl}/email/${id}`, mail);
+        return this.http.put(`${this.solicitudUrl}/email/${id}`, mail);
     }
 }

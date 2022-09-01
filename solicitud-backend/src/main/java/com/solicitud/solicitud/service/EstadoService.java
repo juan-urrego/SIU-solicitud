@@ -4,8 +4,10 @@ import com.solicitud.solicitud.entity.Estado;
 import com.solicitud.solicitud.enums.EstadoNombre;
 import com.solicitud.solicitud.repository.EstadoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Optional;
@@ -21,8 +23,9 @@ public class EstadoService {
         return estadoRepository.findById(id);
     }
 
-    public Optional<Estado> getByEstadoNombre(EstadoNombre estadoNombre){
-        return estadoRepository.findByEstadoNombre(estadoNombre);
+    public Estado getByEstadoNombre(EstadoNombre estadoNombre){
+        return estadoRepository.findByEstadoNombre(estadoNombre).orElseThrow(() ->
+                new ResponseStatusException(HttpStatus.NOT_FOUND, "status not found"));
     }
 
     public List<Estado> getEstado(){

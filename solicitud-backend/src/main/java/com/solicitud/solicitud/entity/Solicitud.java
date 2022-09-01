@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.solicitud.solicitud.security.entity.User;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 import java.util.Set;
 
 @Entity
@@ -16,34 +15,25 @@ public class Solicitud {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "sol_id")
     private int id;
-    @NotNull
-    @Column(name = "sol_tipo_tramite")
+    @Column(name = "sol_tipo_tramite", nullable = false)
     private String tipoTramite;
-    @NotNull
-    @Column(name = "sol_necesidad")
+    @Column(name = "sol_necesidad", nullable = false)
     private String necesidad;
-    @NotNull
-    @Column(name = "sol_fecha")
+    @Column(name = "sol_fecha", nullable = false)
     private String fecha;
-    @NotNull
-    @Column(name = "sol_valor")
+    @Column(name = "sol_valor", nullable = false)
     private double valor;
-    @NotNull
-    @NotNull
-    @Column(name = "sol_verificacion")
+    @Column(name = "sol_verificacion", nullable = false)
     private String verificacion;
-    @NotNull
-    @Column(name = "sol_observacion")
+    @Column(name = "sol_observacion", nullable = false)
     private String observacion;
 
-    @NotNull
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "sol_grupo_investigador_id")
+    @JoinColumn(name = "sol_grupo_investigador_id", nullable = false)
     private GrupoInvestigador grupoInvestigador;
 
-    @NotNull
     @ManyToOne
-    @JoinColumn(name = "sol_estado_id")
+    @JoinColumn(name = "sol_estado_id", nullable = false)
     private Estado estado;
 
     @OneToOne(mappedBy = "solicitud")
@@ -61,7 +51,7 @@ public class Solicitud {
     private Set<Precotizacion> precotizaciones;
 
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "sol_precotizacion_elegida_id")
+    @JoinColumn(name = "sol_precotizacion_elegida_id", nullable = false)
     private Precotizacion precotizacionElegida;
 
     @OneToMany(mappedBy = "solicitud", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -69,10 +59,18 @@ public class Solicitud {
 
     @ManyToOne
     @JsonIgnoreProperties({"password","roles"})
-    @JoinColumn(name = "sol_usuario_id")
+    @JoinColumn(name = "sol_usuario_id", nullable = false)
     private User user;
 
-    public Solicitud(@NotNull String tipoTramite, @NotNull String necesidad, @NotNull String fecha, @NotNull double valor, @NotNull @NotNull String verificacion, @NotNull String observacion, @NotNull GrupoInvestigador grupoInvestigador, @NotNull Estado estado, @NotNull User user) {
+    public Solicitud(String tipoTramite,
+                     String necesidad,
+                     String fecha,
+                     double valor,
+                     String verificacion,
+                     String observacion,
+                     GrupoInvestigador grupoInvestigador,
+                     Estado estado,
+                     User user) {
         this.tipoTramite = tipoTramite;
         this.necesidad = necesidad;
         this.fecha = fecha;

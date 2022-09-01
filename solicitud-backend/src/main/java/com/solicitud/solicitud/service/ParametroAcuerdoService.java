@@ -1,45 +1,80 @@
 package com.solicitud.solicitud.service;
 
+import com.solicitud.solicitud.dto.ParametroDto;
 import com.solicitud.solicitud.entity.ParametroAcuerdo;
 import com.solicitud.solicitud.repository.ParametroAcuerdoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @Transactional
 public class ParametroAcuerdoService {
 
-    @Autowired
+    final
     ParametroAcuerdoRepository parametroAcuerdoRepository;
 
-    public Optional<ParametroAcuerdo> getOne(int id){
-        return parametroAcuerdoRepository.findById(id);
+    @Autowired
+    public ParametroAcuerdoService(ParametroAcuerdoRepository parametroAcuerdoRepository) {
+        this.parametroAcuerdoRepository = parametroAcuerdoRepository;
     }
 
-    public boolean existsById(final int id){
-        return parametroAcuerdoRepository.existsById(id);
+    public ParametroAcuerdo getParametroAcuerdoById(int id){
+        return parametroAcuerdoRepository.findById(id).orElseThrow(() ->
+                new ResponseStatusException(HttpStatus.NOT_FOUND, "agreement parameter does not exist, or not found"));
     }
 
-    public Optional<ParametroAcuerdo> getByParametro(final byte parametro){
-        return parametroAcuerdoRepository.findByParametro(parametro);
+    public ParametroAcuerdo getParametroActivo(byte parametro){
+        return parametroAcuerdoRepository.findByParametro(parametro).orElse(new ParametroAcuerdo("", (byte) 0));
     }
 
-    public List<ParametroAcuerdo> getAcuerdo(){
-        final List<ParametroAcuerdo> parametroAcuerdos;
-        parametroAcuerdos = parametroAcuerdoRepository.findAll();
-        return parametroAcuerdos;
+    public List<ParametroAcuerdo> getAll(){
+        return parametroAcuerdoRepository.findAll();
     }
 
-    public void save(final ParametroAcuerdo parametroAcuerdo){
+    public void save(ParametroAcuerdo parametroAcuerdo){
         parametroAcuerdoRepository.save(parametroAcuerdo);
     }
 
+    public void saveParametro(ParametroDto parametroDto) {
+        ParametroAcuerdo parametroAcuerdo = new ParametroAcuerdo(parametroDto.getDescripcion(), (byte) 0);
+        if (getAll().isEmpty())
+            parametroAcuerdo.setParametro((byte) 1);
+        save(parametroAcuerdo);
+    }
+
+    public void update(int id, ParametroDto parametroDto) {
+        ParametroAcuerdo parametroAcuerdo = getParametroAcuerdoById(id);
+        parametroAcuerdo.setDescripcion(parametroDto.getDescripcion());
+        save(parametroAcuerdo);
+    }
+
+    public void activeParameter(int id) {
+        ParametroAcuerdo parametroAcuerdo = getParametroAcuerdoById(id);
+        ParametroAcuerdo parametroAcuerdoActivo = getParametroActivo((byte) 1);
+        if (parametroAcuerdoActivo.getParametro() == (byte) 1) {
+            parametroAcuerdoActivo.setParametro((byte) 0);
+            save(parametroAcuerdoActivo);
+        }
+        parametroAcuerdo.setParametro((byte) 1);
+        save(parametroAcuerdo);
+    }
+
+    public void disableParameterActive() {
+        ParametroAcuerdo parametroAcuerdoActivo = getParametroActivo((byte) 1);
+        if  (parametroAcuerdoActivo.getParametro() == (byte) 0)
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "there is not an active parameter");
+        parametroAcuerdoActivo.setParametro((byte) 0);
+        save(parametroAcuerdoActivo);
+    }
+
     public void delete(int id){
-        parametroAcuerdoRepository.deleteById(id);
+        ParametroAcuerdo parametroAcuerdo = getParametroAcuerdoById(id);
+        parametroAcuerdoRepository.delete(parametroAcuerdo);
     }
 
 

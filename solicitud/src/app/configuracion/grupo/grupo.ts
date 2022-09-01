@@ -4,6 +4,6 @@ export interface Grupo {
     id ?: number,
     codigoGrupo: string,
     nombre: string,
-    codColciencia : string,
+    codigoColciencia : string,
     proyectos ?: Proyecto[]
 }

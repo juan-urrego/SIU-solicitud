@@ -3,7 +3,6 @@ package com.solicitud.solicitud.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 import java.util.Set;
 
 
@@ -16,12 +15,10 @@ public class Precotizacion {
     @Column(name = "pre_id")
     private int id;
 
-    @NotNull
-    @Column(name = "pre_valor_total")
+    @Column(name = "pre_valor_total", nullable = false)
     private int valorTotal;
-    @NotNull
-    @Column(name = "pre_valor_iva")
-    private int valorIva;
+    @Column(name = "pre_valor_iva", nullable = false)
+    private double valorIva;
 
     @ManyToOne
     @JoinColumn(name = "pre_pro_id")
@@ -37,9 +34,9 @@ public class Precotizacion {
     private Solicitud solicitudElegida;
 
     @OneToMany(mappedBy = "precotizacion", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<Argumento> argumentos;
+    private Set<Argumento> arguments;
 
-    public Precotizacion(@NotNull int valorTotal, @NotNull int valorIva, @NotNull Proveedor proveedor) {
+    public Precotizacion(int valorTotal, int valorIva,  Proveedor proveedor) {
         this.valorTotal = valorTotal;
         this.valorIva = valorIva;
         this.proveedor = proveedor;
@@ -64,11 +61,11 @@ public class Precotizacion {
         this.valorTotal = valorTotal;
     }
 
-    public int getValorIva() {
+    public double getValorIva() {
         return valorIva;
     }
 
-    public void setValorIva(int valorIva) {
+    public void setValorIva(double valorIva) {
         this.valorIva = valorIva;
     }
 
@@ -97,10 +94,10 @@ public class Precotizacion {
     }
 
     public Set<Argumento> getArgumentos() {
-        return argumentos;
+        return arguments;
     }
 
-    public void setArgumentos(Set<Argumento> argumentos) {
-        this.argumentos = argumentos;
+    public void setArgumentos(Set<Argumento> arguments) {
+        this.arguments = arguments;
     }
 }

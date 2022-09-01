@@ -25,7 +25,6 @@ public class NewUserDto {
         this.name = name;
     }
 
-
     public String getEmail() {
         return this.email;
     }

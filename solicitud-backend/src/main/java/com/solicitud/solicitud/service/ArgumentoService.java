@@ -1,43 +1,38 @@
 package com.solicitud.solicitud.service;
 
 import com.solicitud.solicitud.entity.Argumento;
-import com.solicitud.solicitud.entity.Consulta;
 import com.solicitud.solicitud.repository.ArgumentoRepository;
-import com.solicitud.solicitud.repository.ConsultaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
-import java.util.Optional;
-import java.util.Set;
 
 @Service
 @Transactional
 public class ArgumentoService {
 
-    @Autowired
+    final
     ArgumentoRepository argumentoRepository;
 
-    public Optional<Argumento> getOne(int id){
-        return argumentoRepository.findById(id);
+    @Autowired
+    public ArgumentoService(ArgumentoRepository argumentoRepository) {
+        this.argumentoRepository = argumentoRepository;
     }
 
-    public boolean existsById(final int id){
-        return argumentoRepository.existsById(id);
+    public Argumento getArgumentoById(int id){
+        return argumentoRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "group does not exist with this id or not found"));
     }
 
-    public List<Argumento> getArgumento(){
-        final List<Argumento> argumentos;
-        argumentos = argumentoRepository.findAll();
-        return argumentos;
+    public List<Argumento> getAll(){
+        return argumentoRepository.findAll();
+
     }
 
-    public void saveAll(final Set<Argumento> argumentos) {
-        argumentoRepository.saveAll(argumentos);
-    }
-
-    public void save(final Argumento argumento){
+    public void save(Argumento argumento){
         argumentoRepository.save(argumento);
     }
 

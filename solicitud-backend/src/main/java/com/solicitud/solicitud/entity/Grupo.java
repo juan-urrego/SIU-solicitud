@@ -6,26 +6,27 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import java.util.List;
 import java.util.Set;
 
 @Entity
-@Table(name = "grupos")
+@Table(
+        name = "grupos",
+        uniqueConstraints = {
+                @UniqueConstraint(name = "gr_codigo_unique", columnNames = "gr_codigo")
+        }
+)
 public class Grupo {
 
     @Id
     @Column(name = "gr_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    @NotNull
-    @Column(name = "gr_codigo")
+    @Column(name = "gr_codigo", nullable = false)
     private String codigoGrupo;
-    @NotNull
-    @Column(name = "gr_nombre")
+    @Column(name = "gr_nombre", nullable = false)
     private String nombre;
-    @NotNull
-    @Column(name = "gr_cod_colciencia")
-    private String codColciencia;
+    @Column(name = "gr_cod_colciencia", nullable = false)
+    private String codigoColciencia;
 
     @JsonIgnoreProperties("grupo")
     @OneToMany(mappedBy = "grupo")
@@ -36,10 +37,10 @@ public class Grupo {
     Set<GrupoInvestigador> grupoInvestigadores;
 
 
-    public Grupo(@NotNull String codigoGrupo, @NotNull String nombre, @NotNull String codColciencia) {
+    public Grupo(@NotNull String codigoGrupo, @NotNull String nombre, @NotNull String codigoColciencia) {
         this.codigoGrupo = codigoGrupo;
         this.nombre = nombre;
-        this.codColciencia = codColciencia;
+        this.codigoColciencia = codigoColciencia;
     }
 
     public Grupo() {
@@ -69,20 +70,12 @@ public class Grupo {
         this.nombre = nombre;
     }
 
-    public String getCodColciencia() {
-        return codColciencia;
+    public String getCodigoColciencia() {
+        return codigoColciencia;
     }
 
-    public void setCodColciencia(String codColciencia) {
-        this.codColciencia = codColciencia;
-    }
-
-    public Set<GrupoInvestigador> getGrupoInvestigadores() {
-        return grupoInvestigadores;
-    }
-
-    public void setGrupoInvestigadores(Set<GrupoInvestigador> grupoInvestigadores) {
-        this.grupoInvestigadores = grupoInvestigadores;
+    public void setCodigoColciencia(String codigoColciencia) {
+        this.codigoColciencia = codigoColciencia;
     }
 
     public Set<Proyecto> getProyectos() {
@@ -93,10 +86,11 @@ public class Grupo {
         this.proyectos = proyectos;
     }
 
-    public Proyecto getProyectoById(int idP) {
-        return this.proyectos.stream()
-                .filter(proyecto -> idP == proyecto.getId())
-                .findAny()
-                .orElse(null);
+    public Set<GrupoInvestigador> getGrupoInvestigadores() {
+        return grupoInvestigadores;
+    }
+
+    public void setGrupoInvestigadores(Set<GrupoInvestigador> grupoInvestigadores) {
+        this.grupoInvestigadores = grupoInvestigadores;
     }
 }

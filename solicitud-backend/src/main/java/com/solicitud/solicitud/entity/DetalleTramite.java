@@ -15,13 +15,9 @@ public class DetalleTramite {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "det_id")
     private int id;
-
-    @NotNull
-    @Column(name = "det_descripcion")
+    @Column(name = "det_descripcion", nullable = false)
     private String descripcion;
-
-    @NotNull
-    @Column(name = "det_cantidad")
+    @Column(name = "det_cantidad", nullable = false)
     private int cantidad;
 
     @ManyToOne
@@ -45,7 +41,7 @@ public class DetalleTramite {
     public DetalleTramite() {
     }
 
-    public DetalleTramite(@NotNull String descripcion, @NotNull int cantidad, LineaGeneral lineaGeneral, Solicitud solicitud, LineaEspecifica lineaEspecifica) {
+    public DetalleTramite(String descripcion, int cantidad, LineaGeneral lineaGeneral, Solicitud solicitud, LineaEspecifica lineaEspecifica) {
         this.descripcion = descripcion;
         this.cantidad = cantidad;
         this.lineaGeneral = lineaGeneral;

@@ -65,16 +65,12 @@ export class UserResolver implements Resolve<UserResolved> {
             }
             
         });
-
+        this.userForm.get('roles').disable();
         return this.userForm;
     }
 
     addTag(): void {
         this.roles.push(new FormControl());
       }
-    
-      deleteTag(index: number): void {
-        this.roles.removeAt(index);
-        this.roles.markAsDirty();
-      }
+
 }

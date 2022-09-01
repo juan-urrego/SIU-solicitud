@@ -18,6 +18,9 @@ export class EstudioService {
         return this.http.get<Estudio>(`${this.estudioUrl}/${id}`);
     }
 
+    descargarPdf(id: number) {
+        return this.http.get(`${this.estudioUrl}/estudios/${id}`);
+    }
 
     updateEstudio(estudio: Estudio): Observable<Estudio> {
         return this.http.put<Estudio>(`${this.estudioUrl}/update/${estudio.id}`, estudio);

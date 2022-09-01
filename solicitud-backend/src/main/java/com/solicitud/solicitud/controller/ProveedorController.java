@@ -7,7 +7,6 @@ import com.solicitud.solicitud.service.ProveedorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,51 +17,41 @@ import java.util.List;
 public class ProveedorController {
 
 
-    @Autowired
+    final
     ProveedorService proveedorService;
+
+    @Autowired
+    public ProveedorController(ProveedorService proveedorService) {
+        this.proveedorService = proveedorService;
+    }
 
     @GetMapping("/proveedores")
     public ResponseEntity<List<Proveedor>> list(){
-        List<Proveedor> list = proveedorService.getProveedor();
-        return new ResponseEntity<List<Proveedor>>(list, HttpStatus.OK);
+        List<Proveedor> list = proveedorService.getAll();
+        return new ResponseEntity<>(list, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> getById(@PathVariable("id") int id){
-        if(!proveedorService.existsById(id))
-            return new ResponseEntity<Message>(new Message("No existe un proveedor con esa id"), HttpStatus.NOT_FOUND);
-        Proveedor proveedor = proveedorService.getOne(id).get();
-        return new ResponseEntity<Proveedor>(proveedor, HttpStatus.OK);
+    public ResponseEntity<Proveedor> getById(@PathVariable(value = "id") int id){
+        Proveedor proveedor = proveedorService.getProveedorById(id);
+        return new ResponseEntity<>(proveedor, HttpStatus.OK);
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<Message> delete (@PathVariable("id") int id){
-        if(!proveedorService.existsById(id))
-            return new ResponseEntity<Message>(new Message("No existe un proveedor con esa id"), HttpStatus.NOT_FOUND);
+    public ResponseEntity<Message> delete (@PathVariable(value = "id") int id){
         proveedorService.delete(id);
-        return new ResponseEntity<Message>(new Message("Proveedor eliminado"), HttpStatus.OK);
+        return new ResponseEntity<>(new Message("provider deleted"), HttpStatus.OK);
     }
 
     @PostMapping("/save")
-    public ResponseEntity<?> save(@RequestBody ProveedorDto proveedorDto, BindingResult bindingResult){
-        if(bindingResult.hasErrors())
-            return new ResponseEntity<Message>(new Message("Campos mal puestos"), HttpStatus.BAD_REQUEST);
-        Proveedor proveedor = new Proveedor(proveedorDto.getNombre(), proveedorDto.getIdentificacion(), proveedorDto.getTelefono(), proveedorDto.getCiudad(), proveedorDto.getTipo());
-        proveedorService.save(proveedor);
-        return new ResponseEntity<Message>(new Message("Proveedor guardado"), HttpStatus.OK);
+    public ResponseEntity<Message> save(@RequestBody ProveedorDto proveedorDto){
+        proveedorService.saveProveedor(proveedorDto);
+        return new ResponseEntity<>(new Message("provider created"), HttpStatus.OK);
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<Message> update(@PathVariable("id") int id, @RequestBody ProveedorDto proveedorDto){
-        if (!proveedorService.existsById(id))
-            return new ResponseEntity<Message>(new Message("No existe un proveedor con esa id"), HttpStatus.NOT_FOUND);
-        Proveedor proveedor = proveedorService.getOne(id).get();
-        proveedor.setNombre(proveedorDto.getNombre());
-        proveedor.setIdentificacion(proveedorDto.getIdentificacion());
-        proveedor.setTelefono(proveedorDto.getTelefono());
-        proveedor.setCiudad(proveedorDto.getCiudad());
-        proveedor.setTipo(proveedorDto.getTipo());
-        proveedorService.save(proveedor);
-        return new ResponseEntity<Message>(new Message("Proveedor actualizado"), HttpStatus.OK);
+    public ResponseEntity<Message> update(@PathVariable(value = "id") int id, @RequestBody ProveedorDto proveedorDto){
+        proveedorService.update(id, proveedorDto);
+        return new ResponseEntity<>(new Message("provider updated"), HttpStatus.OK);
     }
 }

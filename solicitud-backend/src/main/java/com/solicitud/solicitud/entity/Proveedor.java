@@ -2,15 +2,8 @@ package com.solicitud.solicitud.entity;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
-import java.util.List;
 import java.util.Set;
 
 
@@ -22,20 +15,15 @@ public class Proveedor {
     @Column(name = "pro_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    @NotNull
-    @Column(name = "pro_nombre")
+    @Column(name = "pro_nombre", nullable = false)
     private String nombre;
-    @NotNull
-    @Column(name = "pro_identificacion")
+    @Column(name = "pro_identificacion", nullable = false)
     private String identificacion;
-    @NotNull
-    @Column(name = "pro_telefono")
+    @Column(name = "pro_telefono", nullable = false)
     private String telefono;
-    @NotNull
-    @Column(name = "pro_ciudad")
+    @Column(name = "pro_ciudad", nullable = false)
     private String ciudad;
-    @NotNull
-    @Column(name = "pro_tipo")
+    @Column(name = "pro_tipo", nullable = false)
     private String tipo;
 
     @OneToMany(mappedBy = "proveedor")
@@ -46,7 +34,7 @@ public class Proveedor {
     @OneToMany(mappedBy = "proveedor")
     Set<ProveedorDetalle> proveedorDetalles;
 
-    public Proveedor(@NotNull String nombre, @NotNull String identificacion, @NotNull String telefono, @NotNull String ciudad, @NotNull String tipo) {
+    public Proveedor(String nombre, String identificacion, String telefono, String ciudad, String tipo) {
         this.nombre = nombre;
         this.identificacion = identificacion;
         this.telefono = telefono;

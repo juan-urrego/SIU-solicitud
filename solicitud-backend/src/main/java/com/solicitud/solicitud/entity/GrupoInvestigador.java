@@ -3,8 +3,6 @@ package com.solicitud.solicitud.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
-import java.util.Set;
 
 @Entity
 @Table(name = "grupo_investigadores")
@@ -14,36 +12,30 @@ public class GrupoInvestigador {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "gi_id")
     private int id;
-    @Column(name = "gi_cargo")
-    @NotNull
+    @Column(name = "gi_cargo", nullable = false)
     private String cargo;
-    @NotNull
-    @Column(name = "gi_nombre_contacto")
+    @Column(name = "gi_nombre_contacto", nullable = false)
     private String nombreContacto;
-    @NotNull
-    @Column(name = "gi_telefono_contacto")
+    @Column(name = "gi_telefono_contacto", nullable = false)
     private String telefonoContacto;
 
     @ManyToOne
-    @NotNull
-    @JoinColumn(name = "gi_proyecto_id")
+    @JoinColumn(name = "gi_proyecto_id", nullable = false)
     private Proyecto proyecto;
 
-    @NotNull
     @ManyToOne
     @JoinColumn(name = "gi_grupo_id")
     private Grupo grupo;
 
-    @NotNull
     @ManyToOne
-    @JoinColumn(name = "gi_investigador_id")
+    @JoinColumn(name = "gi_investigador_id", nullable = false)
     private Investigador investigador;
 
     @JsonIgnore
     @OneToOne(mappedBy = "grupoInvestigador")
     private Solicitud solicitud;
 
-    public GrupoInvestigador(@NotNull String cargo, @NotNull String nombreContacto, @NotNull String telefonoContacto, @NotNull Grupo grupo, @NotNull Investigador investigador, Proyecto proyecto) {
+    public GrupoInvestigador(String cargo, String nombreContacto, String telefonoContacto, Grupo grupo, Investigador investigador, Proyecto proyecto) {
         this.cargo = cargo;
         this.nombreContacto = nombreContacto;
         this.telefonoContacto = telefonoContacto;

@@ -8,7 +8,6 @@ import com.solicitud.solicitud.service.ParametroArgumentoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,48 +17,42 @@ import java.util.List;
 @CrossOrigin
 public class ParametroArgumentoController {
 
-    @Autowired
+    final
     ParametroArgumentoService parametroArgumentoService;
+
+    @Autowired
+    public ParametroArgumentoController(ParametroArgumentoService parametroArgumentoService) {
+        this.parametroArgumentoService = parametroArgumentoService;
+    }
 
     @GetMapping("/argumentos")
     public ResponseEntity<List<ParametroArgumento>> list(){
-        List<ParametroArgumento> list = parametroArgumentoService.getArgumento();
-        return new ResponseEntity<List<ParametroArgumento>>(list, HttpStatus.OK);
+        List<ParametroArgumento> list = parametroArgumentoService.getAll();
+        return new ResponseEntity<>(list, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> getById(@PathVariable("id") int id){
-        if(!parametroArgumentoService.existsById(id))
-            return new ResponseEntity<Message>(new Message("No existe un parametro-argumento con esa id"), HttpStatus.NOT_FOUND);
-        ParametroArgumento parametroArgumento = parametroArgumentoService.getOne(id).get();
-        return new ResponseEntity<ParametroArgumento>(parametroArgumento, HttpStatus.OK);
+    public ResponseEntity<ParametroArgumento> getById(@PathVariable(value = "id") int id){
+        ParametroArgumento parametroArgumento = parametroArgumentoService.getParametroArgumentoById(id);
+        return new ResponseEntity<>(parametroArgumento, HttpStatus.OK);
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<Message> delete (@PathVariable("id") int id){
-        if(!parametroArgumentoService.existsById(id))
-            return new ResponseEntity<Message>(new Message("No existe un parametro-argumento con esa id"), HttpStatus.NOT_FOUND);
+    public ResponseEntity<Message> delete (@PathVariable(value = "id") int id){
         parametroArgumentoService.delete(id);
-        return new ResponseEntity<Message>(new Message("parametro-argumento eliminado"), HttpStatus.OK);
+        return new ResponseEntity<>(new Message("argument parameter deleted"), HttpStatus.OK);
     }
 
     @PostMapping("/save")
-    public ResponseEntity<?> save(@RequestBody ParametroDto parametroDto, BindingResult bindingResult){
-        if(bindingResult.hasErrors())
-            return new ResponseEntity<Message>(new Message("Campos mal puestos"), HttpStatus.BAD_REQUEST);
-        ParametroArgumento parametroArgumento = new ParametroArgumento(parametroDto.getDescripcion());
-        parametroArgumentoService.save(parametroArgumento);
-        return new ResponseEntity<Message>(new Message("Parametro-argumento guardado"), HttpStatus.OK);
+    public ResponseEntity<Message> save(@RequestBody ParametroDto parametroDto){
+        parametroArgumentoService.saveParametroArgumento(parametroDto);
+        return new ResponseEntity<>(new Message("argument parameter created"), HttpStatus.OK);
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<Message> update(@PathVariable("id") int id, @RequestBody ParametroDto parametroDto){
-        if (!parametroArgumentoService.existsById(id))
-            return new ResponseEntity<Message>(new Message("No existe un parametro-argumento con esa id"), HttpStatus.NOT_FOUND);
-        ParametroArgumento parametroArgumento = parametroArgumentoService.getOne(id).get();
-        parametroArgumento.setDescripcion(parametroDto.getDescripcion());
-        parametroArgumentoService.save(parametroArgumento);
-        return new ResponseEntity<Message>(new Message("Parametro-argumento actualizado"), HttpStatus.OK);
+    public ResponseEntity<Message> update(@PathVariable(value = "id") int id, @RequestBody ParametroDto parametroDto){
+        parametroArgumentoService.update(id, parametroDto);
+        return new ResponseEntity<>(new Message("argument parameter updated"), HttpStatus.OK);
     }
 
 }

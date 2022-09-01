@@ -35,8 +35,16 @@
                         icon="pi pi-align-center" class="p-button-rounded p-button-help"
                         title="crear documentos"
                         (click)="createDocuments(solicitud.id)"></button>
+                        <button pButton pRipple type="button" *ngIf="solicitud.estado.estadoNombre === 'DOCUMENTADA'"
+                        icon="pi pi-align-center" class="p-button-rounded p-button-help"
+                        title="ver estudio de trámite"
+                        [routerLink]="['/estudio', solicitud.id, 'editar']"></button>
+                        <button pButton pRipple type="button" *ngIf="solicitud.estado.estadoNombre === 'DOCUMENTADA'"
+                        icon="pi pi-align-center" class="p-button-rounded p-button-help"
+                        title="ver consulta de trámite"
+                        [routerLink]="['/consulta', solicitud.id, 'editar']"></button>
                     </td>
-                    <td><div *ngIf="solicitud.estado.estadoNombre === 'CREADA'">
+                    <td><div *ngIf="solicitud.estado.estadoNombre === 'CREADA' || solicitud.estado.estadoNombre === 'POR_VERIFICAR'">
                         <span class="badge badge-secondary">{{solicitud.estado.estadoNombre}}</span>
                     </div>
                     <div *ngIf="solicitud.estado.estadoNombre === 'VERIFICADA'">
@@ -45,7 +53,6 @@
                     <div *ngIf="solicitud.estado.estadoNombre === 'DOCUMENTADA'">
                         <span class="badge badge-primary">{{solicitud.estado.estadoNombre}}</span>
                     </div>
-                    {{solicitud.estado.estadoNombre}}
                 </td>
                     <td>{{solicitud.grupoInvestigador.proyecto.nombre}}</td>
                     <td>{{solicitud.grupoInvestigador.investigador.nombre}}</td>

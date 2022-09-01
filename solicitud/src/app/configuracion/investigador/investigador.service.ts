@@ -21,22 +21,16 @@ export class InvestigadorService {
         return this.http.get(`${this.investigadorUrl}/image/${id}`, {responseType: 'blob'});
     }
 
-    createInvestigador(investigador: string, file: File): Observable<Investigador> {
-        var data = new FormData();
-        data.append('imageFile', file);
-        data.append('investigador', investigador);
-        return this.http.post<Investigador>(`${this.investigadorUrl}/save`, data);
+    createInvestigador(investigador: Investigador): Observable<Investigador> {
+        return this.http.post<Investigador>(`${this.investigadorUrl}/save`, investigador);
     }
 
     deleteInvestigador(id: number): Observable<{}> {
         return this.http.delete<Investigador>(`${this.investigadorUrl}/delete/${id}`);
     }
 
-    updateInvestigador(investigador: string, file: File, id: number): Observable<Investigador> {
-        var data = new FormData();
-        data.append('imageFile', file);
-        data.append('investigador', investigador);
-        return this.http.put<Investigador>(`${this.investigadorUrl}/update/${id}`, data);
+    updateInvestigador(investigador: Investigador, id: number): Observable<Investigador> {
+        return this.http.put<Investigador>(`${this.investigadorUrl}/update/${id}`, investigador);
     }
 
 }

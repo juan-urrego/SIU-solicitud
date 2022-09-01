@@ -25,17 +25,19 @@
                         title="ver/editar"
                         icon="pi pi-pencil"
                         [routerLink]="['/estudio', estudio.id, 'editar']"></button>
-                        <button pButton pRipple type="button" *ngIf="estudio.estado.estadoNombre === 'FIRMADO'"
-                        icon="pi pi-check-square" class="p-button-rounded p-mr-2" 
-                        title="verificar documentos"
-                        (click)="verifyDocument(estudio.id)"></button>
                     </td>
                     <td><div *ngIf="estudio.estado.estadoNombre === 'CREADA'">
                         <span class="badge badge-secondary">{{estudio.estado.estadoNombre}}</span>
                     </div>
-                    <div *ngIf="estudio.estado.estadoNombre === 'FIRMADA'">
+                    <div *ngIf="estudio.estado.estadoNombre === 'ADMIN_FIRMADO'">
+                        <span class="badge badge-secondary">{{estudio.estado.estadoNombre}}</span>
+                    </div>
+                    <div *ngIf="estudio.estado.estadoNombre === 'DIRECTOR_FIRMADO'">
+                        <span class="badge badge-secondary">{{estudio.estado.estadoNombre}}</span>
+                    </div>
+                    <div *ngIf="estudio.estado.estadoNombre === 'FIRMADO'">
                         <span class="badge badge-success">{{estudio.estado.estadoNombre}}</span>
-                    </div>{{estudio.estado.estadoNombre}}
+                    </div>
                 </td>
                     <td>{{estudio.solicitud.grupoInvestigador.investigador.nombre}}</td>
                     <td>{{estudio.solicitud.grupoInvestigador.proyecto.nombre}}</td>                                               

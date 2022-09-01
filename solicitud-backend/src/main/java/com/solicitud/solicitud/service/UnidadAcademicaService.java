@@ -1,41 +1,54 @@
 package com.solicitud.solicitud.service;
 
+import com.solicitud.solicitud.dto.ParametroDto;
 import com.solicitud.solicitud.entity.UnidadAcademica;
 import com.solicitud.solicitud.repository.UnidadAcademicaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @Transactional
 public class UnidadAcademicaService {
 
-    @Autowired
+    final
     UnidadAcademicaRepository unidadAcademicaRepository;
 
-    public Optional<UnidadAcademica> getOne(int id){
-        return unidadAcademicaRepository.findById(id);
+    @Autowired
+    public UnidadAcademicaService(UnidadAcademicaRepository unidadAcademicaRepository) {
+        this.unidadAcademicaRepository = unidadAcademicaRepository;
     }
 
-    public boolean existsById(final int id){
-        return unidadAcademicaRepository.existsById(id);
+    public UnidadAcademica getUnidadAcademicaById(int id){
+        return unidadAcademicaRepository.findById(id).orElseThrow(() ->
+                new ResponseStatusException(HttpStatus.NOT_FOUND, "unit does not exist with this id, or not found"));
     }
 
-    public List<UnidadAcademica> getUnidadAcademica(){
-        final List<UnidadAcademica> unidadAcademicas;
-        unidadAcademicas = unidadAcademicaRepository.findAll();
-        return unidadAcademicas;
+    public List<UnidadAcademica> getAll(){
+        return unidadAcademicaRepository.findAll();
     }
 
-    public void save(final UnidadAcademica unidadAcademica){
+    public void save(UnidadAcademica unidadAcademica){
         unidadAcademicaRepository.save(unidadAcademica);
     }
 
-    public void delete(int id){
-        unidadAcademicaRepository.deleteById(id);
+    public void saveUnidadAcademica(ParametroDto parametroDto) {
+        UnidadAcademica unidadAcademica = new UnidadAcademica(parametroDto.getDescripcion());
+        save(unidadAcademica);
     }
 
+    public  void update(int id, ParametroDto parametroDto) {
+        UnidadAcademica unidadAcademica = getUnidadAcademicaById(id);
+        unidadAcademica.setDescripcion(parametroDto.getDescripcion());
+        save(unidadAcademica);
+    }
+
+    public void delete(int id){
+        UnidadAcademica unidadAcademica = getUnidadAcademicaById(id);
+        unidadAcademicaRepository.delete(unidadAcademica);
+    }
 }

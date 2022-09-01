@@ -40,14 +40,14 @@ export class GrupoComponent implements OnInit {
             id: 0,
             codigoGrupo: ['', Validators.required],
             nombre: ['', Validators.required],
-            codColciencia: ['', Validators.required]
+            codigoColciencia: ['', Validators.required]
         });
         if(grupo) {
             this.grupoForm.patchValue({
                 id: grupo.id,
                 codigoGrupo: grupo.codigoGrupo,
                 nombre: grupo.nombre,
-                codColciencia: grupo.codColciencia
+                codigoColciencia: grupo.codigoColciencia
             });
             this.grupoSelected = grupo;
         }

@@ -2,42 +2,38 @@ package com.solicitud.solicitud.entity;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import java.util.List;
 import java.util.Set;
 
 @Entity
-@Table(name = "investigadores")
+@Table(
+        name = "investigadores",
+        uniqueConstraints = {
+                @UniqueConstraint(name = "inv_identificacion_unique", columnNames = "inv_identificacion"),
+                @UniqueConstraint(name = "inv_email_unique", columnNames = "inv_email")
+        })
 public class Investigador {
 
     @Id
     @Column(name = "inv_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    @NotNull
-    @Column(name = "inv_identificacion", unique = true)
+    @Column(name = "inv_identificacion", nullable = false)
     private String identificacion;
-    @NotNull
-    @Column(name = "inv_nombre")
+    @Column(name = "inv_nombre", nullable = false)
     private String nombre;
-    @NotNull
-    @Column(name = "inv_telefono")
+    @Column(name = "inv_telefono", nullable = false)
     private String telefono;
-    @NotNull
-    @Column(name = "inv_email")
+    @Column(name = "inv_email", nullable = false)
     private String email;
-
 
     @OneToMany(mappedBy = "investigador")
     @JsonIgnore
     private Set<GrupoInvestigador> grupoInvestigadores;
 
-    public Investigador(@NotNull String identificacion, @NotNull String nombre, @NotNull String telefono, @NotNull String email, @NotNull String firma) {
+    public Investigador(String identificacion, String nombre, String telefono, String email) {
         this.identificacion = identificacion;
         this.nombre = nombre;
         this.telefono = telefono;

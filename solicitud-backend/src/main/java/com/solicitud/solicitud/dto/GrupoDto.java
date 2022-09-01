@@ -9,7 +9,7 @@ public class GrupoDto {
     @NotBlank
     private String nombre;
     @NotBlank
-    private String codColciencia;
+    private String codigoColciencia;
 
     public String getCodigoGrupo() {
         return codigoGrupo;
@@ -27,11 +27,11 @@ public class GrupoDto {
         this.nombre = nombre;
     }
 
-    public String getCodColciencia() {
-        return codColciencia;
+    public String getCodigoColciencia() {
+        return codigoColciencia;
     }
 
-    public void setCodColciencia(String codColciencia) {
-        this.codColciencia = codColciencia;
+    public void setCodigoColciencia(String codigoColciencia) {
+        this.codigoColciencia = codigoColciencia;
     }
 }

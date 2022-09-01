@@ -36,14 +36,16 @@ export class InvestigadorComponent implements OnInit {
     }
 
     openNew(investigador ?: Investigador) {
-        this.investigadorForm = this.fb.group({            
+        this.investigadorForm = this.fb.group({      
+            id: 0,      
             identificacion: ['', Validators.required],
             nombre: ['', Validators.required],
             telefono: ['', Validators.required],
             email: ['', Validators.required]
         });
         if(investigador) {
-            this.investigadorForm.patchValue({                
+            this.investigadorForm.patchValue({           
+                id: investigador.id,
                 identificacion: investigador.identificacion,
                 nombre: investigador.nombre,
                 telefono: investigador.telefono,
@@ -67,9 +69,9 @@ export class InvestigadorComponent implements OnInit {
     saveInvestigador(){
         if(this.investigadorForm.valid){
             if(this.investigadorForm.dirty){                
-                
-                if(this.investigadorSelected) {
-                    this.investigadorService.createInvestigador(JSON.stringify(this.investigadorForm.value),null).subscribe({
+                const p = {...this.investigadorSelected, ...this.investigadorForm.value}
+                if(this.investigadorForm.get('id').value === 0) {
+                    this.investigadorService.createInvestigador(p).subscribe({
                         next: () => {
                             this.refresh();
                             this.hideDialog();
@@ -82,8 +84,6 @@ export class InvestigadorComponent implements OnInit {
                         },
                         error: error => {
                             this.mensajeError= error.message;
-                            console.log(typeof(JSON.stringify(this.investigadorForm.value)));
-                            
                             this.messageService.add({
                                 severity:'error',
                                 summary: 'Error',
@@ -93,7 +93,7 @@ export class InvestigadorComponent implements OnInit {
                         }
                     });
                 }else{
-                    this.investigadorService.updateInvestigador(this.investigadorForm.value,null, this.investigadorForm.get('id').value).subscribe({
+                    this.investigadorService.updateInvestigador(p, this.investigadorForm.get('id').value).subscribe({
                         next: () => {
                             this.refresh();
                             this.hideDialog();

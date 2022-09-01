@@ -31,6 +31,7 @@ export class SolicitudEditarProyectoComponent implements OnInit {
     }
 
     displayProyecto(proyectoSelected: Proyecto) {
+        
         this.solicitudForm.get('_codigo_proyecto').setValue(proyectoSelected.codigoProyecto);
         this.solicitudForm.get('_centro_costos_proyecto').setValue(proyectoSelected.centroCostos);        
     }

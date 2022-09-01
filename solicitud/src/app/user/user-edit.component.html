@@ -1,3 +1,4 @@
+<p-toast></p-toast>
 <form novalidate [formGroup]="usuarioForm">
     <div class="card mb-5 mx-5 shadow-lg">
         <div class="card-header text-white">
@@ -15,7 +16,7 @@
                                         !usuarioForm.get('name').valid}">
                     <span class="invalid-feedback">
                         <span *ngIf="usuarioForm.get('name').errors?.required">
-                            Por favor seleccione un tipo de trámite.
+                            Por favor ingrese un nombre.
                         </span>
                     </span>
 
@@ -32,7 +33,7 @@
                                                                 !usuarioForm.get('position').valid}">
                     <span class="invalid-feedback">
                         <span *ngIf="usuarioForm.get('position').errors?.required">
-                            Por favor ingrese un nombre de contacto.
+                            Por favor ingrese el cargo del usuario.
                         </span>
                     </span>
                 </div>
@@ -47,7 +48,7 @@
                                                 !usuarioForm.get('email').valid}">
                     <span class="invalid-feedback">
                         <span *ngIf="usuarioForm.get('email').errors?.required">
-                            Por favor ingrese un nombre de contacto.
+                            Por favor ingrese email.
                         </span>
                     </span>
 
@@ -56,30 +57,18 @@
 
                     <label for="passwordUsuario"><strong>Password:<strong
                                 class="text-danger">*</strong></strong></label>
-                    <input id="passwordUsuario" pInputText type="text" formControlName="password" class="form-control"
+                    <p-password inputId="passwordUsuario" formControlName="password"
                         [ngClass]="{'is-invalid ng-dirty': 
                                                         (usuarioForm.get('password').touched ||
                                                         usuarioForm.get('password').dirty) && 
                                                         !usuarioForm.get('password').valid}">
-                    <span class="invalid-feedback">
-                        <span *ngIf="usuarioForm.get('password').errors?.required">
-                            Por favor ingrese un nombre de contacto.
-                        </span>
-                    </span>
-
+                                                        </p-password>
                 </div>
 
 
                 <div class="p-field p-col-12">
-                    <div class="p-d-flex p-jc-between">
-                        <div>
-                            <label for="nombre" class="col-form-label"><b>Roles</b></label>
-                        </div>
-                        <div>
-                            <button class="btn-outline-success btn" type="button" (click)="addTag()">
-                                Agregar
-                            </button>
-                        </div>
+                    <div>
+                        <label for="nombre" class="col-form-label"><b>Roles</b></label>
                     </div>
                 </div>
                 <div class="p-field p-col-12">
@@ -88,26 +77,14 @@
                     <div formArrayName="roles" *ngFor="let especifica of roles.controls; let i=index">
                         <div class="mb-3">
                             <div class="p-grid p-jc-center form-group row">
-
                                 <div class="p-col-4">
                                     <div class="box">
                                         <p-dropdown [options]="rolOptions" [formControlName]="i"
                                             placeholder="Seleccione tipo" inputId="tipo">
                                         </p-dropdown>
-
-                                    </div>
-                                </div>
-                                <div class="p-col-2">
-                                    <div class="box">
-
-                                        <button class="btn btn-outline-warning form-control" type="button"
-                                            title="Delete this search linea" (click)="deleteTag(i)">delete
-                                        </button>
                                     </div>
                                 </div>
                             </div>
-
-
                         </div>
                     </div>
                 </div>
@@ -122,7 +99,7 @@
                         <button class="btn btn-outline-primary btn-sm" (click)="toggleImage()">
                             {{loadImage ? "Ocultar" : "Mostrar"}} Firma
                         </button>
-                        <div *ngIf="loadImage">
+                        <div *ngIf="loadImage" class="p-col-6 p-offset-3">
                             <img [src]="url" [style.height.px]="250" [style.margin.px]="2" alt="firma"
                                 *ngIf="loadImage && url">
                         </div>
@@ -130,7 +107,7 @@
                 </div>
             </div>
 
-
+            <div class="alert alert-danger mt-3" *ngIf="submitted">{{mensajeError}}</div>
 
         </div>
     </div>
@@ -155,10 +132,4 @@
         </button>
     </div>
 </div>
-
 <p-confirmDialog [style]="{width: '450px'}"></p-confirmDialog>
-
-<pre>
-
-    {{usuarioForm.value | json}}
-</pre>

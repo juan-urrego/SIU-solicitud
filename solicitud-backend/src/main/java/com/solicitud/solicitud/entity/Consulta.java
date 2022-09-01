@@ -2,8 +2,6 @@ package com.solicitud.solicitud.entity;
 
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
-
 
 @Entity
 @Table(name = "consultas")
@@ -12,24 +10,20 @@ public class Consulta {
     @Id
     @Column(name = "con_sol_id")
     private int id;
-
     @Column(name = "con_parametro")
     private String parametro;
-
     @OneToOne
     @MapsId
     @JoinColumn(name = "con_sol_id")
     private Solicitud solicitud;
-
-    @NotNull
     @ManyToOne
-    @JoinColumn(name = "con_est_id")
+    @JoinColumn(name = "con_est_id", nullable = false)
     private Estado estado;
 
     public Consulta() {
     }
 
-    public Consulta(String parametro, Solicitud solicitud, @NotNull Estado estado) {
+    public Consulta(String parametro, Solicitud solicitud, Estado estado) {
         this.parametro = parametro;
         this.solicitud = solicitud;
         this.estado = estado;
